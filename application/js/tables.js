@@ -45,9 +45,6 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     start_element.onblur = function() {
         validateSimple('start_value'+rowCount,'real');
     };
-    start_element.onfocus = function() {
-        onFocus(rowCount);
-    };
     start_cell.appendChild(start_element);
 
     var end_cell = row.insertCell(2);
@@ -63,9 +60,6 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     end_element.onblur = function() {validateSimple('end_value'+rowCount,'real')};
     end_element.onblur = function() {
         validateSimple('end_value'+rowCount,'real');
-    };
-    end_element.onfocus = function() {
-        onFocus(rowCount);
     };
     end_cell.appendChild(end_element);
 
@@ -83,9 +77,6 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     rate_element.onblur = function() {
         validateSimple('rate'+rowCount,'real');
     };
-    rate_element.onfocus = function() {
-        onFocus(rowCount);
-    };
     rate_cell.appendChild(rate_element);
 
     var duration_cell = row.insertCell(4);
@@ -102,9 +93,6 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     duration_element.onblur = function() {
         validateSimple('duration'+rowCount,'positive_real');
     };
-    duration_element.onfocus = function() {
-        onFocus(rowCount);
-    };
     duration_cell.appendChild(duration_element);
 
     var repeat_cell = row.insertCell(5);
@@ -120,9 +108,6 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     repeat_element.onblur = function() {
         validateSimple('repeat_value'+rowCount,'integer');
     };
-    repeat_element.onfocus = function() {
-        onFocus(rowCount);
-    };
     repeat_cell.appendChild(repeat_element);
     
     var button_cell = row.insertCell(6);
@@ -131,7 +116,8 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     button_element.class = "btn";
     button_element.id = "btn"+rowCount;
     button_element.name = button_element.id;
-    button_element.onclick = function() {submitIt(rowCount)};
+    button_element.innerHTML = "Update";
+    button_element.onclick = function() {updateRow(rowCount-1)};
     button_cell.appendChild(button_element);
 
     submitIt(rowCount);
@@ -176,18 +162,21 @@ function deleteRow(){
     }
 }
 
-
+//temp functions
 function submitIt(rowCount){
-    $.post('add_segment',$('#row'+(rowCount)+' :input').serialize()+'&position='+(rowCount),function(data){updateChart(data)});
+    $.post('add_segment',$('#row'+(rowCount)+' :input').serialize()+'&position='+(rowCount-1),function(data){updateChart(data)});
 }
 
-function onFocus(position){
-    if (highlighted_row != position){
-        var table = document.getElementById('user_table');
-        table.rows[position].style.backgroundColor = '#848484';
-        table.rows[highlighted_row].style.backgroundColor = 'white';
-        highlighted_row = position;
-    }
+function updateRow(position){
+    $.post('delete_segment',position.toString(),function(data){
+        //alert(data);
+        deletePoints(data)
+        //post to server to delete segment
+        $.post('add_segment',$('#row'+(position+1)+' :input').serialize()+'&position='+(position),function(data){
+            //alert(data);
+            updateChart(data)
+        });
+    });
 }
 
 function selectAll(){

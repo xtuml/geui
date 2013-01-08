@@ -57,7 +57,7 @@ function initiateGraph(){
             }
         },
         series: [{
-            data: [[0,0]]
+            data: []
         }]
     };
 
