@@ -1,4 +1,4 @@
-githubchat
+GEUI
 ==========
 
-Group/team real-time chat displayed and saved within github
+Graphical editor to describe waveforms and persist them to XML.
