@@ -21,11 +21,17 @@ class GraphHandler:
 
         return current_graph
 
-    def update_model(self, current_graph, form):
+    def update_model(self, current_graph, action, form):
         name = 'mygraph' #eventually will be from user
 
-        #add segment
-        self.add_segment(current_graph, int(form.start_value), int(form.end_value), int(form.rate), int(form.duration))
+        if (action == 'add'):
+            #add segment at end
+            self.add_segment(current_graph, int(form.start_value), int(form.end_value), int(form.rate), int(form.duration))
+        elif (action == 'delete'):
+            #delete segment at end
+            self.delete_segment(current_graph)
+        else:
+            pass
 
         #save the file 
         save_file = open('data/'+name+'.xml','w')
@@ -48,6 +54,11 @@ class GraphHandler:
             parent_graph.ends_with = new_segment
 
         parent_graph.number_segments += 1
+
+    def delete_segment(self, parent_graph):
+        #cut ties with the model
+        parent_graph.ends_with.is_after.is_before = None
+        parent_graph.ends_with = parent_graph.ends_with.is_after
             
     def calculate_reply(self, current_graph):
         csv = ''

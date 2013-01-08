@@ -4,7 +4,8 @@ import scripts.requests
 urls = (
     '/','index',
     '/js/(.*)','script_handler',
-    '/add_segment','scripts.requests.AddSegment'
+    '/add_segment','scripts.requests.AddSegment',
+    '/delete_segment','scripts.requests.DeleteSegment'
 )
 
 render = web.template.render('templates/')

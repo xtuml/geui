@@ -119,6 +119,7 @@ function addRow(){
     button_cell.appendChild(button_element);
 }
 
+//deleteRows will be used in the final product. deleteRow only deletes the last segment. will be used for now
 function deleteRows(){
     try {
         var table = document.getElementById('user_table');
@@ -136,6 +137,23 @@ function deleteRows(){
         }
 
     }catch(e) {
+        alert(e);
+    }
+}
+
+function deleteRow(){
+    try {
+        var table = document.getElementById('user_table');
+        var rowCount = table.rows.length;
+
+        if (rowCount > 2){
+            table.deleteRow(rowCount-1);
+            $.post('delete_segment',function(data){deletePoints(data)}); //post to server to delete segment
+        }
+        else{
+        }
+    }
+    catch(e){
         alert(e);
     }
 }
