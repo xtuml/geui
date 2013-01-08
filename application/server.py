@@ -5,7 +5,9 @@ urls = (
     '/','index',
     '/js/(.*)','script_handler',
     '/add_segment','scripts.requests.AddSegment',
-    '/delete_segment','scripts.requests.DeleteSegment'
+    '/delete_segment','scripts.requests.DeleteSegment',
+    '/open','scripts.requests.OpenFile',
+    '/open_table','scripts.requests.OpenTable'
 )
 
 render = web.template.render('templates/')

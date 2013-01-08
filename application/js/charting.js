@@ -49,11 +49,11 @@ function initiateGraph(){
             }
         },
         plotOptions: {
-            spline: {
+            line: {
                 marker: {
                     enable: false
                 },
-                animation: true
+                animation: false 
             }
         },
         series: [{

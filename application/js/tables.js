@@ -2,7 +2,7 @@ var highlighted_row = 0;
 
 function init_table(){    
 
-    addRow(0,0,0,10,1);
+    openFile();
 
 }
 
@@ -13,11 +13,12 @@ function addSegmentClicked(){
         document.getElementById('end_value'+(table.rows.length-1)).value,
         document.getElementById('rate'+(table.rows.length-1)).value,
         document.getElementById('duration'+(table.rows.length-1)).value,
-        document.getElementById('repeat_value'+(table.rows.length-1)).value
+        document.getElementById('repeat_value'+(table.rows.length-1)).value,
+        true
     );
 }
 
-function addRow(start_value, end_value, rate, duration, repeat_value){
+function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
 
     var table = document.getElementById("user_table");
 
@@ -120,7 +121,9 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     button_element.onclick = function() {updateRow(rowCount-1)};
     button_cell.appendChild(button_element);
 
-    submitIt(rowCount);
+    if (updateIt == true){
+        submitIt(rowCount);
+    }
 }
 
 //deleteRows will be used in the final product. deleteRow only deletes the last segment. will be used for now
@@ -178,6 +181,33 @@ function updateRow(position){
         });
     });
 }
+
+function openFile(){
+    $.post('open',function(data){
+        if (data == ''){
+            alert('hi');
+            addRow(0,0,0,10,1,true);
+        }
+        else{
+            updateChart(data);
+            $.post('open_table',function(data){
+                var lines = data.split('\n');
+                for (line in lines){
+                    var items = lines[line].split(',');
+
+                    //populate array
+                    var param_set  = [];
+
+                    for (item in items){
+                        param_set.push(parseFloat(items[item]));
+                    }
+                    addRow(param_set[0],param_set[1],param_set[2],param_set[3],1,false);
+                }
+            });
+        }
+    });
+}
+//end temp functions
 
 function selectAll(){
     var table = document.getElementById('user_table');

@@ -26,3 +26,15 @@ class DeleteSegment:
         handler.delete_segment(current_graph, position)
         handler.update_model(current_graph)
         return reply 
+
+class OpenFile:
+  
+    def POST(self):
+        current_graph = handler.open_model()
+        return handler.calculate_reply(current_graph, 0)
+
+class OpenTable:
+
+    def POST(self):
+        current_graph = handler.open_model()
+        return handler.calculate_table_reply(current_graph)

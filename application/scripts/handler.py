@@ -95,28 +95,23 @@ class GraphHandler:
             
     def calculate_reply(self, current_graph, position):
         csv = ''
-        print current_graph.starts_with, current_graph.ends_with
-        start_segment = self.select_segment(position, current_graph.starts_with)
-        points = []
-        self.get_points_from_segment(points, start_segment)
-        if (position != 0):
-            end_point = self.calculate_endpoints(start_segment.is_after)[1]
-            d = -1
-            for (c,point) in enumerate(points):
-                if (point == end_point):
-                    d = c
-            if (d != -1):
-                del points[d]
-                    
-        print points
-
-        #if (current_graph.number_segments > 1 and current_graph.ends_with.start_value == current_graph.ends_with.is_after.end_value):
-        #    points = points[1]
-        #    csv = ','.join('%s'%point for point in points)
-        #else:
-        #    csv = '\n'.join('%s,%s'%point for point in points)
-        
-        csv = '\n'.join('%s,%s'%point for point in points)
+        if (position < current_graph.number_segments):
+            print current_graph.starts_with, current_graph.ends_with
+            start_segment = self.select_segment(position, current_graph.starts_with)
+            points = []
+            self.get_points_from_segment(points, start_segment)
+            if (position != 0):
+                end_point = self.calculate_endpoints(start_segment.is_after)[1]
+                d = -1
+                for (c,point) in enumerate(points):
+                    if (point == end_point):
+                        d = c
+                if (d != -1):
+                    del points[d]
+                        
+            print points
+            
+            csv = '\n'.join('%s,%s'%point for point in points)
         return csv
 
     def calculate_start_time(self,segment):
@@ -147,5 +142,22 @@ class GraphHandler:
                     point_list.append(test_point)
                 
             self.get_points_from_segment(point_list, segment.is_before)
+        else:
+            pass
+
+    def calculate_table_reply(self, current_graph):
+        reply = ''
+        if (current_graph.starts_with != None):
+            param_list = []
+            self.get_parameters(param_list, current_graph.starts_with)
+
+            #calculate csv  string
+            reply = '\n'.join('%s,%s,%s,%s'%param_set for param_set in param_list)
+        return reply
+            
+    def get_parameters(self, param_list, segment):
+        if (segment != None):
+            param_list.append((segment.start_value, segment.end_value, segment.rate, segment.duration))
+            self.get_parameters(param_list, segment.is_before)
         else:
             pass
