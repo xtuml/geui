@@ -2,11 +2,22 @@ var highlighted_row = 0;
 
 function init_table(){    
 
-    addRow();
+    addRow(0,0,0,10,1);
 
 }
 
-function addRow(){
+function addSegmentClicked(){
+    var table = document.getElementById("user_table");
+    addRow(
+        document.getElementById('start_value'+(table.rows.length-1)).value,
+        document.getElementById('end_value'+(table.rows.length-1)).value,
+        document.getElementById('rate'+(table.rows.length-1)).value,
+        document.getElementById('duration'+(table.rows.length-1)).value,
+        document.getElementById('repeat_value'+(table.rows.length-1)).value
+    );
+}
+
+function addRow(start_value, end_value, rate, duration, repeat_value){
 
     var table = document.getElementById("user_table");
 
@@ -30,6 +41,7 @@ function addRow(){
     start_element.row_number = rowCount;
     start_element.default_placeholder = "Start value";
     start_element.placeholder = start_element.default_placeholder;
+    start_element.value = start_value;
     start_element.onblur = function() {
         validateSimple('start_value'+rowCount,'real');
     };
@@ -47,6 +59,7 @@ function addRow(){
     end_element.row_number = rowCount;
     end_element.default_placeholder = "End value";
     end_element.placeholder = end_element.default_placeholder;
+    end_element.value = end_value;
     end_element.onblur = function() {validateSimple('end_value'+rowCount,'real')};
     end_element.onblur = function() {
         validateSimple('end_value'+rowCount,'real');
@@ -65,6 +78,7 @@ function addRow(){
     rate_element.row_number = rowCount;
     rate_element.default_placeholder = "Rate";
     rate_element.placeholder = rate_element.default_placeholder;
+    rate_element.value = rate;
     rate_element.onblur = function() {validateSimple('rate'+rowCount,'real')};
     rate_element.onblur = function() {
         validateSimple('rate'+rowCount,'real');
@@ -83,6 +97,7 @@ function addRow(){
     duration_element.row_number = rowCount;
     duration_element.default_placeholder = "Duration";
     duration_element.placeholder = duration_element.default_placeholder;
+    duration_element.value = duration;
     duration_element.onblur = function() {validateSimple('duration'+rowCount,'positive_real')};
     duration_element.onblur = function() {
         validateSimple('duration'+rowCount,'positive_real');
@@ -101,6 +116,7 @@ function addRow(){
     repeat_element.row_number = rowCount;
     repeat_element.default_placeholder = "Repeats";
     repeat_element.placeholder = repeat_element.default_placeholder;
+    repeat_element.value = repeat_value;
     repeat_element.onblur = function() {
         validateSimple('repeat_value'+rowCount,'integer');
     };
@@ -117,6 +133,8 @@ function addRow(){
     button_element.name = button_element.id;
     button_element.onclick = function() {submitIt(rowCount)};
     button_cell.appendChild(button_element);
+
+    submitIt(rowCount);
 }
 
 //deleteRows will be used in the final product. deleteRow only deletes the last segment. will be used for now
