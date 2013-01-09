@@ -24,14 +24,16 @@ function validateSimple(id_string, method){
     var value = $.trim($('#'+id_string).val());
 
     if (value == '' || validate_methods[method]['method'](value)){
-        //$($('#'+id_string)).parents('.control-group').removeClass('error');
+        document.getElementById(id_string).parentNode.setAttribute('class','control-group');    
+        document.getElementById(id_string).parentNode.parentNode.setAttribute('style','text-align: center; vertical-align: middle; background-color:');    
         document.getElementById(id_string).placeholder = document.getElementById(id_string).default_placeholder;    
         return true;
     }
     else{
         document.getElementById(id_string).placeholder = validate_methods[method]['message'];    
         document.getElementById(id_string).value = '';    
-        //$('#'+id_string).addClass('error');
+        document.getElementById(id_string).parentNode.setAttribute('class','control-group error');    
+        document.getElementById(id_string).parentNode.parentNode.setAttribute('style','text-align: center; vertical-align: middle; background-color: #FFAFAF');
         return false;
     }
 

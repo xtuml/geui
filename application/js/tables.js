@@ -7,7 +7,7 @@ function init_table(){
 }
 
 function addSegmentClicked(){
-    var table = document.getElementById("user_table");
+    var table = document.getElementById("tbody");
     addRow(
         document.getElementById('end_value'+(table.rows.length-1)).value,
         document.getElementById('start_value'+(table.rows.length-1)).value,
@@ -20,23 +20,37 @@ function addSegmentClicked(){
 
 function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
 
-    var table = document.getElementById("user_table");
+    var table = document.getElementById("tbody");
 
     var rowCount = table.rows.length;
     var row = table.insertRow(rowCount);
     row.id = 'row'+rowCount;
                               
     var check_cell  = row.insertCell(0);
+    check_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var check_element  = document.createElement("input");
     check_element.type = "checkbox";
+    check_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     check_element.id = "check"+rowCount;
     check_element.row_number = rowCount;
     check_cell.appendChild(check_element);
 
-    var start_cell = row.insertCell(1);
+    var number_cell = row.insertCell(1);
+    number_cell.setAttribute("style","text-align: center; vertical-align: middle");
+    var number_element = document.createElement('b');
+    number_element.innerHTML = rowCount+1;
+    number_cell.appendChild(number_element);
+
+    var start_cell = row.insertCell(2);
+    start_cell.setAttribute("style","text-align: center; vertical-align: middle");
+    var start_div_element = document.createElement("div");
+    start_div_element.setAttribute("class", "control-group");
+    start_div_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
+    start_cell.appendChild(start_div_element);
+
     var start_element = document.createElement("input");
     start_element.type = "text";
-    start_element.class = "input input-xlarge error";
+    start_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     start_element.id = "start_value"+rowCount;
     start_element.name = "start_value";
     start_element.row_number = rowCount;
@@ -46,12 +60,19 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     start_element.onblur = function() {
         validateSimple('start_value'+rowCount,'real');
     };
-    start_cell.appendChild(start_element);
+    start_div_element.appendChild(start_element);
+    //start_cell.appendChild(start_element);
 
-    var end_cell = row.insertCell(2);
+    var end_cell = row.insertCell(3);
+    end_cell.setAttribute("style","text-align: center; vertical-align: middle");
+    var end_div_element = document.createElement("div");
+    end_div_element.setAttribute("class", "control-group");
+    end_div_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
+    end_cell.appendChild(end_div_element);
+
     var end_element = document.createElement("input");
     end_element.type = "text";
-    end_element.class = "input input-xlarge";
+    end_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     end_element.id = "end_value"+rowCount;
     end_element.name = "end_value";
     end_element.row_number = rowCount;
@@ -62,12 +83,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     end_element.onblur = function() {
         validateSimple('end_value'+rowCount,'real');
     };
-    end_cell.appendChild(end_element);
+    end_div_element.appendChild(end_element);
 
-    var rate_cell = row.insertCell(3);
+    var rate_cell = row.insertCell(4);
+    rate_cell.setAttribute("style","text-align: center; vertical-align: middle");
+    var rate_div_element = document.createElement("div");
+    rate_div_element.setAttribute("class", "control-group");
+    rate_div_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
+    rate_cell.appendChild(rate_div_element);
+
     var rate_element = document.createElement("input");
     rate_element.type = "text";
-    rate_element.class = "input input-xlarge";
+    rate_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     rate_element.id = "rate"+rowCount;
     rate_element.name = "rate";
     rate_element.row_number = rowCount;
@@ -78,12 +105,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     rate_element.onblur = function() {
         validateSimple('rate'+rowCount,'real');
     };
-    rate_cell.appendChild(rate_element);
+    rate_div_element.appendChild(rate_element);
 
-    var duration_cell = row.insertCell(4);
+    var duration_cell = row.insertCell(5);
+    duration_cell.setAttribute("style","text-align: center; vertical-align: middle");
+    var duration_div_element = document.createElement("div");
+    duration_div_element.setAttribute("class", "control-group");
+    duration_div_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
+    duration_cell.appendChild(duration_div_element);
+
     var duration_element = document.createElement("input");
     duration_element.type = "text";
-    duration_element.class = "input input-xlarge";
+    duration_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     duration_element.id = "duration"+rowCount;
     duration_element.name = "duration";
     duration_element.row_number = rowCount;
@@ -94,12 +127,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     duration_element.onblur = function() {
         validateSimple('duration'+rowCount,'positive_real');
     };
-    duration_cell.appendChild(duration_element);
+    duration_div_element.appendChild(duration_element);
 
-    var repeat_cell = row.insertCell(5);
+    var repeat_cell = row.insertCell(6);
+    repeat_cell.setAttribute("style","text-align: center; vertical-align: middle");
+    var repeat_div_element = document.createElement("div");
+    repeat_div_element.setAttribute("class", "control-group");
+    repeat_div_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
+    repeat_cell.appendChild(repeat_div_element);
+
     var repeat_element = document.createElement("input");
     repeat_element.type = "text";
-    repeat_element.class = "input input-xlarge";
+    repeat_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     repeat_element.id = "repeat_value"+rowCount;
     repeat_element.name = "repeat";
     repeat_element.row_number = rowCount;
@@ -109,16 +148,17 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     repeat_element.onblur = function() {
         validateSimple('repeat_value'+rowCount,'integer');
     };
-    repeat_cell.appendChild(repeat_element);
+    repeat_div_element.appendChild(repeat_element);
     
-    var button_cell = row.insertCell(6);
+    var button_cell = row.insertCell(7);
+    button_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var button_element = document.createElement("button");
     button_element.type = "button";
-    button_element.class = "btn";
+    button_element.setAttribute('class', "btn");
     button_element.id = "btn"+rowCount;
     button_element.name = button_element.id;
     button_element.innerHTML = "Update";
-    button_element.onclick = function() {updateRow(rowCount-1)};
+    button_element.onclick = function() {updateRow(rowCount)};
     button_cell.appendChild(button_element);
 
     if (updateIt == true){
@@ -129,11 +169,11 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
 //deleteRows will be used in the final product. deleteRow only deletes the last segment. will be used for now
 function deleteRows(){
     try {
-        var table = document.getElementById('user_table');
+        var table = document.getElementById('tbody');
         var rowCount = table.rows.length;
         document.getElementById('table_check').checked = false;
                                
-        for(var i=1; i<rowCount; i++) {
+        for(var i=0; i<rowCount; i++) {
             var row = table.rows[i];
             var chkbox = row.cells[0].childNodes[0];
             if(null != chkbox && true == chkbox.checked) {
@@ -150,10 +190,10 @@ function deleteRows(){
 
 function deleteRow(){
     try {
-        var table = document.getElementById('user_table');
+        var table = document.getElementById('tbody');
         var rowCount = table.rows.length;
 
-        if (rowCount > 2){
+        if (rowCount > 1){
             table.deleteRow(rowCount-1);
             $.post('delete_segment',function(data){deletePoints(data)}); //post to server to delete segment
         }
@@ -167,16 +207,13 @@ function deleteRow(){
 
 //temp functions
 function submitIt(rowCount){
-    $.post('add_segment',$('#row'+(rowCount)+' :input').serialize()+'&position='+(rowCount-1),function(data){updateChart(data)});
+    $.post('add_segment',$('#row'+(rowCount)+' :input').serialize()+'&position='+(rowCount),function(data){updateChart(data)});
 }
 
 function updateRow(position){
     $.post('delete_segment',position.toString(),function(data){
-        //alert(data);
         deletePoints(data)
-        //post to server to delete segment
-        $.post('add_segment',$('#row'+(position+1)+' :input').serialize()+'&position='+(position),function(data){
-            //alert(data);
+        $.post('add_segment',$('#row'+(position)+' :input').serialize()+'&position='+(position),function(data){
             updateChart(data)
         });
     });
@@ -185,7 +222,6 @@ function updateRow(position){
 function openFile(){
     $.post('open',function(data){
         if (data == ''){
-            alert('hi');
             addRow(0,0,0,10,1,true);
         }
         else{
@@ -210,7 +246,7 @@ function openFile(){
 //end temp functions
 
 function selectAll(){
-    var table = document.getElementById('user_table');
+    var table = document.getElementById('tbody');
     var ckbx = document.getElementById('table_check');
     if (ckbx.checked == true){
         for (row in table.rows){

@@ -57,6 +57,7 @@ function initiateGraph(){
             }
         },
         series: [{
+            color: '#FF0000',
             data: []
         }]
     };
