@@ -180,7 +180,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     repeat_element.row_number = rowCount;
     repeat_element.default_placeholder = "Repeats";
     repeat_element.placeholder = repeat_element.default_placeholder;
-    repeat_element.value = cleanUp(repeat_value);
+    repeat_element.value = repeat_value;
     repeat_element.autocomplete = "off";
     repeat_element.onkeypress = function (e){
         if (e.keyCode == 13){
@@ -278,4 +278,20 @@ function keyHandler(e, position){
     if (e.keyCode == 13){
         updateRow(position);
     }
+}
+
+function fullscreen(){
+    var chart_container = document.getElementById('chart_container');
+    var table_container = document.getElementById('table_container');
+    if (chart_container.style.height == '325px'){
+        chart_container.style.height = '625px';
+        table_container.style.height = '25px';
+    }
+    else{
+        chart_container.style.height = '325px';
+        table_container.style.height = '325px';
+    }
+    var new_options = chart.options;
+    chart.destroy();
+    chart = new Highcharts.Chart(new_options);
 }
