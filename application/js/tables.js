@@ -56,9 +56,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     start_element.row_number = rowCount;
     start_element.default_placeholder = "Start value";
     start_element.placeholder = start_element.default_placeholder;
-    start_element.value = start_value;
+    start_element.value = cleanUp(start_value);
+    start_element.autocomplete = "off";
+    start_element.onkeypress = function (e){
+        if (e.keyCode == 13){
+            start_element.value = cleanUp(start_element.value);
+            updateRow(rowCount);
+        }
+    };
     start_element.onblur = function() {
-        validateSimple('start_value'+rowCount,'real');
+        if (validateSimple('start_value'+rowCount,'real') == true){
+            start_element.value = cleanUp(start_element.value);
+        }
     };
     start_div_element.appendChild(start_element);
     //start_cell.appendChild(start_element);
@@ -78,10 +87,19 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     end_element.row_number = rowCount;
     end_element.default_placeholder = "End value";
     end_element.placeholder = end_element.default_placeholder;
-    end_element.value = end_value;
-    end_element.onblur = function() {validateSimple('end_value'+rowCount,'real')};
+    end_element.value = cleanUp(end_value);
+    end_element.autocomplete = "off";
+    end_element.setAttribute('onkeypress','keyHandler(event, '+rowCount+')');
+    end_element.onkeypress = function (e){
+        if (e.keyCode == 13){
+            end_element.value = cleanUp(end_element.value);
+            updateRow(rowCount);
+        }
+    };
     end_element.onblur = function() {
-        validateSimple('end_value'+rowCount,'real');
+        if (validateSimple('end_value'+rowCount,'real') == true){
+            end_element.value = cleanUp(end_element.value);
+        }
     };
     end_div_element.appendChild(end_element);
 
@@ -100,10 +118,19 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     rate_element.row_number = rowCount;
     rate_element.default_placeholder = "Rate";
     rate_element.placeholder = rate_element.default_placeholder;
-    rate_element.value = rate;
-    rate_element.onblur = function() {validateSimple('rate'+rowCount,'real')};
+    rate_element.value = cleanUp(rate);
+    rate_element.autocomplete = "off";
+    rate_element.setAttribute('onkeypress','keyHandler(event, '+rowCount+')');
+    rate_element.onkeypress = function (e){
+        if (e.keyCode == 13){
+            rate_element.value = cleanUp(rate_element.value);
+            updateRow(rowCount);
+        }
+    };
     rate_element.onblur = function() {
-        validateSimple('rate'+rowCount,'real');
+        if (validateSimple('rate'+rowCount,'real') == true){
+            rate_element.value = cleanUp(rate_element.value);
+        }
     };
     rate_div_element.appendChild(rate_element);
 
@@ -122,10 +149,19 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     duration_element.row_number = rowCount;
     duration_element.default_placeholder = "Duration";
     duration_element.placeholder = duration_element.default_placeholder;
-    duration_element.value = duration;
-    duration_element.onblur = function() {validateSimple('duration'+rowCount,'positive_real')};
+    duration_element.value = cleanUp(duration);
+    duration_element.autocomplete = "off";
+    duration_element.setAttribute('onkeypress','keyHandler(event, '+rowCount+')');
+    duration_element.onkeypress = function (e){
+        if (e.keyCode == 13){
+            duration_element.value = cleanUp(duration_element.value);
+            updateRow(rowCount);
+        }
+    };
     duration_element.onblur = function() {
-        validateSimple('duration'+rowCount,'positive_real');
+        if (validateSimple('duration'+rowCount,'positive_real') == true){
+            duration_element.value = cleanUp(duration_element.value);
+        }
     };
     duration_div_element.appendChild(duration_element);
 
@@ -144,7 +180,14 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     repeat_element.row_number = rowCount;
     repeat_element.default_placeholder = "Repeats";
     repeat_element.placeholder = repeat_element.default_placeholder;
-    repeat_element.value = repeat_value;
+    repeat_element.value = cleanUp(repeat_value);
+    repeat_element.autocomplete = "off";
+    repeat_element.onkeypress = function (e){
+        if (e.keyCode == 13){
+            repeat_element.value = cleanUp(repeat_element.value);
+            updateRow(rowCount);
+        }
+    };
     repeat_element.onblur = function() {
         validateSimple('repeat_value'+rowCount,'integer');
     };
@@ -162,7 +205,9 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     button_cell.appendChild(button_element);
 
     if (updateIt == true){
-        submitIt(rowCount);
+        if (addSegment(rowCount) == false){
+            table.deleteRow(rowCount);
+        }
     }
 }
 
@@ -186,37 +231,6 @@ function deleteRows(){
     }catch(e) {
         alert(e);
     }
-}
-
-function deleteRow(){
-    try {
-        var table = document.getElementById('tbody');
-        var rowCount = table.rows.length;
-
-        if (rowCount > 1){
-            table.deleteRow(rowCount-1);
-            $.post('delete_segment',function(data){deletePoints(data)}); //post to server to delete segment
-        }
-        else{
-        }
-    }
-    catch(e){
-        alert(e);
-    }
-}
-
-//temp functions
-function submitIt(rowCount){
-    $.post('add_segment',$('#row'+(rowCount)+' :input').serialize()+'&position='+(rowCount),function(data){updateChart(data)});
-}
-
-function updateRow(position){
-    $.post('delete_segment',position.toString(),function(data){
-        deletePoints(data)
-        $.post('add_segment',$('#row'+(position)+' :input').serialize()+'&position='+(position),function(data){
-            updateChart(data)
-        });
-    });
 }
 
 function openFile(){
@@ -257,5 +271,11 @@ function selectAll(){
         for (row in table.rows){
             table.rows[row].cells[0].childNodes[0].checked = false;
         }
+    }
+}
+
+function keyHandler(e, position){
+    if (e.keyCode == 13){
+        updateRow(position);
     }
 }

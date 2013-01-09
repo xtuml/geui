@@ -10,7 +10,7 @@ class AddSegment:
         
         current_graph = handler.open_model()
         position = int(form.position)
-        handler.add_segment(current_graph, int(form.start_value), int(form.end_value), int(form.rate), int(form.duration), position)
+        handler.add_segment(current_graph, float(form.start_value), float(form.end_value), float(form.rate), float(form.duration), position)
         handler.update_model(current_graph)
         return handler.calculate_reply(current_graph, position)
 
