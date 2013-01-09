@@ -9,9 +9,9 @@ function init_table(){
 function addSegmentClicked(){
     var table = document.getElementById("user_table");
     addRow(
-        document.getElementById('start_value'+(table.rows.length-1)).value,
         document.getElementById('end_value'+(table.rows.length-1)).value,
-        document.getElementById('rate'+(table.rows.length-1)).value,
+        document.getElementById('start_value'+(table.rows.length-1)).value,
+        document.getElementById('rate'+(table.rows.length-1)).value*-1,
         document.getElementById('duration'+(table.rows.length-1)).value,
         document.getElementById('repeat_value'+(table.rows.length-1)).value,
         true
