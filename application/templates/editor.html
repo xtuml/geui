@@ -6,24 +6,25 @@
 
     <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
     <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="/js/init.js"></script>
-    <script src="/js/charting.js"></script>
     
   </head>
   <body>
 
     <div class="row">
-        <div id="chart_container" style="height: 325px; margin: 0px 25px"></div>
+        <div id="chart_container" style="height: 325px; margin: 10px 50px"></div>
     </div>
     
     <div class="row">
-        <div class="well" id="table_container" style="height: 325px; margin: 0px 25px 0px 50px; overflow: scroll">
+        <div class="well" id="table_container" style="height: 325px; margin: 10px 50px; overflow: scroll">
             <form id="user_input">
             <table id="user_table" class="table table-condensed table-bordered table-hover" style="background-color: white">
                 <thead>
                     <tr>
                         <th><center><input type="checkbox" id="table_check" onclick="selectAll()"></input></center></th>
+                        <th>#</th>
                         <th>Start Value</th>
                         <th>End Value</th>
                         <th>Sweep Rate</th>
@@ -31,7 +32,7 @@
                         <th>Repeats</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tbody">
                 </tbody>
             </table>
             </form>
@@ -44,122 +45,38 @@
                 type="button"
                 id="add_segment"
                 class="btn btn-large btn-primary"
-                onclick="addRow()"
+                onclick="addSegmentClicked()"
             >Add Segment</button>
             <button
                 type="button"
                 id="delete_segment"
                 class="btn btn-large btn-danger"
-                onclick="deleteRows()"
-            >Delete Segment(s)</button>
+                onclick="deleteSegment()"
+            >Delete Segment</button>
+            <button
+                type="button"
+                id="delete_segment"
+                class="btn btn-large btn-success"
+            >Bind</button>
             <button
                 type="button"
                 id="move_up"
                 class="btn btn-large"
-                disabled="true"
-            ><i class="icon-circle-arrow-up"></i></button>
+            ><i class="icon-circle-arrow-up icon-large"></i></button>
             <button
                 type="button"
                 id="move_down"
                 class="btn btn-large"
-                disabled="true"
-            ><i class="icon-circle-arrow-down"></i></button>
+            ><i class="icon-circle-arrow-down icon-large"></i></button>
+            <button
+                type="button"
+                id="fullscreen"
+                class="btn btn-large"
+                onclick="fullscreen()"
+            ><i class="icon-fullscreen icon-large"></i></button>
         </div>
     </div>
 
-    <!--div class="container">
-    <div class="row">
-
-    <div class="span6">
-      
-	<form class="form-horizontal" id="user_input">
-	  <fieldset>
-	    <legend>Add Segment to Graph</legend>
-	    <div class="control-group">
-	      <label class="control-label" for="input01">Starting Value</label>
-	      <div class="controls">
-	        <input 
-                  type="text" 
-                  class="input-xlarge" 
-                  id="start_value" 
-                  name="start_value" 
-                  onblur="validateSimple('start_value','integer')"
-                >
-                <span class="help-inline" id="start_value_help"></span>
-	      </div>
-	    </div>
-	
-	    <div class="control-group">
-	      <label class="control-label" for="input01">Ending Value</label>
-	      <div class="controls">
-	        <input 
-                  type="text"
-                  class="input-xlarge" 
-                  id="end_value" 
-                  name="end_value" 
-                  onblur="validateSimple('end_value','integer')"
-                >
-                <span class="help-inline" id="end_value_help"></span>
-	      </div>
-	    </div>
-	
-	    <div class="control-group">
-	      <label class="control-label" for="input01">Rate</label>
-	      <div class="controls">
-	        <input 
-                  type="text" 
-                  class="input-xlarge" 
-                  id="rate" 
-                  name="rate" 
-                  onblur="validateSimple('rate','integer')"
-                >
-                <span class="help-inline" id="rate_help"></span>
-	      </div>
-	    </div>
-	    
-            <div class="control-group">
-	      <label class="control-label" for="input01">Segment Duration (s)</label>
-	      <div class="controls">
-	        <input 
-                  type="text" 
-                  class="input-xlarge" 
-                  id="duration" 
-                  name="duration" 
-                  onblur="validateSimple('duration','integer')"
-                >
-                <span class="help-inline" id="duration_help"></span>
-	      </div>
-	    </div>
-            
-            <hr> 
-	    
-            <div class="control-group">
-	      <label class="control-label" for="input01"></label>
-	      <div class="controls">
-	        <button 
-                  type="button" 
-                  class="btn btn-large btn-primary"
-                  id="submit_btn"
-                  onclick="submitForm()"
-                >Add Segment</button>
-	        <button
-                  type="button"
-                  class="btn btn-large"
-                  id="auto_fill"
-                  disabled="true"
-                  onclick="autoFill()"
-                >Auto Fill</button> 
-                <span class="help-block" id="submit_help"></span>
-	      </div>
-	    </div>
-	   
-	  </fieldset>
-	</form>
-        
-    </div> 
-    </div>
-    </div-->  
-         
     <!-- SCRIPTS INCLUDED -->
     
     <!-- highcharts scripts -->
@@ -180,6 +97,8 @@
     <script src="/js/validation.js"></script>
     <script src="/js/submission.js"></script>
     <script src="/js/tables.js"></script>
+    <script src="/js/charting.js"></script>
+    <script src="/js/chart_theme.js"></script>
 
   </body>
 </html>
