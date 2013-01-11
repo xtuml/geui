@@ -7,13 +7,13 @@ var validate_methods = {
     },
     real: {
         method: function real(value){
-            return /^(((0|-|-?[1-9][0-9]*)?(\.[0-9]*))|(0|-?[1-9][0-9]*))$/.test(value);
+            return /^(0|(-?([1-9][0-9]*)?\.[0-9]*)|(-?[1-9][0-9]*)|(0\.[0-9]*)|(-?0?\.[0-9]*[1-9][0-9]*))$/.test(value);
         },
         message: 'Enter a valid real'
     },
     positive_real: {
         method: function positive_real(value){
-            return /^(((0|[1-9][0-9]*)?(\.[0-9]*))|(0|[1-9][0-9]*))$/.test(value);
+            return /^((([1-9][0-9]*)(\.[0-9]*))|(\.[0-9]*[1-9][0-9]*)|([1-9][0-9]*))$/.test(value);
         },
         message: 'Enter a positive real'
     }
@@ -24,26 +24,23 @@ function validateSimple(id_string, method){
     var value = $.trim($('#'+id_string).val());
 
     if (value == '' || validate_methods[method]['method'](value)){
-        //$($('#'+id_string)).parents('.control-group').removeClass('error');
-        document.getElementById(id_string).placeholder = document.getElementById(id_string).default_placeholder;    
+        removeError(id_string, document.getElementById(id_string).default_placeholder);
         return true;
     }
     else{
-        document.getElementById(id_string).placeholder = validate_methods[method]['message'];    
-        document.getElementById(id_string).value = '';    
-        //$('#'+id_string).addClass('error');
+        setError(id_string, validate_methods[method]['message']);
         return false;
     }
 
 }
 
-function validateComplex(){
+function validateComplex(rowCount){
     //setup
     var fields = {
-        start_value: document.getElementById('start_value'),
-        end_value: document.getElementById('end_value'),
-        rate: document.getElementById('rate'),
-        duration: document.getElementById('duration')
+        start_value: document.getElementById('start_value'+rowCount),
+        end_value: document.getElementById('end_value'+rowCount),
+        rate: document.getElementById('rate'+rowCount),
+        duration: document.getElementById('duration'+rowCount)
     }
     var values = {
         start_value: $.trim(fields['start_value'].value),
@@ -55,11 +52,38 @@ function validateComplex(){
     //validation code
     var valid = true
 
+    //auto fill
+    if (values['end_value'] != values['start_value'] && ((values['end_value'] - values['start_value']) / values['rate']) > 0){
+        var num_empty = 0;
+        var to_fill = '';
+        for (var value in values ){
+            if (values[value] == ''){
+                num_empty += 1;
+                to_fill = value;
+            }
+        }
+        if (num_empty == 1){
+            if (to_fill == 'start_value'){
+                var fill_val = (values['end_value'] - values['rate'] * values['duration']);
+            }
+            else if (to_fill == 'end_value'){
+                var fill_val = (values['start_value'] + values['rate'] * values['duration']);
+            }
+            else if (to_fill == 'rate'){
+                var fill_val = ((values['end_value'] - values['start_value']) / values['duration']);
+            }
+            else{
+                var fill_val = ((values['end_value'] - values['start_value']) / values['rate']);
+            }
+            fields[to_fill].value = cleanUp(fill_val);
+            return true;
+        }
+    }
+
     //validate empty fields
     for (var value in values ){
         if (values[value] == ''){
-            document.getElementById(value+'_help').innerHTML = 'Must enter a value';    
-            $(fields[value]).parents('.control-group').addClass('error');
+            setError(value+rowCount, 'Must enter a value');
             valid = false;
         }
     }
@@ -69,31 +93,35 @@ function validateComplex(){
     }
 
     //validate interdependencies
-    if (values['end_value'] - values['start_value'] != values['rate'] * values['duration']){
-        document.getElementById('submit_help').innerHTML = 'Field values must agree';    
-        $($('#submit_btn')).parents('.control-group').addClass('error');
+    if ((values['end_value'] - values['start_value']).toFixed(3) != (values['rate'] * values['duration']).toFixed(3)){
+        alert('Field values must agree');
         valid = false;
     }
     else{
-        document.getElementById('submit_help').innerHTML = '';    
-        $($('#submit_btn')).parents('.control-group').removeClass('error');
     }
             
     return valid;
 }
 
-function submitForm(){
-    if (
-        validateSimple('start_value','integer') && 
-        validateSimple('end_value','integer') && 
-        validateSimple('rate','integer') && 
-        validateSimple('duration','integer') && 
-        validateComplex()
-        ){
-        $.post('/add_segment',$('#user_input').serialize(),function(data){
-            updateChart(data);
-        });
+function setError(id_string, message){
+    document.getElementById(id_string).placeholder = message;    
+    document.getElementById(id_string).value = '';    
+    document.getElementById(id_string).parentNode.setAttribute('class','control-group error');    
+    document.getElementById(id_string).parentNode.parentNode.setAttribute('style','text-align: center; vertical-align: middle; background-color: #FFAFAF');
+}
+
+function removeError(id_string, message){
+    document.getElementById(id_string).parentNode.setAttribute('class','control-group');    
+    document.getElementById(id_string).parentNode.parentNode.setAttribute('style','text-align: center; vertical-align: middle; background-color:');    
+    document.getElementById(id_string).placeholder = message;    
+}
+
+function cleanUp(value){
+    if (value != '' || value == '0'){
+        value = value*1;
+        return value.toFixed(3);
     }
     else{
+        return ''
     }
 }
