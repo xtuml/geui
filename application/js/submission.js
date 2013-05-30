@@ -7,28 +7,20 @@ function addSegment(position){
         validateComplex(position)
     ){
         $.post('add_segment',$('#row'+(position)+' :input').serialize()+'&position='+(position),function(data){updateChart(data)});
-        return true;
     }
     else{
-        return false;
+        var table = document.getElementById('tbody');
+        table.deleteRow(table.rows.length);
     }
 }
 
-function deleteSegment(){
-    try {
-        var table = document.getElementById('tbody');
-        var rowCount = table.rows.length;
-
-        if (rowCount > 1){
-            table.deleteRow(rowCount-1);
-            $.post('delete_segment',function(data){deletePoints(data)}); //post to server to delete segment
-        }
-        else{
-        }
+function deleteSegments(positions){
+    var csv = '';
+    for (var n = 0; n < positions.length; n++){
+        csv += positions[n].toString() + ',';
     }
-    catch(e){
-        alert(e);
-    }
+    csv = csv.substring(0,csv.length - 1);
+    $.post('delete_segment',csv,function(data){updateChart(data);}); //post to server to delete segment
 }
 
 function updateRow(position){ //needs to be optimized
@@ -39,9 +31,6 @@ function updateRow(position){ //needs to be optimized
         validateSimple('duration'+position,'positive_real') &&
         validateComplex(position)
     ){
-        $.post('delete_segment',position.toString(),function(data){
-            deletePoints(data)
-            $.post('add_segment',$('#row'+(position)+' :input').serialize()+'&position='+(position),function(data){updateChart(data)});
-        });
+        $.post('update_segment',$('#row'+(position)+' :input').serialize()+'&position='+(position),function(data){updateChart(data);});
     }
 }

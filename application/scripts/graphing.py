@@ -2,9 +2,11 @@ class graph:
     
     name = ''
     contents = []
+    vertices = []
 
     def __init__(self):
         self.contents = []
+        self.vertices = []
 
 class segment:
 
@@ -28,4 +30,4 @@ class pattern:
     contents = []
 
     def __init__(self):
-        pass
+        self.contents = [] 

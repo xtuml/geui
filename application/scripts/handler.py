@@ -1,6 +1,9 @@
 import web
 import graphing
+import replies
 import gnosis.xml.pickle
+
+replier = replies.ReplyCalculator()
 
 class GraphHandler:
 
@@ -33,6 +36,16 @@ class GraphHandler:
         new_segment = graphing.segment(start_value, end_value, rate, duration)
         new_segment.graph = parent_graph 
         parent_graph.contents.insert(pos, new_segment)
+        replier.add_points(pos, new_segment, parent_graph.vertices)
 
     def delete_segment(self, parent_graph, pos):
         parent_graph.contents.pop(pos)    
+        replier.remove_points(pos, parent_graph, parent_graph.vertices)
+
+    def update_segment(self, parent_graph, start_value, end_value, rate, duration, pos):
+        segment = parent_graph.contents[pos]
+        segment.start_value = start_value
+        segment.end_value = end_value
+        segment.rate = rate
+        segment.duration = duration
+        replier.update_point(pos, segment)

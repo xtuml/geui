@@ -1,4 +1,4 @@
-var highlighted_row = 0;
+//var highlighted_row = 0;
 
 function init_table(){    
 
@@ -13,12 +13,12 @@ function addSegmentClicked(){
         document.getElementById('start_value'+(table.rows.length-1)).value,
         document.getElementById('rate'+(table.rows.length-1)).value*-1,
         document.getElementById('duration'+(table.rows.length-1)).value,
-        document.getElementById('repeat_value'+(table.rows.length-1)).value,
-        true
+        document.getElementById('repeat_value'+(table.rows.length-1)).value
     );
+    addSegment(table.rows.length - 1);
 }
 
-function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
+function addRow(start_value, end_value, rate, duration, repeat_value){
 
     var table = document.getElementById("tbody");
 
@@ -204,11 +204,6 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     button_element.onclick = function() {updateRow(rowCount)};
     button_cell.appendChild(button_element);
 
-    if (updateIt == true){
-        if (addSegment(rowCount) == false){
-            table.deleteRow(rowCount);
-        }
-    }
 }
 
 //deleteRows will be used in the final product. deleteRow only deletes the last segment. will be used for now
@@ -218,15 +213,20 @@ function deleteRows(){
         var rowCount = table.rows.length;
         document.getElementById('table_check').checked = false;
                                
+        var to_delete = [];
         for(var i=0; i<rowCount; i++) {
             var row = table.rows[i];
             var chkbox = row.cells[0].childNodes[0];
             if(null != chkbox && true == chkbox.checked) {
-                table.deleteRow(i);
-                rowCount--;
-                i--;
+                to_delete.push(i)
             }
         }
+        to_delete.sort();
+        to_delete.reverse();
+        for (var m=0; m<to_delete.length; m++){
+            table.deleteRow(to_delete[m]);
+        }
+        deleteSegments(to_delete);
 
     }catch(e) {
         alert(e);
@@ -235,11 +235,12 @@ function deleteRows(){
 
 function openFile(){
     $.post('open',function(data){
-        if (data == ''){
-            addRow(0,0,0,10,1,true);
+        if (data == 'delete=0&add=None&update=None'){
+            addRow(0,0,0,10,1);
+            addSegment(document.getElementById('tbody').rows.length - 1);
         }
         else{
-            updateChart(data);
+            updateChart(data)
             $.post('open_table',function(data){
                 var lines = data.split('\n');
                 for (line in lines){
@@ -251,7 +252,7 @@ function openFile(){
                     for (item in items){
                         param_set.push(parseFloat(items[item]));
                     }
-                    addRow(param_set[0],param_set[1],param_set[2],param_set[3],1,false);
+                    addRow(param_set[0],param_set[1],param_set[2],param_set[3],1);
                 }
             });
         }
@@ -275,7 +276,7 @@ function selectAll(){
 }
 
 function keyHandler(e, position){
-    if (e.keyCode == 13){
+    if (e.keyCode == 13){ //Enter
         updateRow(position);
     }
 }

@@ -8,6 +8,7 @@ urls = (
     '/font/(.*)','script_handler3',
     '/add_segment','scripts.requests.AddSegment',
     '/delete_segment','scripts.requests.DeleteSegment',
+    '/update_segment','scripts.requests.UpdateSegment',
     '/open','scripts.requests.OpenFile',
     '/open_table','scripts.requests.OpenTable'
 )

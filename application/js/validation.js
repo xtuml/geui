@@ -116,7 +116,7 @@ function removeError(id_string, message){
     document.getElementById(id_string).placeholder = message;    
 }
 
-function cleanUp(value){
+function cleanUp(value){ //sets values to 3 decimals
     if (value != '' || value == '0'){
         value = value*1;
         return value.toFixed(3);
