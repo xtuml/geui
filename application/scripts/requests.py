@@ -60,6 +60,30 @@ class UpdateSegment:
         #print reply
         return reply
 
+class SwitchSegment:
+    
+    def POST(self):
+        csv = web.data()
+        segs = []
+        new_data = ''
+        for letter in csv:
+            if letter == ',':
+                segs.append(int(new_data))
+                new_data = ''
+            else:
+                new_data += letter
+        if new_data != '':
+            segs.append(int(new_data))
+
+        print csv,segs
+        current_graph = handler.open_model()
+        old_vertices = list(current_graph.vertices)
+        handler.switch_segment(current_graph,segs[0],segs[1])
+        handler.update_model(current_graph)
+        reply = replier.calculate_reply(old_vertices, current_graph.vertices)
+        #print reply
+        return reply
+
 class OpenFile:
   
     def POST(self):

@@ -33,6 +33,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     check_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     check_element.id = "check"+rowCount;
     check_element.row_number = rowCount;
+    check_element.onclick = function(){checkClicked(check_element.row_number)};
     check_cell.appendChild(check_element);
 
     var number_cell = row.insertCell(1);
@@ -220,7 +221,7 @@ function deleteRows(){
                 to_delete.push(parseInt(i))
             }
         }
-        to_delete.sort(function(a,b){return a - b});
+        //to_delete.sort(function(a,b){return a - b});
         to_delete.reverse();
         if (to_delete.length == rowCount){
             to_delete.splice(to_delete.length - 1, 1);
@@ -246,14 +247,20 @@ function renumberRows(pos){ // update the numbers and identifiers of rows after 
     if (pos < table.rows.length){
         table.rows[pos].id = 'row'+pos;
         table.rows[pos].cells[0].childNodes[0].id = 'check'+pos;
+        table.rows[pos].cells[0].childNodes[0].row_number = pos;
         table.rows[pos].cells[1].childNodes[0].innerHTML = (pos + 1).toString();
         table.rows[pos].cells[2].childNodes[0].childNodes[0].id = 'start_value'+pos;
+        table.rows[pos].cells[2].childNodes[0].childNodes[0].row_number = pos
         table.rows[pos].cells[3].childNodes[0].childNodes[0].id = 'end_value'+pos; 
+        table.rows[pos].cells[3].childNodes[0].childNodes[0].row_number = pos; 
         table.rows[pos].cells[4].childNodes[0].childNodes[0].id = 'rate'+pos; 
+        table.rows[pos].cells[4].childNodes[0].childNodes[0].row_number = pos; 
         table.rows[pos].cells[5].childNodes[0].childNodes[0].id = 'duration'+pos; 
+        table.rows[pos].cells[5].childNodes[0].childNodes[0].row_number = pos; 
         table.rows[pos].cells[6].childNodes[0].childNodes[0].id = 'repeat_value'+pos; 
+        table.rows[pos].cells[6].childNodes[0].childNodes[0].row_number = pos; 
     }
-    
+
     if (pos < table.rows.length - 1){
         renumberRows(pos + 1);
     }
@@ -298,6 +305,37 @@ function selectAll(){
         for (row in table.rows){
             table.rows[row].cells[0].childNodes[0].checked = false;
         }
+    }
+}
+
+function checkClicked(row_num){
+    var table = document.getElementById('tbody');
+    var checked = 0;
+    for (var row = 0; row < table.rows.length; row++){
+        if (table.rows[row].cells[0].childNodes[0].checked == true){
+            checked ++;
+        }
+    }
+    if (checked == 1){
+        document.getElementById('move_up').disabled = false;
+        document.getElementById('move_down').disabled = false;
+    }
+    else{
+        if (checked == table.rows.length){
+            document.getElementById('table_check').checked = true;
+        }
+        else if (checked == 0){
+            document.getElementById('table_check').checked = false;
+        }
+
+        document.getElementById('move_up').disabled = true;
+        document.getElementById('move_down').disabled = true;
+    }
+    if (table.rows[0].cells[0].childNodes[0].checked == true){
+        document.getElementById('move_up').disabled = true;
+    }
+    if (table.rows[table.rows.length - 1].cells[0].childNodes[0].checked == true){
+        document.getElementById('move_down').disabled = true;
     }
 }
 

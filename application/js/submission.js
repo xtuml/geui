@@ -35,3 +35,49 @@ function updateRow(position){ //needs to be optimized
         $.post('update_segment',$('#row'+(position)+' :input').serialize()+'&position='+(position),function(data){updateChart(data);});
     }
 }
+
+function switchRow(up){
+    var table = document.getElementById('tbody');
+    var checked = -1
+    for (var row = 0; row < table.rows.length; row++){
+        if (table.rows[row].cells[0].childNodes[0].checked == true){
+            checked = row;
+        }
+    }
+    if (checked != -1){
+        var offset = 0;
+        if (up == true){
+            offset = -1;
+            $.post('switch_segment',(checked-1) + ',' + checked,function(data){updateChart(data);});
+        }
+        else{
+            offset = 1;
+            $.post('switch_segment',checked + ',' + (checked+1),function(data){updateChart(data);});
+        }
+        
+        var temp = [
+            document.getElementById('start_value'+checked).value,
+            document.getElementById('end_value'+checked).value,
+            document.getElementById('rate'+checked).value,
+            document.getElementById('duration'+checked).value,
+            document.getElementById('repeat_value'+checked).value
+        ];
+
+        document.getElementById('start_value'+checked).value = document.getElementById('start_value'+(checked+offset)).value;
+        document.getElementById('end_value'+checked).value = document.getElementById('end_value'+(checked+offset)).value;
+        document.getElementById('rate'+checked).value = document.getElementById('rate'+(checked+offset)).value;
+        document.getElementById('duration'+checked).value = document.getElementById('duration'+(checked+offset)).value;
+        document.getElementById('repeat_value'+checked).value = document.getElementById('repeat_value'+(checked+offset)).value;
+
+        document.getElementById('start_value'+(checked+offset)).value = temp[0];
+        document.getElementById('end_value'+(checked+offset)).value = temp[1];
+        document.getElementById('rate'+(checked+offset)).value = temp[2];
+        document.getElementById('duration'+(checked+offset)).value = temp[3];
+        document.getElementById('repeat_value'+(checked+offset)).value = temp[4];
+
+        table.rows[checked].cells[0].childNodes[0].checked = false;
+        table.rows[checked+offset].cells[0].childNodes[0].checked = true;
+
+        checkClicked(checked+offset);
+    }
+}

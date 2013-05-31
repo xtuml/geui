@@ -49,3 +49,10 @@ class GraphHandler:
         segment.rate = rate
         segment.duration = duration
         replier.update_point(pos, segment)
+
+    def switch_segment(self, parent_graph, seg1, seg2):
+        temp_seg = parent_graph.contents[seg1]
+        parent_graph.contents[seg1] = parent_graph.contents[seg2]
+        parent_graph.contents[seg2] = temp_seg
+        replier.update_point(seg1, parent_graph.contents[seg1])
+        
