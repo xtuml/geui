@@ -66,14 +66,12 @@ function initiateGraph(){
 }
 
 function updateChart(data){
-    alert(data);
     //deserialize data
     var data2 = $.deparam(data);
    
     //delete points 
-    var delete_num = parseInt(data["delete"]);
+    var delete_num = parseInt(data2["delete"]);
     for (var c = 0; c < delete_num*2; c++){
-        alert('eeeee');
         chart.series[0].data[chart.series[0].data.length - 1].remove() 
     }
 

@@ -88,6 +88,8 @@ class ReplyCalculator:
         
     def remove_points(self, pos, graph, vertices):
         vertices.pop(pos)
+        if (pos < len(vertices)):
+            self.update_point(pos, graph.contents[pos])
 
     def update_point(self, pos, segment):
         updated_point = self.calculate_endpoints(segment)

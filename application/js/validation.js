@@ -75,7 +75,7 @@ function validateComplex(rowCount){
             else{
                 var fill_val = ((values['end_value'] - values['start_value']) / values['rate']);
             }
-            fields[to_fill].value = cleanUp(fill_val);
+            fields[to_fill].value = cleanUp(3, fill_val);
             return true;
         }
     }
@@ -116,10 +116,15 @@ function removeError(id_string, message){
     document.getElementById(id_string).placeholder = message;    
 }
 
-function cleanUp(value){ //sets values to 3 decimals
+function cleanUp(decimals, value){ //sets values to decimals
     if (value != '' || value == '0'){
         value = value*1;
-        return value.toFixed(3);
+        if (decimals == 0){
+            return Math.round(value);
+        }
+        else{
+            return value.toFixed(decimals);
+        }
     }
     else{
         return ''

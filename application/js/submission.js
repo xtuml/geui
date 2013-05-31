@@ -6,6 +6,7 @@ function addSegment(position){
         validateSimple('duration'+position,'positive_real') &&
         validateComplex(position)
     ){
+        var row  = document.getElementById('tbody').rows[position];
         $.post('add_segment',$('#row'+(position)+' :input').serialize()+'&position='+(position),function(data){updateChart(data)});
     }
     else{
