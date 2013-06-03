@@ -367,12 +367,12 @@ function fullscreen(){
     var chart_container = document.getElementById('chart_container');
     var table_container = document.getElementById('table_container');
     if (chart_container.style.height == '325px'){
-        chart_container.style.height = '625px';
+        chart_container.style.height = '575px';
         table_container.style.height = '25px';
     }
     else{
         chart_container.style.height = '325px';
-        table_container.style.height = '325px';
+        table_container.style.height = '275px';
     }
     var new_options = chart.options;
     chart.destroy();

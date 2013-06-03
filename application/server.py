@@ -1,5 +1,6 @@
 import web
 import scripts.requests
+import scripts.pyusb #temporary
 
 urls = (
     '/','index',
@@ -11,7 +12,9 @@ urls = (
     '/update_segment','scripts.requests.UpdateSegment',
     '/switch_segment','scripts.requests.SwitchSegment',
     '/open','scripts.requests.OpenFile',
-    '/open_table','scripts.requests.OpenTable'
+    '/open_table','scripts.requests.OpenTable',
+
+    '/pyusb','scripts.pyusb.PyUSB' #temporary
 )
 
 

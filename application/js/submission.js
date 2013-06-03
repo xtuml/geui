@@ -81,3 +81,8 @@ function switchRow(up){
         checkClicked(checked+offset);
     }
 }
+
+function pyusb_test(){ //temporary function to test if we can send data down to the board and get a reply
+    var request = 'hello world'
+    $.post('pyusb',request,function(data){alert(data);});
+}

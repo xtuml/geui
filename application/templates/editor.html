@@ -12,13 +12,30 @@
     
   </head>
   <body>
+  
+    <div class="row">
+        <div id="header_container" style="height: 50px; margin: 10px 50px">
+            <button
+                type="button"
+                id="download"
+                class="btn btn-large btn-primary"
+                style="float: right"
+                onclick="pyusb_test()"
+            >Download</button>
+            <input
+                type="text"
+                class="input-large"
+                placeholder="Waiting for data">
+            </input>
+        </div>
+    </div>
 
     <div class="row">
         <div id="chart_container" style="height: 325px; margin: 10px 50px"></div>
     </div>
     
     <div class="row">
-        <div class="well" id="table_container" style="height: 325px; margin: 10px 50px; overflow: scroll">
+        <div class="well" id="table_container" style="height: 275px; margin: 10px 50px; overflow: scroll">
             <form id="user_input">
             <table id="user_table" class="table table-condensed table-bordered table-hover" style="background-color: white">
                 <thead>
