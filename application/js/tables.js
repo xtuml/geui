@@ -62,11 +62,11 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     start_element.onkeypress = function (e){
         if (e.keyCode == 13){
             start_element.value = cleanUp(3, start_element.value);
-            updateRow(rowCount);
+            updateRow(start_element.row_number);
         }
     };
     start_element.onblur = function() {
-        if (validateSimple('start_value'+rowCount,'real') == true){
+        if (validateSimple('start_value'+start_element.row_number,'real') == true){
             start_element.value = cleanUp(3, start_element.value);
         }
     };
@@ -94,11 +94,11 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     end_element.onkeypress = function (e){
         if (e.keyCode == 13){
             end_element.value = cleanUp(3, end_element.value);
-            updateRow(rowCount);
+            updateRow(end_element.row_number);
         }
     };
     end_element.onblur = function() {
-        if (validateSimple('end_value'+rowCount,'real') == true){
+        if (validateSimple('end_value'+ end_element.row_number,'real') == true){
             end_element.value = cleanUp(3, end_element.value);
         }
     };
@@ -125,11 +125,11 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     rate_element.onkeypress = function (e){
         if (e.keyCode == 13){
             rate_element.value = cleanUp(3, rate_element.value);
-            updateRow(rowCount);
+            updateRow(rate_element.row_number);
         }
     };
     rate_element.onblur = function() {
-        if (validateSimple('rate'+rowCount,'real') == true){
+        if (validateSimple('rate'+ rate_element.row_number,'real') == true){
             rate_element.value = cleanUp(3, rate_element.value);
         }
     };
@@ -156,11 +156,11 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     duration_element.onkeypress = function (e){
         if (e.keyCode == 13){
             duration_element.value = cleanUp(3, duration_element.value);
-            updateRow(rowCount);
+            updateRow(duration_element.row_number);
         }
     };
     duration_element.onblur = function() {
-        if (validateSimple('duration'+rowCount,'positive_real') == true){
+        if (validateSimple('duration'+ duration_element.row_number,'positive_real') == true){
             duration_element.value = cleanUp(3, duration_element.value);
         }
     };
@@ -186,11 +186,11 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     repeat_element.onkeypress = function (e){
         if (e.keyCode == 13){
             repeat_element.value = cleanUp(0, repeat_element.value);
-            updateRow(rowCount);
+            updateRow(repeat_element.row_number);
         }
     };
     repeat_element.onblur = function() {
-        validateSimple('repeat_value'+rowCount,'integer');
+        validateSimple('repeat_value'+ repeate_element.row_number,'integer');
     };
     repeat_div_element.appendChild(repeat_element);
     
@@ -201,9 +201,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     button_element.setAttribute('class', "btn");
     button_element.id = "btn"+rowCount;
     button_element.name = button_element.id;
+    button_element.row_number = rowCount
     button_element.innerHTML = "Update";
-    button_element.onclick = function() {updateRow(rowCount)};
+    button_element.onclick = function() {updateRow(button_element.row_number)};
     button_cell.appendChild(button_element);
+
+
+    if (table.rows.length > 1){
+        document.getElementById('delete_segment').disabled = false;
+    }
+    else{
+        document.getElementById('delete_segment').disabled = true;
+    }
 
 }
 
@@ -236,6 +245,14 @@ function deleteRows(){
         deleteSegments(to_delete);
         renumberRows(to_delete[to_delete.length - 1]);
 
+        if (table.rows.length > 1){
+            document.getElementById('delete_segment').disabled = false;
+        }
+        else{
+            document.getElementById('delete_segment').disabled = true;
+        }
+
+
     }catch(e) {
         alert(e);
     }
@@ -259,6 +276,7 @@ function renumberRows(pos){ // update the numbers and identifiers of rows after 
         table.rows[pos].cells[5].childNodes[0].childNodes[0].row_number = pos; 
         table.rows[pos].cells[6].childNodes[0].childNodes[0].id = 'repeat_value'+pos; 
         table.rows[pos].cells[6].childNodes[0].childNodes[0].row_number = pos; 
+        table.rows[pos].cells[7].childNodes[0].row_number = pos;
     }
 
     if (pos < table.rows.length - 1){

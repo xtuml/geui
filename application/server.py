@@ -14,11 +14,11 @@ urls = (
     '/open_table','scripts.requests.OpenTable'
 )
 
-render = web.template.render('templates/')
 
 class index:
     
     def GET(self):
+        render = web.template.render('templates/')
         return render.editor()
 
 class script_handler:
