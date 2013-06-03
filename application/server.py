@@ -8,15 +8,17 @@ urls = (
     '/font/(.*)','script_handler3',
     '/add_segment','scripts.requests.AddSegment',
     '/delete_segment','scripts.requests.DeleteSegment',
+    '/update_segment','scripts.requests.UpdateSegment',
+    '/switch_segment','scripts.requests.SwitchSegment',
     '/open','scripts.requests.OpenFile',
     '/open_table','scripts.requests.OpenTable'
 )
 
-render = web.template.render('templates/')
 
 class index:
     
     def GET(self):
+        render = web.template.render('templates/')
         return render.editor()
 
 class script_handler:
