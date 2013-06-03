@@ -72,20 +72,13 @@ class ReplyCalculator:
         reply = ''
         if (len(current_graph.contents) != 0):
             param_list = []
-            self.get_parameters(param_list, current_graph.contents[0])
+            for segment in current_graph.contents:
+                param_list.append((segment.start_value, segment.end_value, segment.rate, segment.duration))
 
             #calculate csv  string
             reply = '\n'.join('%s,%s,%s,%s'%param_set for param_set in param_list)
         return reply
             
-    #recursively gets all the parameters of all the segments
-    def get_parameters(self, param_list, segment):
-        param_list.append((segment.start_value, segment.end_value, segment.rate, segment.duration))
-        if (segment.graph.contents.index(segment) + 1 < len(segment.graph.contents)):
-            self.get_parameters(param_list, segment.graph.contents[segment.graph.contents.index(segment) + 1])
-        else:
-            pass
-
     #adds points to the graphs list of points
     def add_points(self, pos, segment, vertices):
         new_points = self.calculate_endpoints(segment)
