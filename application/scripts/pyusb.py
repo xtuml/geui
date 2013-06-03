@@ -1,10 +1,4 @@
 import web
-import handler
-import replies
-import csv
-
-handler = handler.GraphHandler()
-replier = replies.ReplyCalculator()
 
 class PyUSB:
 
@@ -12,6 +6,8 @@ class PyUSB:
         data = web.data()
 
         #pyusb code
+
+        #reverses the input string
         reply = data[::-1]
 
-        return reply #just makes a loop
+        return reply

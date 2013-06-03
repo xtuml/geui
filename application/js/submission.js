@@ -82,7 +82,12 @@ function switchRow(up){
     }
 }
 
-function pyusb_test(){ //temporary function to test if we can send data down to the board and get a reply
+//temporary function to test if we can send data down to the board and get a reply
+//puts the request variable reversed in the input box
+function pyusb_test(){
     var request = 'hello world'
-    $.post('pyusb',request,function(data){alert(data);});
+    $.post('pyusb',request,function(data){
+        var input_box = document.getElementById('download_output');
+        input_box.value = data;
+    });
 }
