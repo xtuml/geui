@@ -1,5 +1,6 @@
 function initiateGraph(){
   
+    //table options
     var options = {
         chart: {
             renderTo: 'chart_container',
@@ -65,6 +66,7 @@ function initiateGraph(){
     chart = new Highcharts.Chart(options);
 }
 
+//updates chart points
 function updateChart(data){
     //deserialize data
     var data2 = $.deparam(data);
@@ -75,6 +77,7 @@ function updateChart(data){
         chart.series[0].data[chart.series[0].data.length - 1].remove() 
     }
 
+    //add points
     if (data2["add"] != 'None'){
         var lines = data2["add"].split('\n');
         for (line in lines){
@@ -92,6 +95,7 @@ function updateChart(data){
         }
     }
 
+    //update points
     if (data2["update"] != 'None'){
         var lines2 = data2["update"].split('\n');
         for (line in lines2){
@@ -107,28 +111,4 @@ function updateChart(data){
     }
     
 
-}
-
-function deletePoints(data){
-
-    //split lines
-
-    var lines = data.split('\n');
-    for (line in lines){
-        var items = lines[line].split(',');
-
-        //populate array
-        var point = [];
-
-        for (item in items){
-            point.push(parseFloat(items[item]));
-        }
-            
-        for (p in chart.series[0].data){
-            if (point[0] == chart.series[0].data[p].x && point[1] == chart.series[0].data[p].y){
-                chart.series[0].data[p].remove();
-            }
-        }
-                
-    }
 }

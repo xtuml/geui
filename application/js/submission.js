@@ -1,3 +1,6 @@
+//contains methods that talk to the server
+
+//validate inputes and then add a segment
 function addSegment(position){
     if (
         validateSimple('start_value'+position,'real') &&
@@ -15,6 +18,7 @@ function addSegment(position){
     }
 }
 
+//deletes segment, creates a csv with the indices of segments to delete.
 function deleteSegments(positions){
     var csv = '';
     for (var n = 0; n < positions.length; n++){
@@ -24,6 +28,7 @@ function deleteSegments(positions){
     $.post('delete_segment',csv,function(data){updateChart(data);}); //post to server to delete segment
 }
 
+//validates inputs and then updates a row
 function updateRow(position){ //needs to be optimized
     if (
         validateSimple('start_value'+position,'real') &&
@@ -36,48 +41,7 @@ function updateRow(position){ //needs to be optimized
     }
 }
 
-function switchRow(up){
-    var table = document.getElementById('tbody');
-    var checked = -1
-    for (var row = 0; row < table.rows.length; row++){
-        if (table.rows[row].cells[0].childNodes[0].checked == true){
-            checked = row;
-        }
-    }
-    if (checked != -1){
-        var offset = 0;
-        if (up == true){
-            offset = -1;
-            $.post('switch_segment',(checked-1) + ',' + checked,function(data){updateChart(data);});
-        }
-        else{
-            offset = 1;
-            $.post('switch_segment',checked + ',' + (checked+1),function(data){updateChart(data);});
-        }
-        
-        var temp = [
-            document.getElementById('start_value'+checked).value,
-            document.getElementById('end_value'+checked).value,
-            document.getElementById('rate'+checked).value,
-            document.getElementById('duration'+checked).value,
-            document.getElementById('repeat_value'+checked).value
-        ];
-
-        document.getElementById('start_value'+checked).value = document.getElementById('start_value'+(checked+offset)).value;
-        document.getElementById('end_value'+checked).value = document.getElementById('end_value'+(checked+offset)).value;
-        document.getElementById('rate'+checked).value = document.getElementById('rate'+(checked+offset)).value;
-        document.getElementById('duration'+checked).value = document.getElementById('duration'+(checked+offset)).value;
-        document.getElementById('repeat_value'+checked).value = document.getElementById('repeat_value'+(checked+offset)).value;
-
-        document.getElementById('start_value'+(checked+offset)).value = temp[0];
-        document.getElementById('end_value'+(checked+offset)).value = temp[1];
-        document.getElementById('rate'+(checked+offset)).value = temp[2];
-        document.getElementById('duration'+(checked+offset)).value = temp[3];
-        document.getElementById('repeat_value'+(checked+offset)).value = temp[4];
-
-        table.rows[checked].cells[0].childNodes[0].checked = false;
-        table.rows[checked+offset].cells[0].childNodes[0].checked = true;
-
-        checkClicked(checked+offset);
-    }
+//switches a segment with the segment before or after (see tables.switchRow for call)
+function switchSegment(msg){
+    $.post('switch_segment',msg,function(data){updateChart(data);});
 }

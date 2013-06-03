@@ -1,6 +1,10 @@
 /**
  * Gray theme for Highcharts JS
  * @author Torstein Hønsi
+
+ edited to use for geui
+ no code here, just themes
+
  */
 
 Highcharts.theme = {

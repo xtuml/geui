@@ -4,6 +4,7 @@ import gnosis.xml.pickle
 
 class ReplyCalculator:
 
+    #replies to the client points to delete, add, and update
     def calculate_reply(self, old_vertices, new_vertices):
         #points to delete
         delete = 0
@@ -46,7 +47,7 @@ class ReplyCalculator:
         
         return reply 
         
-
+    #returns the start time of a segment
     def calculate_start_time(self,segment):
         graph = segment.graph
         pos = graph.contents.index(segment)
@@ -55,6 +56,7 @@ class ReplyCalculator:
         else:
             return graph.contents[pos - 1].duration + self.calculate_start_time(graph.contents[pos - 1])
 
+    #returns the endpoints of a segment
     def calculate_endpoints(self,segment):
         #caluclate starting point
         t = self.calculate_start_time(segment)
@@ -65,6 +67,7 @@ class ReplyCalculator:
 
         return (start_point, end_point) 
 
+    #returns values to populate the clients table in csv format
     def calculate_table_reply(self, current_graph):
         reply = ''
         if (len(current_graph.contents) != 0):
@@ -75,6 +78,7 @@ class ReplyCalculator:
             reply = '\n'.join('%s,%s,%s,%s'%param_set for param_set in param_list)
         return reply
             
+    #recursively gets all the parameters of all the segments
     def get_parameters(self, param_list, segment):
         param_list.append((segment.start_value, segment.end_value, segment.rate, segment.duration))
         if (segment.graph.contents.index(segment) + 1 < len(segment.graph.contents)):
@@ -82,15 +86,19 @@ class ReplyCalculator:
         else:
             pass
 
+    #adds points to the graphs list of points
     def add_points(self, pos, segment, vertices):
         new_points = self.calculate_endpoints(segment)
         vertices.insert(pos, new_points)
         
+    #removes points from the graphs list of points
     def remove_points(self, pos, graph, vertices):
         vertices.pop(pos)
         if (pos < len(vertices)):
             self.update_point(pos, graph.contents[pos])
 
+    #updates a point in the graphs list of points
+    #updates all the ones after that (the duration of the updated point affects the start times of the others)
     def update_point(self, pos, segment):
         updated_point = self.calculate_endpoints(segment)
         segment.graph.vertices.pop(pos)

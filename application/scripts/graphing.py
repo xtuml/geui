@@ -1,3 +1,5 @@
+#data model for the graph
+
 class graph:
     
     name = ''

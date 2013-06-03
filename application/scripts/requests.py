@@ -9,6 +9,7 @@ replier = replies.ReplyCalculator()
 class AddSegment:
 
     def POST(self):
+        #add segment: open graph, add, update graph, reply 
         form = web.input()
 
         current_graph = handler.open_model()
@@ -23,6 +24,7 @@ class AddSegment:
 class DeleteSegment:
 
     def POST(self):
+        #delete segment: parse csv, open graph, delete segments, update graph, reply
         csv = web.data()
         
         #parse csv
@@ -50,6 +52,7 @@ class DeleteSegment:
 class UpdateSegment:
 
     def POST(self):
+        #update segment: open graph, update segment, update graph, reply
         form = web.input()
         current_graph = handler.open_model()
         old_vertices = list(current_graph.vertices)
@@ -63,6 +66,7 @@ class UpdateSegment:
 class SwitchSegment:
     
     def POST(self):
+        #switch segment: parse csv, open graph, switch segments, update graph, reply
         csv = web.data()
         segs = []
         new_data = ''
@@ -87,11 +91,13 @@ class SwitchSegment:
 class OpenFile:
   
     def POST(self):
+        #open file: open graph, reply
         current_graph = handler.open_model()
         return replier.calculate_reply([], current_graph.vertices)
 
 class OpenTable:
 
     def POST(self):
+        #open table: open graph, reply table values
         current_graph = handler.open_model()
         return replier.calculate_table_reply(current_graph)
