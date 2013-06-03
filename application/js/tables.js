@@ -1,4 +1,4 @@
-var highlighted_row = 0;
+//var highlighted_row = 0;
 
 function init_table(){    
 
@@ -13,12 +13,12 @@ function addSegmentClicked(){
         document.getElementById('start_value'+(table.rows.length-1)).value,
         document.getElementById('rate'+(table.rows.length-1)).value*-1,
         document.getElementById('duration'+(table.rows.length-1)).value,
-        document.getElementById('repeat_value'+(table.rows.length-1)).value,
-        true
+        document.getElementById('repeat_value'+(table.rows.length-1)).value
     );
+    addSegment(table.rows.length - 1);
 }
 
-function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
+function addRow(start_value, end_value, rate, duration, repeat_value){
 
     var table = document.getElementById("tbody");
 
@@ -33,6 +33,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     check_element.setAttribute("style", "margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto");
     check_element.id = "check"+rowCount;
     check_element.row_number = rowCount;
+    check_element.onclick = function(){checkClicked(check_element.row_number)};
     check_cell.appendChild(check_element);
 
     var number_cell = row.insertCell(1);
@@ -56,17 +57,17 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     start_element.row_number = rowCount;
     start_element.default_placeholder = "Start value";
     start_element.placeholder = start_element.default_placeholder;
-    start_element.value = cleanUp(start_value);
+    start_element.value = cleanUp(3, start_value);
     start_element.autocomplete = "off";
     start_element.onkeypress = function (e){
         if (e.keyCode == 13){
-            start_element.value = cleanUp(start_element.value);
-            updateRow(rowCount);
+            start_element.value = cleanUp(3, start_element.value);
+            updateRow(start_element.row_number);
         }
     };
     start_element.onblur = function() {
-        if (validateSimple('start_value'+rowCount,'real') == true){
-            start_element.value = cleanUp(start_element.value);
+        if (validateSimple('start_value'+start_element.row_number,'real') == true){
+            start_element.value = cleanUp(3, start_element.value);
         }
     };
     start_div_element.appendChild(start_element);
@@ -87,18 +88,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     end_element.row_number = rowCount;
     end_element.default_placeholder = "End value";
     end_element.placeholder = end_element.default_placeholder;
-    end_element.value = cleanUp(end_value);
+    end_element.value = cleanUp(3, end_value);
     end_element.autocomplete = "off";
     end_element.setAttribute('onkeypress','keyHandler(event, '+rowCount+')');
     end_element.onkeypress = function (e){
         if (e.keyCode == 13){
-            end_element.value = cleanUp(end_element.value);
-            updateRow(rowCount);
+            end_element.value = cleanUp(3, end_element.value);
+            updateRow(end_element.row_number);
         }
     };
     end_element.onblur = function() {
-        if (validateSimple('end_value'+rowCount,'real') == true){
-            end_element.value = cleanUp(end_element.value);
+        if (validateSimple('end_value'+ end_element.row_number,'real') == true){
+            end_element.value = cleanUp(3, end_element.value);
         }
     };
     end_div_element.appendChild(end_element);
@@ -118,18 +119,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     rate_element.row_number = rowCount;
     rate_element.default_placeholder = "Rate";
     rate_element.placeholder = rate_element.default_placeholder;
-    rate_element.value = cleanUp(rate);
+    rate_element.value = cleanUp(3, rate);
     rate_element.autocomplete = "off";
     rate_element.setAttribute('onkeypress','keyHandler(event, '+rowCount+')');
     rate_element.onkeypress = function (e){
         if (e.keyCode == 13){
-            rate_element.value = cleanUp(rate_element.value);
-            updateRow(rowCount);
+            rate_element.value = cleanUp(3, rate_element.value);
+            updateRow(rate_element.row_number);
         }
     };
     rate_element.onblur = function() {
-        if (validateSimple('rate'+rowCount,'real') == true){
-            rate_element.value = cleanUp(rate_element.value);
+        if (validateSimple('rate'+ rate_element.row_number,'real') == true){
+            rate_element.value = cleanUp(3, rate_element.value);
         }
     };
     rate_div_element.appendChild(rate_element);
@@ -149,18 +150,18 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     duration_element.row_number = rowCount;
     duration_element.default_placeholder = "Duration";
     duration_element.placeholder = duration_element.default_placeholder;
-    duration_element.value = cleanUp(duration);
+    duration_element.value = cleanUp(3, duration);
     duration_element.autocomplete = "off";
     duration_element.setAttribute('onkeypress','keyHandler(event, '+rowCount+')');
     duration_element.onkeypress = function (e){
         if (e.keyCode == 13){
-            duration_element.value = cleanUp(duration_element.value);
-            updateRow(rowCount);
+            duration_element.value = cleanUp(3, duration_element.value);
+            updateRow(duration_element.row_number);
         }
     };
     duration_element.onblur = function() {
-        if (validateSimple('duration'+rowCount,'positive_real') == true){
-            duration_element.value = cleanUp(duration_element.value);
+        if (validateSimple('duration'+ duration_element.row_number,'positive_real') == true){
+            duration_element.value = cleanUp(3, duration_element.value);
         }
     };
     duration_div_element.appendChild(duration_element);
@@ -184,12 +185,12 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     repeat_element.autocomplete = "off";
     repeat_element.onkeypress = function (e){
         if (e.keyCode == 13){
-            repeat_element.value = cleanUp(repeat_element.value);
-            updateRow(rowCount);
+            repeat_element.value = cleanUp(0, repeat_element.value);
+            updateRow(repeat_element.row_number);
         }
     };
     repeat_element.onblur = function() {
-        validateSimple('repeat_value'+rowCount,'integer');
+        validateSimple('repeat_value'+ repeate_element.row_number,'integer');
     };
     repeat_div_element.appendChild(repeat_element);
     
@@ -200,46 +201,98 @@ function addRow(start_value, end_value, rate, duration, repeat_value, updateIt){
     button_element.setAttribute('class', "btn");
     button_element.id = "btn"+rowCount;
     button_element.name = button_element.id;
+    button_element.row_number = rowCount
     button_element.innerHTML = "Update";
-    button_element.onclick = function() {updateRow(rowCount)};
+    button_element.onclick = function() {updateRow(button_element.row_number)};
     button_cell.appendChild(button_element);
 
-    if (updateIt == true){
-        if (addSegment(rowCount) == false){
-            table.deleteRow(rowCount);
-        }
+
+    if (table.rows.length > 1){
+        document.getElementById('delete_segment').disabled = false;
     }
+    else{
+        document.getElementById('delete_segment').disabled = true;
+    }
+
 }
 
-//deleteRows will be used in the final product. deleteRow only deletes the last segment. will be used for now
 function deleteRows(){
     try {
         var table = document.getElementById('tbody');
         var rowCount = table.rows.length;
         document.getElementById('table_check').checked = false;
                                
+        var to_delete = [];
         for(var i=0; i<rowCount; i++) {
             var row = table.rows[i];
             var chkbox = row.cells[0].childNodes[0];
             if(null != chkbox && true == chkbox.checked) {
-                table.deleteRow(i);
-                rowCount--;
-                i--;
+                to_delete.push(parseInt(i))
             }
         }
+        //to_delete.sort(function(a,b){return a - b});
+        to_delete.reverse();
+        if (to_delete.length == rowCount){
+            to_delete.splice(to_delete.length - 1, 1);
+            table.rows[0].cells[0].childNodes[0].checked = false;
+        }
+        else if (to_delete.length == 0){
+            to_delete.push(rowCount - 1);
+        }
+        for (var m=0; m<to_delete.length; m++){
+            table.deleteRow(to_delete[m]);
+        }
+        deleteSegments(to_delete);
+        renumberRows(to_delete[to_delete.length - 1]);
+
+        if (table.rows.length > 1){
+            document.getElementById('delete_segment').disabled = false;
+        }
+        else{
+            document.getElementById('delete_segment').disabled = true;
+        }
+
 
     }catch(e) {
         alert(e);
     }
 }
 
+function renumberRows(pos){ // update the numbers and identifiers of rows after some have been deleted
+    var table = document.getElementById('tbody');
+
+    if (pos < table.rows.length){
+        table.rows[pos].id = 'row'+pos;
+        table.rows[pos].cells[0].childNodes[0].id = 'check'+pos;
+        table.rows[pos].cells[0].childNodes[0].row_number = pos;
+        table.rows[pos].cells[1].childNodes[0].innerHTML = (pos + 1).toString();
+        table.rows[pos].cells[2].childNodes[0].childNodes[0].id = 'start_value'+pos;
+        table.rows[pos].cells[2].childNodes[0].childNodes[0].row_number = pos
+        table.rows[pos].cells[3].childNodes[0].childNodes[0].id = 'end_value'+pos; 
+        table.rows[pos].cells[3].childNodes[0].childNodes[0].row_number = pos; 
+        table.rows[pos].cells[4].childNodes[0].childNodes[0].id = 'rate'+pos; 
+        table.rows[pos].cells[4].childNodes[0].childNodes[0].row_number = pos; 
+        table.rows[pos].cells[5].childNodes[0].childNodes[0].id = 'duration'+pos; 
+        table.rows[pos].cells[5].childNodes[0].childNodes[0].row_number = pos; 
+        table.rows[pos].cells[6].childNodes[0].childNodes[0].id = 'repeat_value'+pos; 
+        table.rows[pos].cells[6].childNodes[0].childNodes[0].row_number = pos; 
+        table.rows[pos].cells[7].childNodes[0].row_number = pos;
+    }
+
+    if (pos < table.rows.length - 1){
+        renumberRows(pos + 1);
+    }
+    
+}
+
 function openFile(){
     $.post('open',function(data){
-        if (data == ''){
-            addRow(0,0,0,10,1,true);
+        if (data == 'delete=0&add=None&update=None'){
+            addRow(0,0,0,10,1);
+            addSegment(document.getElementById('tbody').rows.length - 1);
         }
         else{
-            updateChart(data);
+            updateChart(data)
             $.post('open_table',function(data){
                 var lines = data.split('\n');
                 for (line in lines){
@@ -251,13 +304,12 @@ function openFile(){
                     for (item in items){
                         param_set.push(parseFloat(items[item]));
                     }
-                    addRow(param_set[0],param_set[1],param_set[2],param_set[3],1,false);
+                    addRow(param_set[0],param_set[1],param_set[2],param_set[3],1);
                 }
             });
         }
     });
 }
-//end temp functions
 
 function selectAll(){
     var table = document.getElementById('tbody');
@@ -274,8 +326,39 @@ function selectAll(){
     }
 }
 
+function checkClicked(row_num){
+    var table = document.getElementById('tbody');
+    var checked = 0;
+    for (var row = 0; row < table.rows.length; row++){
+        if (table.rows[row].cells[0].childNodes[0].checked == true){
+            checked ++;
+        }
+    }
+    if (checked == 1){
+        document.getElementById('move_up').disabled = false;
+        document.getElementById('move_down').disabled = false;
+    }
+    else{
+        if (checked == table.rows.length){
+            document.getElementById('table_check').checked = true;
+        }
+        else if (checked == 0){
+            document.getElementById('table_check').checked = false;
+        }
+
+        document.getElementById('move_up').disabled = true;
+        document.getElementById('move_down').disabled = true;
+    }
+    if (table.rows[0].cells[0].childNodes[0].checked == true){
+        document.getElementById('move_up').disabled = true;
+    }
+    if (table.rows[table.rows.length - 1].cells[0].childNodes[0].checked == true){
+        document.getElementById('move_down').disabled = true;
+    }
+}
+
 function keyHandler(e, position){
-    if (e.keyCode == 13){
+    if (e.keyCode == 13){ //Enter
         updateRow(position);
     }
 }
