@@ -1,3 +1,5 @@
+// module downloaded offline to do query string deserialization in javascript
+
 /*!
  * jQuery BBQ: Back Button & Query Library - v1.3pre - 8/26/2010
  * http://benalman.com/projects/jquery-bbq-plugin/

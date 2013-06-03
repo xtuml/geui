@@ -1,3 +1,4 @@
+//object holding regex validation methods
 var validate_methods = {
     integer: {
         method: function integer(value){
@@ -19,6 +20,8 @@ var validate_methods = {
     }
 }
 
+//validates the format of the numbers only
+//called everytime the focus leaves the input box and when it is submitted
 function validateSimple(id_string, method){
     //validation code 
     var value = $.trim($('#'+id_string).val());
@@ -34,6 +37,8 @@ function validateSimple(id_string, method){
 
 }
 
+//validates more complexities
+//only called when form is submitted
 function validateComplex(rowCount){
     //setup
     var fields = {
@@ -103,6 +108,7 @@ function validateComplex(rowCount){
     return valid;
 }
 
+//changes the colors to red when there is an improper input
 function setError(id_string, message){
     document.getElementById(id_string).placeholder = message;    
     document.getElementById(id_string).value = '';    
@@ -110,13 +116,15 @@ function setError(id_string, message){
     document.getElementById(id_string).parentNode.parentNode.setAttribute('style','text-align: center; vertical-align: middle; background-color: #FFAFAF');
 }
 
+//removes the red when the error is fixed
 function removeError(id_string, message){
     document.getElementById(id_string).parentNode.setAttribute('class','control-group');    
     document.getElementById(id_string).parentNode.parentNode.setAttribute('style','text-align: center; vertical-align: middle; background-color:');    
     document.getElementById(id_string).placeholder = message;    
 }
 
-function cleanUp(decimals, value){ //sets values to decimals
+//returns the value to a specific number of decimals
+function cleanUp(decimals, value){
     if (value != '' || value == '0'){
         value = value*1;
         if (decimals == 0){

@@ -1,11 +1,11 @@
-//var highlighted_row = 0;
-
-function init_table(){    
+//called at the very beginning of the program
+function init_table(){
 
     openFile();
 
 }
 
+//called when the "Add Segment" button is clicked
 function addSegmentClicked(){
     var table = document.getElementById("tbody");
     addRow(
@@ -18,6 +18,7 @@ function addSegmentClicked(){
     addSegment(table.rows.length - 1);
 }
 
+//dynamically add a row to the table
 function addRow(start_value, end_value, rate, duration, repeat_value){
 
     var table = document.getElementById("tbody");
@@ -26,6 +27,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     var row = table.insertRow(rowCount);
     row.id = 'row'+rowCount;
                               
+    //checkbox
     var check_cell  = row.insertCell(0);
     check_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var check_element  = document.createElement("input");
@@ -36,12 +38,14 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     check_element.onclick = function(){checkClicked(check_element.row_number)};
     check_cell.appendChild(check_element);
 
+    //row number
     var number_cell = row.insertCell(1);
     number_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var number_element = document.createElement('b');
     number_element.innerHTML = rowCount+1;
     number_cell.appendChild(number_element);
 
+    //start_value
     var start_cell = row.insertCell(2);
     start_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var start_div_element = document.createElement("div");
@@ -71,8 +75,8 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
         }
     };
     start_div_element.appendChild(start_element);
-    //start_cell.appendChild(start_element);
 
+    //end_value
     var end_cell = row.insertCell(3);
     end_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var end_div_element = document.createElement("div");
@@ -104,6 +108,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     };
     end_div_element.appendChild(end_element);
 
+    //rate
     var rate_cell = row.insertCell(4);
     rate_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var rate_div_element = document.createElement("div");
@@ -135,6 +140,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     };
     rate_div_element.appendChild(rate_element);
 
+    //duration
     var duration_cell = row.insertCell(5);
     duration_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var duration_div_element = document.createElement("div");
@@ -166,6 +172,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     };
     duration_div_element.appendChild(duration_element);
 
+    //repeat_value
     var repeat_cell = row.insertCell(6);
     repeat_cell.setAttribute("style","text-align: center; vertical-align: middle");
     var repeat_div_element = document.createElement("div");
@@ -206,7 +213,7 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
     button_element.onclick = function() {updateRow(button_element.row_number)};
     button_cell.appendChild(button_element);
 
-
+    //if there is only one row, disallow deleting rows
     if (table.rows.length > 1){
         document.getElementById('delete_segment').disabled = false;
     }
@@ -216,12 +223,15 @@ function addRow(start_value, end_value, rate, duration, repeat_value){
 
 }
 
+//delete rows from the table then delete the segments
 function deleteRows(){
     try {
+        //setup
         var table = document.getElementById('tbody');
         var rowCount = table.rows.length;
         document.getElementById('table_check').checked = false;
                                
+        //collect the rows that need to be delete
         var to_delete = [];
         for(var i=0; i<rowCount; i++) {
             var row = table.rows[i];
@@ -230,21 +240,28 @@ function deleteRows(){
                 to_delete.push(parseInt(i))
             }
         }
-        //to_delete.sort(function(a,b){return a - b});
         to_delete.reverse();
-        if (to_delete.length == rowCount){
+        
+        //if all are selected, force the first one to deselect
+        if (to_delete.length == rowCount){ //if all are selected, force the first one to deselect
             to_delete.splice(to_delete.length - 1, 1);
             table.rows[0].cells[0].childNodes[0].checked = false;
         }
-        else if (to_delete.length == 0){
+        //if none are selected, delete the last segment
+        else if (to_delete.length == 0){ //if none are selected, delete the last segment
             to_delete.push(rowCount - 1);
         }
+        //delete rows
         for (var m=0; m<to_delete.length; m++){
             table.deleteRow(to_delete[m]);
         }
+        //delete segments (see submission.js)
         deleteSegments(to_delete);
+
+        //update row numbers
         renumberRows(to_delete[to_delete.length - 1]);
 
+        //if there is only one row, disallow deleting rows
         if (table.rows.length > 1){
             document.getElementById('delete_segment').disabled = false;
         }
@@ -258,6 +275,70 @@ function deleteRows(){
     }
 }
 
+//switch the values in two adjacent rows
+function switchRow(up){
+    //setup
+    var table = document.getElementById('tbody');
+    var checked = -1
+
+    //select row to switch
+    for (var row = 0; row < table.rows.length; row++){
+        if (table.rows[row].cells[0].childNodes[0].checked == true){
+            checked = row;
+        }
+    }
+    
+    //if a row is selected
+    if (checked != -1){
+        var offset = 0;
+        var msg = ''
+
+        //if it's switching with the one above
+        if (up == true){
+            offset = -1;
+            msg = (checked-1) + ',' + checked;
+            
+        }
+        //if it's switching with the one below
+        else{
+            offset = 1;
+            msg = checked + ',' + (checked+1);
+        }
+
+        //switch segments
+        switchSegment(msg);
+        
+        //switch table values
+        var temp = [
+            document.getElementById('start_value'+checked).value,
+            document.getElementById('end_value'+checked).value,
+            document.getElementById('rate'+checked).value,
+            document.getElementById('duration'+checked).value,
+            document.getElementById('repeat_value'+checked).value
+        ];
+
+        document.getElementById('start_value'+checked).value = document.getElementById('start_value'+(checked+offset)).value;
+        document.getElementById('end_value'+checked).value = document.getElementById('end_value'+(checked+offset)).value;
+        document.getElementById('rate'+checked).value = document.getElementById('rate'+(checked+offset)).value;
+        document.getElementById('duration'+checked).value = document.getElementById('duration'+(checked+offset)).value;
+        document.getElementById('repeat_value'+checked).value = document.getElementById('repeat_value'+(checked+offset)).value;
+
+        document.getElementById('start_value'+(checked+offset)).value = temp[0];
+        document.getElementById('end_value'+(checked+offset)).value = temp[1];
+        document.getElementById('rate'+(checked+offset)).value = temp[2];
+        document.getElementById('duration'+(checked+offset)).value = temp[3];
+        document.getElementById('repeat_value'+(checked+offset)).value = temp[4];
+
+        //switch checkbox values
+        table.rows[checked].cells[0].childNodes[0].checked = false;
+        table.rows[checked+offset].cells[0].childNodes[0].checked = true;
+
+        checkClicked(checked+offset);
+    }
+}
+
+//renumbers all the rows below the one updated
+//update the numbers and identifiers of rows after some have been deleted
 function renumberRows(pos){ // update the numbers and identifiers of rows after some have been deleted
     var table = document.getElementById('tbody');
 
@@ -285,14 +366,18 @@ function renumberRows(pos){ // update the numbers and identifiers of rows after 
     
 }
 
+//open an existing file
+//eventually will be user specified
 function openFile(){
     $.post('open',function(data){
+        //if there is no file, add a default row
         if (data == 'delete=0&add=None&update=None'){
             addRow(0,0,0,10,1);
             addSegment(document.getElementById('tbody').rows.length - 1);
         }
         else{
             updateChart(data)
+            //create table rows from the file
             $.post('open_table',function(data){
                 var lines = data.split('\n');
                 for (line in lines){
@@ -311,6 +396,7 @@ function openFile(){
     });
 }
 
+//defines behavior when the select all checkbox is clicked
 function selectAll(){
     var table = document.getElementById('tbody');
     var ckbx = document.getElementById('table_check');
@@ -326,14 +412,19 @@ function selectAll(){
     }
 }
 
+//called when any checkbox is clicked
 function checkClicked(row_num){
     var table = document.getElementById('tbody');
     var checked = 0;
+
+    //counts how many are clicked
     for (var row = 0; row < table.rows.length; row++){
         if (table.rows[row].cells[0].childNodes[0].checked == true){
             checked ++;
         }
     }
+
+    //buttons disabled for certain checkbox conditions
     if (checked == 1){
         document.getElementById('move_up').disabled = false;
         document.getElementById('move_down').disabled = false;
@@ -357,12 +448,14 @@ function checkClicked(row_num){
     }
 }
 
+//updates row when enter is pressed
 function keyHandler(e, position){
     if (e.keyCode == 13){ //Enter
         updateRow(position);
     }
 }
 
+//expands/contracts the chart when fullscreen is clicked
 function fullscreen(){
     var chart_container = document.getElementById('chart_container');
     var table_container = document.getElementById('table_container');
