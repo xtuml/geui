@@ -1,46 +1,22 @@
-import web
 import usb.core
 import usb.util
 
-class PyUSB:
+#use for testing without the client
 
-    def POST(self):
-        data = web.data()
+#pyusb code
+# find our device
+dev = usb.core.find(idVendor=0x0483, idProduct=0x9999)
 
-        #pyusb code
-        # find our device
-        dev = usb.core.find(idVendor=0x0483, idProduct=0x9999)
+# was it found?
+if dev is None:
+    raise ValueError('Device not found')
 
-        # was it found?
-        if dev is None:
-            raise ValueError('Device not found')
+dev.detach_kernel_driver(0)
 
-        # set the active configuration. With no arguments, the first
-        # configuration will be the active one
-        dev.set_configuration()
+dev.write(1, 'test', 0)
 
-        # get an endpoint instance
-        cfg = dev.get_active_configuration()
-        interface_number = cfg[(0,0)].bInterfaceNumber
-        alternate_settting = usb.control.get_interface(interface_number)
-        intf = usb.util.find_descriptor(
-        cfg, bInterfaceNumber = interface_number,bAlternateSetting = alternate_setting)
+#attempt to read from device
+reply = dev.read(1, 4, 0, 5000)
+print reply
 
-        ep = usb.util.find_descriptor(
-            intf,
-            # match the first OUT endpoint
-            custom_match = \
-            lambda e: \
-                usb.util.endpoint_direction(e.bEndpointAddress) == \
-                usb.util.ENDPOINT_OUT
-        )
 
-        assert ep is not None
-
-        # write the data
-        ep.write('test')
-
-        #reverses the input string
-        reply = data[::-1]
-
-        return reply
