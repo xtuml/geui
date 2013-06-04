@@ -1,13 +1,20 @@
-import web
+import usb.core
+import usb.util
 
-class PyUSB:
 
-    def POST(self):
-        data = web.data()
 
-        #pyusb code
+#pyusb code
+# find our device
+dev = usb.core.find(idVendor=0x0483, idProduct=0x9999)
 
-        #reverses the input string
-        reply = data[::-1]
+# was it found?
+if dev is None:
+    raise ValueError('Device not found')
 
-        return reply
+interface_number = dev[0][(0,0)].bInterfaceNumber
+print interface_number
+
+dev.write(1, 'test', 0)
+
+
+
