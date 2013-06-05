@@ -1,11 +1,9 @@
 //global variables
 var chart;
 
-$(document).ready(function(){
-    
-    document.getElementById('move_up').onclick = function(){switchRow(true);};
-    document.getElementById('move_down').onclick = function(){switchRow(false);};
+$(document).ready(function(){ //function is called when the page is loaded and ready
 
+    //initialize functions
     initiateGraph();
     init_table();
 
