@@ -1,19 +1,17 @@
 class graph:
     
     name = ''
-    number_segments = 0
-    starts_with = None
-    ends_with = None
+    contents = []
+    vertices = []
 
     def __init__(self):
-        pass
+        self.contents = []
+        self.vertices = []
 
 class segment:
 
-    position = 0
-    is_before = None
-    is_after = None
     graph = None
+
     start_value = 0
     end_value = 0
     rate = 0
@@ -24,7 +22,12 @@ class segment:
         self.end_value = end_value
         self.rate = rate
         self.duration = duration
-        self.position = 0
-        self.is_before = None
-        self.is_after = None
         self.graph = None
+
+class pattern:
+    
+    graph = None
+    contents = []
+
+    def __init__(self):
+        self.contents = [] 

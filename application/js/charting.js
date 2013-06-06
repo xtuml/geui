@@ -66,25 +66,51 @@ function initiateGraph(){
 }
 
 function updateChart(data){
-    //split lines
-
-    var lines = data.split('\n');
-    for (line in lines){
-        var items = lines[line].split(',');
-
-        //populate array
-        var point = [];
-
-        for (item in items){
-            point.push(parseFloat(items[item]));
-        }
-            
-        chart.series[0].addPoint(point);
-                
+    //deserialize data
+    var data2 = $.deparam(data);
+   
+    //delete points 
+    var delete_num = parseInt(data2["delete"]);
+    for (var c = 0; c < delete_num*2; c++){
+        chart.series[0].data[chart.series[0].data.length - 1].remove() 
     }
+
+    if (data2["add"] != 'None'){
+        var lines = data2["add"].split('\n');
+        for (line in lines){
+            var items = lines[line].split(',');
+
+            //populate array
+            var point = [];
+
+            for (item in items){
+                point.push(parseFloat(items[item]));
+            }
+                
+            chart.series[0].addPoint(point);
+                
+        }
+    }
+
+    if (data2["update"] != 'None'){
+        var lines2 = data2["update"].split('\n');
+        for (line in lines2){
+            var items = lines2[line].split(',');
+
+            //populate array
+            var point = [parseFloat(items[1]),parseFloat(items[2])];
+            var index = parseInt(items[0]);
+                
+            chart.series[0].data[index].update(point);
+                    
+        }
+    }
+    
+
 }
 
 function deletePoints(data){
+
     //split lines
 
     var lines = data.split('\n');
