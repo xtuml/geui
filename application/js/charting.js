@@ -73,7 +73,7 @@ function updateChart(data){
    
     //delete points 
     var delete_num = parseInt(data2["delete"]);
-    for (var c = 0; c < delete_num*2; c++){
+    for (var c = 0; c < delete_num; c++){
         chart.series[0].data[chart.series[0].data.length - 1].remove() 
     }
 

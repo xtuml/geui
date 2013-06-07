@@ -2,6 +2,8 @@ import web
 import handler
 import replies
 import csv
+import experiment
+import server
 
 handler = handler.GraphHandler()
 replier = replies.ReplyCalculator()
@@ -9,7 +11,6 @@ replier = replies.ReplyCalculator()
 class AddSegment:
 
     def POST(self):
-        #add segment: open graph, add, update graph, reply 
         form = web.input()
 
         current_graph = handler.open_model()
@@ -24,9 +25,8 @@ class AddSegment:
 class DeleteSegment:
 
     def POST(self):
-        #delete segment: parse csv, open graph, delete segments, update graph, reply
         csv = web.data()
-        
+                                                                                                
         #parse csv
         to_delete = [] 
         new_string = ''
@@ -101,3 +101,24 @@ class OpenTable:
         #open table: open graph, reply table values
         current_graph = handler.open_model()
         return replier.calculate_table_reply(current_graph)
+
+#serves js files upon load (included in html. basis of client side operations)
+class script_handler:
+    
+    def GET(self, url):
+        script = open('js/'+url,'r')
+        return script.read()
+
+#serves css files upon load. Used for styling (bootstrap)
+class script_handler2:
+    
+    def GET(self, url):
+        script = open('css/'+url,'r')
+        return script.read()
+
+#serves font files upon load. Used for special icons on buttons.
+class script_handler3:
+    
+    def GET(self, url):
+        script = open('font/'+url,'r')
+        return script.read()
