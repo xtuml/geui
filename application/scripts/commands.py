@@ -1,6 +1,4 @@
 import web
-#from experiment import Experiment
-#from server import Server
 
 #super class for commands from the client
 class COMMAND:
@@ -27,32 +25,37 @@ class INDEX(COMMAND):
         return render.index()
 
 
-#Open the experiment, returns the initial points and table values
-#class OPEN_EXPERIMENT(COMMAND):
-#    pass
+#I/O Commands
+#==========================#
 
-#class SAVE_EXPERIMENT(COMMAND):
-#    pass
+class SAVE_EXPERIMENT(COMMAND):
+    def POST(self):
+        from server import Server
+        Server.current_experiment.save()
+        return ''
 
-class TEMP_OPEN(COMMAND):       #temporary way to open. more similar to old method
+class GET_EXPERIMENT_LIST(COMMAND):
+    pass
+
+class OPEN_EXPERIMENT(COMMAND):
     def POST(self):
         from experiment import Experiment
         from server import Server
-        Server.current_experiment = Experiment.open('mygraph')
-        return Server.current_experiment.calculate_reply([], Server.current_experiment.graph.get_vertices())
+        Server.current_experiment = Experiment.open(web.data())
+        if Server.current_experiment != None:
+            reply = Server.current_experiment.calculate_reply([], Server.current_experiment.graph.get_vertices())
+            reply_table = Server.current_experiment.calculate_table_reply()
+            return reply + '&table=' + reply_table
+        else:
+            return 'NoFile'
 
 class CREATE_EXPERIMENT(COMMAND):       #temporarily called for opening a file
     def POST(self):
         from experiment import Experiment
         from server import Server
-        Server.current_experiment = Experiment.create('mygraph')
+        Server.current_experiment = Experiment.create(web.data())
         return Server.current_experiment.calculate_reply([], Server.current_experiment.graph.get_vertices())
-
-class TEMP_OPEN_TABLE(COMMAND):
-    def POST(self):
-        from server import Server
-        #open table: open graph, reply table values
-        return Server.current_experiment.calculate_table_reply(current_graph)
+#==========================#
 
         
 #Graph manipulation commands

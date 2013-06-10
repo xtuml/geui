@@ -1,10 +1,11 @@
 import gnosis.xml.pickle
+from gnosis.xml.pickle.util import setParanoia
+setParanoia(0)
 
 #data model for an experiment
 class Experiment:
 
     name = ''
-    
     graph = None
 
     def __init__(self, graph=None, name=''):
@@ -34,7 +35,7 @@ class Experiment:
     #dump to xml file
     def save(self):
         #save the file 
-        save_file = open('data/'+name+'.xml','w')
+        save_file = open('data/'+self.name+'.xml','w')
         save_file.write(gnosis.xml.pickle.dumps(self))
         save_file.close()
 
@@ -45,7 +46,7 @@ class Experiment:
         add = []
         update = []
 
-        #points to delete -- if there is a net loss of vertices, deletes the last ones
+        #points to delete -- if thee is a net loss of vertices, deletes the last ones
         #and counts how many it deleted
         if len(old_vertices) > len(new_vertices):
             while len(new_vertices) != len(old_vertices): 
@@ -90,7 +91,7 @@ class Experiment:
         reply = ''
         if (len(self.graph.contents) != 0):
             param_list = []
-            for segment in current_graph.contents:
+            for segment in self.graph.contents:
                 param_list.append((segment.start_value, segment.end_value, segment.rate, segment.duration))
 
             #calculate csv  string

@@ -1,111 +1,152 @@
 ﻿<!DOCTYPE HTML>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Graph Editor</title>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Graph Editor</title>
 
-    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
-    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/font-awesome.min.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script src="/js/init.js"></script>
+        <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+        <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="/js/init.js"></script>
     
-  </head>
-  <body>
+    </head>
+    <body>
 
-    <div class="row">
-        <div id="chart_container" style="height: 325px; margin: 10px 50px"></div>
-    </div>
-    
-    <div class="row">
-        <div class="well" id="table_container" style="height: 325px; margin: 10px 50px; overflow: scroll">
-            <form id="user_input">
-            <table id="user_table" class="table table-condensed table-bordered table-hover" style="background-color: white">
-                <thead>
-                    <tr>
-                        <th><center><input type="checkbox" id="table_check" onclick="selectAll()"></input></center></th>
-                        <th>#</th>
-                        <th>Start Value</th>
-                        <th>End Value</th>
-                        <th>Sweep Rate</th>
-                        <th>Duration</th>
-                        <th>Repeats</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody">
-                </tbody>
-            </table>
-            </form>
+        <!-- Modal -->
+        <div id="open_dialog" class="modal hide fade in" style="display: none;">
+            <div class="modal-header">
+                <h3>Open Experiment</h3>
+            </div>
+            <div class="modal-body">
+                <div class="input-append" style="width: 50%; margin: 0 auto">
+                    <input id="open_experiment_input" type="text" class="span3" placeholder="Experiment Name">
+                    <button
+                        type="button"
+                        id="open_experiment"
+                        class="btn"
+                        onclick="openExperiment()"
+                    >Open Experiment</button>
+                </div>
+            </div>
+            <div class="modal-header">
+                <h3>Create New Experiment</h3>
+            </div>
+            <div class="modal-body">
+                <div class="input-append" style="width: 50%; margin: 0 auto">
+                    <input id="new_experiment_input" type="text" class="span3" placeholder="Experiment Name">
+                    <button
+                        type="button"
+                        id="create_experiment"
+                        class="btn"
+                        onclick="createExperiment()"
+                    >Create Experiment</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div id="button_container" style="height: 50px; margin: 10px 50px">
-            <button
-                type="button"
-                id="add_segment"
-                class="btn btn-large btn-primary"
-                onclick="addSegmentClicked()"
-            >Add Segment</button>
-            <button
-                type="button"
-                id="delete_segment"
-                class="btn btn-large btn-danger"
-                onclick="deleteRows()"
-            >Delete Segment</button>
-            <button
-                type="button"
-                id="delete_segment"
-                class="btn btn-large btn-success"
-                disabled="true"
-            >Bind</button>
-            <button
-                type="button"
-                id="move_up"
-                class="btn btn-large"
-                disabled="true"
-                onclick="switchRow(true)"
-            ><i class="icon-circle-arrow-up icon-large"></i></button>
-            <button
-                type="button"
-                id="move_down"
-                class="btn btn-large"
-                disabled="true"
-                onclick="switchRow(false)"
-            ><i class="icon-circle-arrow-down icon-large"></i></button>
-            <button
-                type="button"
-                id="fullscreen"
-                class="btn btn-large"
-                onclick="fullscreen()"
-            ><i class="icon-fullscreen icon-large"></i></button>
+        <div class="row">
+            <div id="chart_container" style="height: 325px; margin: 10px 50px"></div>
         </div>
-    </div>
+    
+        <div class="row">
+            <div class="well" id="table_container" style="height: 325px; margin: 10px 50px; overflow: scroll">
+                <form id="user_input">
+                <table id="user_table" class="table table-condensed table-bordered table-hover" style="background-color: white">
+                    <thead>
+                        <tr>
+                            <th><center><input type="checkbox" id="table_check" onclick="selectAll()"></input></center></th>
+                            <th>#</th>
+                            <th>Start Value</th>
+                            <th>End Value</th>
+                            <th>Sweep Rate</th>
+                            <th>Duration</th>
+                            <th>Repeats</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+                </form>
+            </div>
+        </div>
 
-    <!-- SCRIPTS INCLUDED -->
+        <div class="row">
+            <div id="button_container" style="height: 50px; margin: 10px 50px">
+                <button
+                    type="button"
+                    id="add_segment"
+                    class="btn btn-large btn-primary"
+                    onclick="addSegmentClicked()"
+                >Add Segment</button>
+                <button
+                    type="button"
+                    id="delete_segment"
+                    class="btn btn-large btn-danger"
+                    onclick="deleteRows()"
+                >Delete Segment</button>
+                <button
+                    type="button"
+                    id="delete_segment"
+                    class="btn btn-large btn-success"
+                    disabled="true"
+                >Bind</button>
+                <button
+                    type="button"
+                    id="move_up"
+                    class="btn btn-large"
+                    disabled="true"
+                    onclick="switchRow(true)"
+                ><i class="icon-circle-arrow-up icon-large"></i></button>
+                <button
+                    type="button"
+                    id="move_down"
+                    class="btn btn-large"
+                    disabled="true"
+                    onclick="switchRow(false)"
+                ><i class="icon-circle-arrow-down icon-large"></i></button>
+                <button
+                    type="button"
+                    id="fullscreen"
+                    class="btn btn-large"
+                    onclick="fullscreen()"
+                ><i class="icon-fullscreen icon-large"></i></button>
+                <button
+                    type="button"
+                    id="save_experiment"
+                    class="btn btn-large btn-primary"
+                    onclick="saveExperiment()"
+                >Save</button>
+            </div>
+        </div>
+
+        <!-- SCRIPTS INCLUDED -->
     
-    <!-- highcharts scripts -->
-    <script src="http://code.highcharts.com/highcharts.js"></script>
-    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+        <!-- highcharts scripts -->
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
     
-    <!-- bootstrap scripts --> 
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-scrollspy.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
+        <!-- bootstrap scripts --> 
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-scrollspy.js"></script>
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
 	  
-    <!-- my scripts -->
-    <script src="/js/validation.js"></script>
-    <script src="/js/submission.js"></script>
-    <script src="/js/tables.js"></script>
-    <script src="/js/charting.js"></script>
-    <script src="/js/chart_theme.js"></script>
+        <!-- my scripts -->
+        <script src="/js/validation.js"></script>
+        <script src="/js/submission.js"></script>
+        <script src="/js/tables.js"></script>
+        <script src="/js/charting.js"></script>
+        <script src="/js/chart_theme.js"></script>
 
-    <script src="/js/jquery.ba-bbq.js"></script>
+        <script src="/js/jquery.ba-bbq.js"></script>
 
-  </body>
+    </body>
 </html>

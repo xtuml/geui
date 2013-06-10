@@ -6,5 +6,6 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     //initialize functions
     initiateGraph();
     init_table();
+    $('#open_dialog').modal('show');
 
 });

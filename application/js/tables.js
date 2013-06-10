@@ -1,7 +1,7 @@
 //called at the very beginning of the program
 function init_table(){
 
-    openFile();
+    //openFile();
 
 }
 
@@ -366,36 +366,6 @@ function renumberRows(pos){ // update the numbers and identifiers of rows after 
     
 }
 
-//open an existing file
-//eventually will be user specified
-function openFile(){
-    $.post('open',function(data){
-        //if there is no file, add a default row
-        if (data == 'delete=0&add=None&update=None'){
-            addRow(0,0,0,10,1);
-            addSegment(document.getElementById('tbody').rows.length - 1);
-        }
-        else{
-            updateChart(data)
-            //create table rows from the file
-            $.post('open_table',function(data){
-                var lines = data.split('\n');
-                for (line in lines){
-                    var items = lines[line].split(',');
-
-                    //populate array
-                    var param_set  = [];
-
-                    for (item in items){
-                        param_set.push(parseFloat(items[item]));
-                    }
-                    addRow(param_set[0],param_set[1],param_set[2],param_set[3],1);
-                }
-            });
-        }
-    });
-}
-
 //defines behavior when the select all checkbox is clicked
 function selectAll(){
     var table = document.getElementById('tbody');
@@ -470,4 +440,45 @@ function fullscreen(){
     var new_options = chart.options;
     chart.destroy();
     chart = new Highcharts.Chart(new_options);
+}
+
+
+//temporary place for these methods
+function createExperiment(){
+    $('#open_dialog').modal('hide');
+    $.post('create',document.getElementById('new_experiment_input').value,function(data){
+        addRow(0,0,0,10,1);
+        addSegment(document.getElementById('tbody').rows.length - 1);
+    });
+}
+
+function saveExperiment(){
+    $.post('save',function(data){
+        alert('saved');    
+    });
+}
+
+function openExperiment(){
+    //open an existing file
+    $.post('open',document.getElementById('open_experiment_input').value,function(data){
+        //if there is no file, go back to open dialog
+        if (data != 'NoFile'){
+            $('#open_dialog').modal('hide');
+            updateChart(data)
+            //create table rows from the file
+            var data2 = $.deparam(data);
+            var lines = data2["table"].split('\n');
+            for (line in lines){
+                var items = lines[line].split(',');
+
+                //populate array
+                var param_set  = [];
+
+                for (item in items){
+                    param_set.push(parseFloat(items[item]));
+                }
+                addRow(param_set[0],param_set[1],param_set[2],param_set[3],1);
+            }
+        }
+    });
 }
