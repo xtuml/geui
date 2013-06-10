@@ -59,9 +59,16 @@ print "EP_OUT addr, max packet size:  0x%02x, %d " % (EP_OUT.bEndpointAddress, E
 #=====================================================================
 # Do a simple write and read test.
 #=====================================================================
+send_data = [1, 3, 5, 7, 0] 
 print "writing..."
-EP_OUT.write('test')
+print send_data
+EP_OUT.write( send_data )
 
 print "reading..."
 data = dev.read(EP_IN.bEndpointAddress, EP_IN.wMaxPacketSize)
 print data
+
+# If you write a string list this:
+#    EP_OUT.write('testing 1 2 3')
+# This script's output will be the ascii values of each character:
+#    array('B', [116, 101, 115, 116, 105, 110, 103, 32, 49, 32, 50, 32, 51, 0, 0,  ...
