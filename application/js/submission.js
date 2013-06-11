@@ -49,7 +49,7 @@ function switchSegment(msg){
 //temporary function to test if we can send data down to the board and get a reply
 //puts the request variable reversed in the input box
 function pyusb_test(){
-    var request = 'hello world'
+    var request = 'test'
     $.post('pyusb',request,function(data){
         var input_box = document.getElementById('download_output');
         input_box.value = data;

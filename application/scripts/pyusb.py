@@ -17,9 +17,8 @@ class PyUSB:
 
 	dev.detach_kernel_driver(0)
 
-	dev.write(1, 'test', 0)
+	dev.write(1, data, 0)
 
         #reverses the input string
-        reply = data[::-1]
 
-        return reply
+        return 'Downloaded test string'
