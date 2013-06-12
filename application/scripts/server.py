@@ -1,5 +1,5 @@
 import web
-from commands import *
+from client_commands import *
 from experiment import Experiment
 
 class Server:
