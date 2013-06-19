@@ -1,0 +1,482 @@
+﻿/*
+
+Styling sheet for X8 GUI
+
+*/
+
+/* Packaging style classes */
+.app-background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: #000000;
+    background-image: url(../img/background.png);
+    overflow: hidden;
+}
+
+.app-header {
+    position:
+    absolute;
+    top: 15px;
+    left: 15px;
+    height: 55px;
+    width: calc(100% - 30px);
+    width: -webkit-calc(100% - 30px);
+    background: rgba(255,255,255,0.4);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid silver;
+}
+
+.app-body {
+    position: absolute;
+    top: 75px;
+    left: 10px;
+    height: calc(100% - 90px);
+    height: -webkit-calc(100% - 90px);
+    width: calc(100% - 20px);
+    width: -webkit-calc(100% - 20px);
+}
+
+.app-panel-TL {
+    position:
+    absolute;
+    top: 0px;
+    left: 0px;
+    height: 0%;
+    width: 0%;
+}
+
+.app-panel-TR {
+    position:
+    absolute;
+    top: 0px;
+    left: 50%;
+    height: 0%;
+    width: 0%;
+}
+
+.app-panel-ML {
+    position:
+    absolute;
+    top: 33%;
+    left: 0px;
+    height: 0%;
+    width: 0%;
+}
+.app-panel-MR {
+    position:
+    absolute;
+    top: 33%;
+    left: 50%;
+    height: 0%;
+    width: 0%;
+}
+.app-panel-BL {
+    position:
+    absolute;
+    top: 66%;
+    left: 0px;
+    height: 0%;
+    width: 0%;
+}
+
+.app-panel-BR {
+    position:
+    absolute;
+    top: 66%;
+    left: 50%; 
+    height: 0%;
+    width: 0%;
+}
+
+@keyframes flyout {
+    from {
+        left: 5px;
+    }
+    to {
+        left: calc(100% + 10px);
+    }
+}
+
+@-webkit-keyframes flyout {
+    from {
+        left: 5px;
+    }
+    to {
+        left: calc(100% + 10px);
+    }
+}
+
+.fly-out {
+    animation: flyout 0.25s ease-in-out 0 1 normal;
+    -webkit-animation: flyout 0.25s ease-in-out 0 1 normal;
+}
+    
+.app-cubby {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    height: calc(100% - 10px);
+    height: -webkit-calc(100% - 10px);
+    width: calc(100% - 10px);
+    width: -webkit-calc(100% - 10px);
+    background: rgba(255,255,255,0.4);
+    border-radius: 10px;
+    border: 1px solid silver;
+    -webkit-transition: all 0.25s ease-in-out;
+       -moz-transition: all 0.25s ease-in-out;
+         -o-transition: all 0.25s ease-in-out;
+            transition: all 0.25s ease-in-out;
+}
+
+.app-content {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: calc(100% - 4px);
+    height: -webkit-calc(100% - 4px);
+    width: calc(100% - 4px);
+    width: -webkit-calc(100% - 4px);
+    border-radius: 8px;
+    overflow: hidden
+}
+
+
+
+/* button style classes */
+
+.btn-add {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    background: #000000;
+    background-image: url(../img/plus_sign_inactive.png); /* fallback */
+    background-image: url(../img/plus_sign_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/plus_sign_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/plus_sign_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/plus_sign_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/plus_sign_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/plus_sign_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #666666;
+    border-radius: 10px;
+}
+
+.btn-add:hover,
+.btn-add:focus {
+    background: #000000;
+    background-image: url(../img/plus_sign.png); /* fallback */
+    background-image: url(../img/plus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/plus_sign.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/plus_sign.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/plus_sign.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/plus_sign.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/plus_sign.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.btn-add:active {
+    background: #000000;
+    background-image: url(../img/plus_sign.png); /* fallback */
+    background-image: url(../img/plus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
+    background-image: url(../img/plus_sign.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/plus_sign.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
+    background-image: url(../img/plus_sign.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
+    background-image: url(../img/plus_sign.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
+    background-image: url(../img/plus_sign.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.btn-delete {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    background: #000000;
+    background-image: url(../img/minus_sign_inactive.png); /* fallback */
+    background-image: url(../img/minus_sign_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/minus_sign_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/minus_sign_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/minus_sign_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/minus_sign_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/minus_sign_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #666666;
+    border-radius: 10px;
+}
+
+.btn-delete:hover,
+.btn-delete:focus {
+    background: #000000;
+    background-image: url(../img/minus_sign.png); /* fallback */
+    background-image: url(../img/minus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/minus_sign.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/minus_sign.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/minus_sign.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/minus_sign.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/minus_sign.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.btn-delete:active {
+    background: #000000;
+    background-image: url(../img/minus_sign.png); /* fallback */
+    background-image: url(../img/minus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
+    background-image: url(../img/minus_sign.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/minus_sign.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
+    background-image: url(../img/minus_sign.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
+    background-image: url(../img/minus_sign.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
+    background-image: url(../img/minus_sign.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.btn-save {
+    position: absolute;
+    height: 50px;
+    width: 82px;
+    background: #000000;
+    background-image: url(../img/save_inactive.png); /* fallback */
+    background-image: url(../img/save_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/save_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/save_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/save_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/save_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/save_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #666666;
+    border-radius: 10px;
+}
+
+.btn-save:hover,
+.btn-save:focus {
+    background: #000000;
+    background-image: url(../img/save.png); /* fallback */
+    background-image: url(../img/save.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/save.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/save.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/save.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/save.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/save.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.btn-save:active {
+    background: #000000;
+    background-image: url(../img/save.png); /* fallback */
+    background-image: url(../img/save.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
+    background-image: url(../img/save.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/save.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
+    background-image: url(../img/save.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
+    background-image: url(../img/save.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
+    background-image: url(../img/save.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.btn-back {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    background: #000000;
+    background-image: url(../img/arrow_inactive.png); /* fallback */
+    background-image: url(../img/arrow_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/arrow_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/arrow_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/arrow_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/arrow_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/arrow_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #666666;
+    border-radius: 10px;
+}
+
+.btn-back:hover,
+.btn-back:focus {
+    background: #000000;
+    background-image: url(../img/arrow.png); /* fallback */
+    background-image: url(../img/arrow.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: url(../img/arrow.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/arrow.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image: url(../img/arrow.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image: url(../img/arrow.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image: url(../img/arrow.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.btn-back:active {
+    background: #000000;
+    background-image: url(../img/arrow.png); /* fallback */
+    background-image: url(../img/arrow.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
+    background-image: url(../img/arrow.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
+    background-image: url(../img/arrow.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
+    background-image: url(../img/arrow.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
+    background-image: url(../img/arrow.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
+    background-image: url(../img/arrow.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/* Table style classes */
+
+.input-table {
+    position: absolute;
+    top: 31px;
+    left: 0px;
+    height: calc(100% - 31px);
+    width: 100%;
+    background: rgba(44,52,93,0.5);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    min-width: 600px;
+}
+
+.main-row {
+    position: absolute;
+    height: 30px;
+    width: 100%;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    min-width: 600px;
+}
+
+.table-row {
+    position: absolute;
+    height: 50px;
+    width: 100%;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.table-row:hover {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#DCEEE3), to(#86C49D)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #DCEEE3, #86C49D); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #DCEEE3, #86C49D); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #DCEEE3, #86C49D); /* IE10 */
+    background-image:      -o-linear-gradient(top, #DCEEE3, #86C49D); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #DCEEE3, #86C49D);
+}
+
+.select-cell {
+    position: absolute;
+    height: 100%;
+    width: 50px;
+    border: 1px solid #666666;
+    cursor: pointer;
+}
+
+.select-dot {
+    position: absolute;
+    top: 17px;
+    left: 17px;
+    height: 15px;
+    width: 15px;
+    border-radius: 8px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#4C4C4C), to(#8C8C8C)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #4C4C4C, #8C8C8C); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #4C4C4C, #8C8C8C); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #4C4C4C, #8C8C8C); /* IE10 */
+    background-image:      -o-linear-gradient(top, #4C4C4C, #8C8C8C); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #4C4C4C, #8C8C8C);
+    border: 1px solid silver;
+}
+
+.selected {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#64B482), to(#3A7851)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #64B482, #3A7851); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #64B482, #3A7851); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #64B482, #3A7851); /* IE10 */
+    background-image:      -o-linear-gradient(top, #64B482, #3A7851); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #64B482, #3A7851);
+}
+
+.number-cell {
+    position: absolute;
+    left: 50px;
+    height: 100%;
+    width: 50px;
+    border: 1px solid #666666;
+    font-size: 20px;
+    color: black;
+    text-align: center;
+    line-height: 50px;
+    cursor: default;
+    font-family: Arial;
+}
+
+.dots {
+    background: url(../img/dots.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: move;
+}
+
+.value-cell {
+    position: absolute;
+    height: 100%;
+    width: calc((100% - 50px) / 5);
+    width: -webkit-calc((100% - 100px) / 5);
+    border: 1px solid #666666;
+}
+
+.label-cell {
+    position: absolute;
+    height: 100%;
+    width: calc((100% - 50px) / 5);
+    width: -webkit-calc((100% - 100px) / 5);
+    border: 1px solid #666666;
+    font-size: 18px;
+    color: black;
+    text-align: center;
+    line-height: 30px;
+    cursor: default;
+    overflow: hidden;
+    font-family: Arial;
+}
+
+.value-input {
+    position: absolute;
+    height: 22px;
+    width: 90%;
+    top: 11px;
+    left: calc((100% - (90% + 6px)) / 2);
+    border: 1px solid silver;
+    border-radius: 3px;
+    padding: 2px;
+    font-size: 16px;
+}

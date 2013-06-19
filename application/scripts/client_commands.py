@@ -134,22 +134,28 @@ class MOVE_SEGMENT(COMMAND):
 
 
 #serve static files
+#==========================#
 #serves js files upon load (included in html. basis of client side operations)
 class SERVE_JS(COMMAND):
     def GET(self, url):
         script = open('js/'+url,'r')
         return script.read()
 
-#serves css files upon load. Used for styling (bootstrap)
+#serves css files upon load. Used for styling.
 class SERVE_CSS(COMMAND):
     def GET(self, url):
         script = open('css/'+url,'r')
         return script.read()
 
-#serves font files upon load. Used for special icons on buttons.
-class SERVE_FONT(COMMAND):
+#serves image files upon load.
+class SERVE_IMG(COMMAND):
     def GET(self, url):
-        script = open('font/'+url,'r')
-        return script.read()
+        img = open('img/'+url,'rb')
+        return img.read()
 
-
+#serves favicon.ico upon load.
+class SERVE_ICON(COMMAND):
+    def GET(self):
+        img = open('img/favicon.ico','rb')
+        return img.read()
+#==========================#
