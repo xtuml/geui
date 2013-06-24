@@ -49,7 +49,7 @@ class OPEN_EXPERIMENT(COMMAND):
         else:
             return 'NoFile'
 
-class CREATE_EXPERIMENT(COMMAND):       #temporarily called for opening a file
+class CREATE_EXPERIMENT(COMMAND):
     def POST(self):
         from experiment import Experiment
         from server import Server

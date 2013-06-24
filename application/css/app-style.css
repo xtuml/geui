@@ -14,6 +14,11 @@ Styling sheet for X8 GUI
     background-color: #000000;
     background-image: url(../img/background.png);
     overflow: hidden;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .app-header {
@@ -98,6 +103,7 @@ Styling sheet for X8 GUI
     }
     to {
         left: calc(100% + 10px);
+        left: -webkit-calc(100% + 10px);
     }
 }
 
@@ -107,6 +113,7 @@ Styling sheet for X8 GUI
     }
     to {
         left: calc(100% + 10px);
+        left: -webkit-calc(100% + 10px);
     }
 }
 
@@ -114,7 +121,32 @@ Styling sheet for X8 GUI
     animation: flyout 0.25s ease-in-out 0 1 normal;
     -webkit-animation: flyout 0.25s ease-in-out 0 1 normal;
 }
-    
+
+@keyframes flyin {
+    from {
+        left: calc(-100% - 10px);
+        left: -webkit-calc(-100% - 10px);
+    }
+    to {
+        left: 5px;
+    }
+}
+
+@-webkit-keyframes flyin {
+    from {
+        left: calc(-100% - 10px);
+        left: -webkit-calc(-100% - 10px);
+    }
+    to {
+        left: 5px;
+    }
+}
+
+.fly-in {
+    animation: flyin 0.25s ease-in-out 0 1 normal;
+    -webkit-animation: flyin 0.25s ease-in-out 0 1 normal;
+}
+
 .app-cubby {
     position: absolute;
     top: 5px;
@@ -148,186 +180,117 @@ Styling sheet for X8 GUI
 
 /* button style classes */
 
-.btn-add {
+.btn {
     position: absolute;
-    height: 50px;
-    width: 50px;
-    background: #000000;
-    background-image: url(../img/plus_sign_inactive.png); /* fallback */
-    background-image: url(../img/plus_sign_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/plus_sign_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/plus_sign_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/plus_sign_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/plus_sign_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/plus_sign_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    height: 48px;
+    width: 48px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
     background-position: center;
     background-repeat: no-repeat;
     border: 1px solid #666666;
     border-radius: 10px;
 }
 
-.btn-add:hover,
-.btn-add:focus {
+.btn:active {
     background: #000000;
-    background-image: url(../img/plus_sign.png); /* fallback */
-    background-image: url(../img/plus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/plus_sign.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/plus_sign.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/plus_sign.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/plus_sign.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/plus_sign.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #A5A5A5, #E5E5E5);
     background-position: center;
     background-repeat: no-repeat;
 }
 
-.btn-add:active {
-    background: #000000;
-    background-image: url(../img/plus_sign.png); /* fallback */
-    background-image: url(../img/plus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
-    background-image: url(../img/plus_sign.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/plus_sign.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
-    background-image: url(../img/plus_sign.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
-    background-image: url(../img/plus_sign.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
-    background-image: url(../img/plus_sign.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.btn-delete {
+.add-btn {
     position: absolute;
-    height: 50px;
-    width: 50px;
-    background: #000000;
-    background-image: url(../img/minus_sign_inactive.png); /* fallback */
-    background-image: url(../img/minus_sign_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/minus_sign_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/minus_sign_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/minus_sign_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/minus_sign_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/minus_sign_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/plus_sign_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid #666666;
     border-radius: 10px;
 }
 
-.btn-delete:hover,
-.btn-delete:focus {
-    background: #000000;
-    background-image: url(../img/minus_sign.png); /* fallback */
-    background-image: url(../img/minus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/minus_sign.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/minus_sign.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/minus_sign.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/minus_sign.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/minus_sign.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
-    background-position: center;
-    background-repeat: no-repeat;
+.add-btn:hover,
+.add-btn:focus {
+    background-image: url(../img/plus_sign.png);
 }
 
-.btn-delete:active {
-    background: #000000;
-    background-image: url(../img/minus_sign.png); /* fallback */
-    background-image: url(../img/minus_sign.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
-    background-image: url(../img/minus_sign.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/minus_sign.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
-    background-image: url(../img/minus_sign.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
-    background-image: url(../img/minus_sign.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
-    background-image: url(../img/minus_sign.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.btn-save {
+.delete-btn {
     position: absolute;
-    height: 50px;
-    width: 82px;
-    background: #000000;
-    background-image: url(../img/save_inactive.png); /* fallback */
-    background-image: url(../img/save_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/save_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/save_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/save_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/save_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/save_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/minus_sign_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid #666666;
     border-radius: 10px;
 }
 
-.btn-save:hover,
-.btn-save:focus {
-    background: #000000;
-    background-image: url(../img/save.png); /* fallback */
-    background-image: url(../img/save.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/save.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/save.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/save.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/save.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/save.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
-    background-position: center;
-    background-repeat: no-repeat;
+.delete-btn:hover,
+.delete-btn:focus {
+    background-image: url(../img/minus_sign.png);
 }
 
-.btn-save:active {
-    background: #000000;
-    background-image: url(../img/save.png); /* fallback */
-    background-image: url(../img/save.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
-    background-image: url(../img/save.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/save.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
-    background-image: url(../img/save.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
-    background-image: url(../img/save.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
-    background-image: url(../img/save.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.btn-back {
+.save-btn {
     position: absolute;
-    height: 50px;
-    width: 50px;
-    background: #000000;
-    background-image: url(../img/arrow_inactive.png); /* fallback */
-    background-image: url(../img/arrow_inactive.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/arrow_inactive.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/arrow_inactive.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/arrow_inactive.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/arrow_inactive.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/arrow_inactive.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/save_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid #666666;
     border-radius: 10px;
 }
 
-.btn-back:hover,
-.btn-back:focus {
-    background: #000000;
-    background-image: url(../img/arrow.png); /* fallback */
-    background-image: url(../img/arrow.png), -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
-    background-image: url(../img/arrow.png), -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/arrow.png),    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
-    background-image: url(../img/arrow.png),     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
-    background-image: url(../img/arrow.png),      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image: url(../img/arrow.png),         linear-gradient(top, #E5E5E5, #A5A5A5);
-    background-position: center;
-    background-repeat: no-repeat;
+.save-btn:hover,
+.save-btn:focus {
+    background-image: url(../img/save.png);
 }
 
-.btn-back:active {
-    background: #000000;
-    background-image: url(../img/arrow.png); /* fallback */
-    background-image: url(../img/arrow.png), -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
-    background-image: url(../img/arrow.png), -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
-    background-image: url(../img/arrow.png),    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
-    background-image: url(../img/arrow.png),     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
-    background-image: url(../img/arrow.png),      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
-    background-image: url(../img/arrow.png),         linear-gradient(top, #A5A5A5, #E5E5E5);
+.back-btn {
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/arrow_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
+    border-radius: 10px;
 }
 
+.back-btn:hover,
+.back-btn:focus {
+    background-image: url(../img/arrow.png);
+}
+
+.update-btn {
+    position: absolute;
+    height: 44px;
+    width: 44px;
+    background-image: url(../img/update_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.update-btn:hover,
+.update-btn:focus {
+    background-image: url(../img/update.png);
+}
+
+.btn-update {
+    background: transparent;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #666666;
+    cursor: pointer;
+}
 
 /* Table style classes */
 
@@ -336,9 +299,10 @@ Styling sheet for X8 GUI
     top: 31px;
     left: 0px;
     height: calc(100% - 31px);
+    height: -webkit-calc(100% - 31px);
     width: 100%;
     background: rgba(44,52,93,0.5);
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -381,6 +345,11 @@ Styling sheet for X8 GUI
     -webkit-user-select: none;
     -o-user-select: none;
     user-select: none;
+}
+
+.row-ease {
+    transition: top 0.25s;
+    -webkit-transition: top 0.25s;
 }
 
 .table-row:hover {
@@ -449,16 +418,25 @@ Styling sheet for X8 GUI
 .value-cell {
     position: absolute;
     height: 100%;
-    width: calc((100% - 50px) / 5);
-    width: -webkit-calc((100% - 100px) / 5);
+    width: calc((100% - 150px) / 5);
+    width: -webkit-calc((100% - 150px) / 5);
     border: 1px solid #666666;
+}
+
+.value-invalid {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#DC0000), to(#860000)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #DC0000, #860000); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #DC0000, #860000); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #DC0000, #860000); /* IE10 */
+    background-image:      -o-linear-gradient(top, #DC0000, #860000); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #DC0000, #860000);
 }
 
 .label-cell {
     position: absolute;
     height: 100%;
-    width: calc((100% - 50px) / 5);
-    width: -webkit-calc((100% - 100px) / 5);
+    width: calc((100% - 150px) / 5);
+    width: -webkit-calc((100% - 150px) / 5);
     border: 1px solid #666666;
     font-size: 18px;
     color: black;
@@ -469,14 +447,61 @@ Styling sheet for X8 GUI
     font-family: Arial;
 }
 
+.update-cell {
+    position: absolute;
+    height: 100%;
+    width: 50px;
+    border: 1px solid #666666;
+}
+
+.input-wrapper {
+    position: absolute;
+    height: 26px;
+    width: 90%;
+    top: 9px;
+    left: 5%;
+}
+
 .value-input {
     position: absolute;
-    height: 22px;
-    width: 90%;
-    top: 11px;
-    left: calc((100% - (90% + 6px)) / 2);
+    height: calc(100% - 4px);
+    height: -webkit-calc(100% - 4px);
+    width: calc(100% - 56px);
+    width: -webkit-calc(100% - 56px);
+    left: 3px;
     border: 1px solid silver;
-    border-radius: 3px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     padding: 2px;
     font-size: 16px;
+}
+
+.input-label {
+    position: absolute;
+    height: 100%;
+    width: 50px;
+    right: 0px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#8C8C8C), to(#CCCCCC)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #8C8C8C, #CCCCCC); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #8C8C8C, #CCCCCC); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #8C8C8C, #CCCCCC); /* IE10 */
+    background-image:      -o-linear-gradient(top, #8C8C8C, #CCCCCC); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #8C8C8C, #CCCCCC);
+    border: 1px solid silver;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 12px;
+    color: black;
+    text-align: center;
+    line-height: 26px;
+    cursor: default;
+    font-family: Arial;
 }

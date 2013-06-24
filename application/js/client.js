@@ -10,7 +10,6 @@ Gui and Panel have methods for adding deleting and moving views.
 
 function Client(){
     this.gui = null;
-    this.commands = {};
 }
 
 //-----------------------------//
@@ -21,6 +20,7 @@ function Client(){
 
 function Gui(client){
     this.client = client;
+    this.config = null;
     this.panels = {
         'TL': new Panel('TL',this),
         'TR': new Panel('TR',this),
@@ -47,11 +47,16 @@ function Panel(position, gui){
 Panel.prototype.addView = function(view){
     this.view = view;
     this.element.appendChild(view.element);
-};
+}
+
+Panel.prototype.removeView = function(){
+    this.element.removeChild(this.view);
+    this.view = null;
+}
 
 Panel.prototype.updateSize = function(height, width){
     this.element.style.height = height;
     this.element.style.width = width;
-};
+}
 
 //-----------------------------//

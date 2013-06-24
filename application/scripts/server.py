@@ -16,7 +16,7 @@ class Server:
         '/add_segment','ADD_SEGMENT',
         '/delete_segment','DELETE_SEGMENT',
         '/update_segment','UPDATE_SEGMENT',
-        '/switch_segment','MOVE_SEGMENT',
+        '/move_segment','MOVE_SEGMENT',
         '/create','CREATE_EXPERIMENT',
         '/save','SAVE_EXPERIMENT',
         '/open','OPEN_EXPERIMENT'

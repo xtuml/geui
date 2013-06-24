@@ -6,14 +6,8 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     new_client = new Client();
     new_gui = new Gui(new_client);
 
-    new_gui.panels['TL'].addView(new WaveformChart(new_gui.panels['TL']));
-    new_gui.panels['TL'].view.initiateChart();
-    
-    new_gui.panels['ML'].addView(new WaveformTable(new_gui.panels['ML']));
-
-    new_gui.panels['BL'].addView(new WaveformButtons(new_gui.panels['BL']));
-
-
+    new_gui.config = new WaveformEditor(new_gui);
+    new_gui.config.enter();
 
     $.post('open','test',function(data){
         //if there is no file, go back to open dialog
@@ -35,5 +29,4 @@ $(document).ready(function(){ //function is called when the page is loaded and r
             }
         }
     });
-
 });
