@@ -3,30 +3,12 @@ var chart;
 
 $(document).ready(function(){ //function is called when the page is loaded and ready
 
-    new_client = new Client();
-    new_gui = new Gui(new_client);
+    client = new Client();
+    gui = new Gui(client);
 
-    new_gui.config = new WaveformEditor(new_gui);
-    new_gui.config.enter();
+    welcome = new Welcome(gui);
+    editor = new WaveformEditor(gui);
 
-    $.post('open','test',function(data){
-        //if there is no file, go back to open dialog
-        if (data != 'NoFile'){
-            new_gui.panels['TL'].view.updateChart(data);
-            //create table rows from the file
-            var data2 = $.deparam(data);
-            var lines = data2["table"].split('\n');
-            for (line in lines){
-                var items = lines[line].split(',');
+    gui.newConfig(welcome, []);
 
-                //populate array
-                var param_set  = [];
-
-                for (item in items){
-                    param_set.push(parseFloat(items[item]));
-                }
-                new_gui.panels['ML'].view.addRow(new_gui.panels['ML'].view.row_count, [param_set[0],param_set[1],param_set[2],param_set[3],1]);
-            }
-        }
-    });
 });

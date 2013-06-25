@@ -97,54 +97,10 @@ Styling sheet for X8 GUI
     width: 0%;
 }
 
-@keyframes flyout {
-    from {
-        left: 5px;
-    }
-    to {
-        left: calc(100% + 10px);
-        left: -webkit-calc(100% + 10px);
-    }
-}
-
-@-webkit-keyframes flyout {
-    from {
-        left: 5px;
-    }
-    to {
-        left: calc(100% + 10px);
-        left: -webkit-calc(100% + 10px);
-    }
-}
-
-.fly-out {
-    animation: flyout 0.25s ease-in-out 0 1 normal;
-    -webkit-animation: flyout 0.25s ease-in-out 0 1 normal;
-}
-
-@keyframes flyin {
-    from {
-        left: calc(-100% - 10px);
-        left: -webkit-calc(-100% - 10px);
-    }
-    to {
-        left: 5px;
-    }
-}
-
-@-webkit-keyframes flyin {
-    from {
-        left: calc(-100% - 10px);
-        left: -webkit-calc(-100% - 10px);
-    }
-    to {
-        left: 5px;
-    }
-}
-
-.fly-in {
-    animation: flyin 0.25s ease-in-out 0 1 normal;
-    -webkit-animation: flyin 0.25s ease-in-out 0 1 normal;
+/* panel in and out animation */
+.fly {
+    transition: left 0.5s;
+    -webkit-transition: left 0.5s;
 }
 
 .app-cubby {
@@ -283,16 +239,37 @@ Styling sheet for X8 GUI
     background-image: url(../img/update.png);
 }
 
-.btn-update {
-    background: transparent;
+.open-btn {
     position: absolute;
-    height: 100%;
-    width: 100%;
-    border: 1px solid #666666;
-    cursor: pointer;
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/open_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
 }
 
-/* Table style classes */
+.open-btn:hover,
+.open-btn:focus {
+    background-image: url(../img/open.png);
+}
+
+.dots-btn {
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/dots_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.dots-btn:hover,
+.dots-btn:focus {
+    background-image: url(../img/dots.png);
+}
+
+/* Waveform table style classes */
 
 .input-table {
     position: absolute;
@@ -302,7 +279,7 @@ Styling sheet for X8 GUI
     height: -webkit-calc(100% - 31px);
     width: 100%;
     background: rgba(44,52,93,0.5);
-    overflow-y: hidden;
+    overflow-y: scroll;
     overflow-x: hidden;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -409,7 +386,7 @@ Styling sheet for X8 GUI
 }
 
 .dots {
-    background: url(../img/dots.png);
+    background: url(../img/dots_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
     cursor: move;
@@ -505,3 +482,82 @@ Styling sheet for X8 GUI
     cursor: default;
     font-family: Arial;
 }
+
+/* Dialog style classes */
+
+.label {
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    padding: 4px;
+    font-size: 35px;
+    font-family: Arial;
+    color: white;
+    text-shadow: 0px 0px 5px black;
+    cursor: default;
+}
+
+.open-table {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    height: calc(100% - 104px);
+    height: -webkit-calc(100% - 104px);
+    width: 100%;
+    background: rgba(44,52,93,0.5);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    border: 1px solid silver;
+    border-radius: 10px;
+}
+
+.open-row {
+    position: absolute;
+    height: 30px;
+    width: calc(100% - 8px);
+    width: -webkit-calc(100% - 8px);
+    left: 4px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    font-size: 16px;
+    fotn-weight: bold;
+    font-family: Arial;
+    color: black;
+    cursor: default;
+    line-height: 30px;
+    text-indent: 15px;
+    border-radius: 5px;
+}
+
+.open-row-hover:hover {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#DCEEE3), to(#86C49D)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #DCEEE3, #86C49D); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #DCEEE3, #86C49D); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #DCEEE3, #86C49D); /* IE10 */
+    background-image:      -o-linear-gradient(top, #DCEEE3, #86C49D); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #DCEEE3, #86C49D);
+}
+
+.selected-row {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#D5E8F5), to(#6EAFDC)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #D5E8F5, #6EAFDC); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #D5E8F5, #6EAFDC); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #D5E8F5, #6EAFDC); /* IE10 */
+    background-image:      -o-linear-gradient(top, #D5E8F5, #6EAFDC); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #D5E8F5, #6EAFDC);
+}
+

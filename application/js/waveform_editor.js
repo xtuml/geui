@@ -11,11 +11,11 @@ WaveformButtons view classes.
 // WaveformEditor class -------//
 
 function WaveformEditor(gui){
+    //attibutes every config has
     this.gui = gui;
-    this.gui.config = this;
 
-    this.enter_time = 0.45; //time it takes to enter in seconds
-    this.exit_time = 0.45;  //time it takes to exit in seconds
+    this.enter_time = 1.3; //time it takes to enter in seconds
+    this.exit_time = 0.8;  //time it takes to exit in seconds
 
     //object holding addresses to each of the views
     this.views = {
@@ -23,20 +23,124 @@ function WaveformEditor(gui){
         WaveformTable: 'ML',
         WaveformButtons: 'BL'
     };
-}
 
-WaveformEditor.prototype.enter = function(){
     //create the views
-    new_gui.panels['TL'].addView(new WaveformChart(new_gui.panels['TL']));
-    new_gui.panels['TL'].view.initiateChart();
-    new_gui.panels['ML'].addView(new WaveformTable(new_gui.panels['ML']));
-    new_gui.panels['BL'].addView(new WaveformButtons(new_gui.panels['BL']));
+    this.chart = new WaveformChart(gui.panels[this.views['WaveformChart']]);
+    this.table = new WaveformTable(gui.panels[this.views['WaveformTable']]);
+    this.buttons = new WaveformButtons(gui.panels[this.views['WaveformButtons']]);
 
     //setup the animation
+    this.chart.element.style.left = 'calc(-100% - 10px)';
+    this.chart.element.style.left = '-webkit-calc(-100% - 10px)';
+    this.table.element.style.left = 'calc(-100% - 10px)';
+    this.table.element.style.left = '-webkit-calc(-100% - 10px)';
+    this.buttons.element.style.left = 'calc(-100% - 10px)';
+    this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
+
+    //add the elements
+    this.gui.panels[this.views['WaveformChart']].addView(this.chart);
+    this.gui.panels[this.views['WaveformTable']].addView(this.table);
+    this.gui.panels[this.views['WaveformButtons']].addView(this.buttons);
+
+    //initialize the chart
+    //this.chart.initiateChart();
 }
 
-WaveformEditor.prototype.exit = function(){
+//load the waveform file
+WaveformEditor.prototype.openWaveform = function(name){
+    var self = this;
+    $.post('open',name,function(data){
+        //if there is no file, go back to open dialog
+        if (data != 'NoFile'){
+            self.chart.updateChart(data);
+            //create table rows from the file
+            var data2 = $.deparam(data);
+            var lines = data2["table"].split('\n');
+            for (line in lines){
+                var items = lines[line].split(',');
+
+                //populate array
+                var param_set  = [];
+
+                for (item in items){
+                    param_set.push(parseFloat(items[item]));
+                }
+                self.table.addRow(self.table.row_count, [param_set[0],param_set[1],param_set[2],param_set[3],1]);
+            }
+        }
+    });
 }
+
+//prepare the config before entry
+WaveformEditor.prototype.prepare = function(args){
+    //try{
+    //update size and position
+    this.chart.panel.updateSize(this.chart.height, this.chart.width);
+    this.chart.panel.updatePosition(this.chart.x, this.chart.y);
+    this.table.panel.updateSize(this.table.height, this.table.width);
+    this.table.panel.updatePosition(this.table.x, this.table.y);
+    this.buttons.panel.updateSize(this.buttons.height, this.buttons.width);
+    this.buttons.panel.updatePosition(this.buttons.x, this.buttons.y);
+
+    //initate the chart
+    this.chart.initiateChart();
+
+    //load a waveform
+    this.openWaveform(args[0]);
+
+    //add label row
+    //this.table.labels = this.addMainRow();
+    //}catch(e){alert(e)}
+}
+
+//fly in animation
+WaveformEditor.prototype.enter = function(delay){
+
+    //run animation
+    this.chart.element.className = 'app-cubby fly';
+    $(this.chart.element).css('transition-delay', (delay + 0.5) + 's');
+    $(this.chart.element).css('-webkit-transition-delay', (delay + 0.5) + 's');
+    this.chart.element.style.left = '5px';
+
+    this.table.element.className = 'app-cubby fly';
+    $(this.table.element).css('transition-delay', (delay + 0.65) + 's');
+    $(this.table.element).css('-webkit-transition-delay', (delay + 0.65) + 's');
+    this.table.element.style.left = '5px';
+
+    this.buttons.element.className = 'app-cubby fly';
+    $(this.buttons.element).css('transition-delay', (delay + 0.8) + 's');
+    $(this.buttons.element).css('-webkit-transition-delay', (delay + 0.8) + 's');
+    this.buttons.element.style.left = '5px';
+
+}
+
+//fly out animation
+WaveformEditor.prototype.exit = function(delay){
+
+    //run animation
+    this.chart.element.className = 'app-cubby fly';
+    $(this.chart.element).css('transition-delay', delay + 's');
+    $(this.chart.element).css('-webkit-transition-delay', delay + 's');
+    this.chart.element.style.left = 'calc(-100% - 10px)';
+    this.chart.element.style.left = '-webkit-calc(-100% - 10px)';
+
+    this.table.element.className = 'app-cubby fly';
+    $(this.table.element).css('transition-delay', (delay + 0.15) + 's');
+    $(this.table.element).css('-webkit-transition-delay', (delay + 0.15) + 's');
+    this.table.element.style.left = 'calc(-100% - 10px)';
+    this.table.element.style.left = '-webkit-calc(-100% - 10px)';
+
+    this.buttons.element.className = 'app-cubby fly';
+    $(this.buttons.element).css('transition-delay', (delay + 0.3) + 's');
+    $(this.buttons.element).css('-webkit-transition-delay', (delay + 0.3) + 's');
+    this.buttons.element.style.left = 'calc(-100% - 10px)';
+    this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
+
+}
+
+//-----------------------------//
+
+
 
 // WaveformChart class --------//
 
@@ -55,8 +159,11 @@ function WaveformChart(panel){
     this.height = 'calc((100% - 64px) / 2)';
     this.height = '-webkit-calc((100% - 64px) / 2)';
     this.width = '100%'
+    this.x = '0px';
+    this.y = '0px';
     this.panel.updateSize(this.height, this.width);
-    this.content_pane.id = 'chart_container';
+    this.content_pane.id = 'chart_container';           //if want to have multiple waveforms loaded, 
+                                                        //must change to a unique container name
 }
 
 //starts up the chart
@@ -173,6 +280,7 @@ WaveformChart.prototype.updateChart = function(data){
     
 
 }
+
 //-----------------------------//
 
 
@@ -192,11 +300,9 @@ function WaveformTable(panel){
     this.height = 'calc((100% - 64px) / 2)';
     this.height = '-webkit-calc((100% - 64px) / 2)';
     this.width = '100%';
-    this.panel.updateSize(this.height, this.width);
-
-    //temporary fix. will be changed when I implement automatic resizing of the panels.
-    this.panel.element.style.top = 'calc((100% - 64px) / 2)';
-    this.panel.element.style.top = '-webkit-calc((100% - 64px) / 2)';
+    this.x = '0px';
+    this.y = 'calc((100% - 64px) / 2)';
+    this.y = '-webkit-calc((100% - 64px) / 2)';
 
     //container for the value rows
     this.input_table = document.createElement('div');
@@ -275,7 +381,8 @@ function WaveformTable(panel){
     }
 
     //adds the label row
-    this.labels = this.addMainRow();
+    //this.labels = this.addMainRow();
+    this.labels = null;
 }
 
 // add a value row
@@ -912,11 +1019,9 @@ function WaveformButtons(panel){
 
     this.height = '64px';
     this.width = '100%';
-    this.panel.updateSize(this.height, this.width);
-    
-    //temporary fix. will be changed when I implement automatic resizing of the panels.
-    this.panel.element.style.top = 'calc(100% - 64px)';
-    this.panel.element.style.top = '-webkit-calc(100% - 64px)';
+    this.x = '0px';
+    this.y = 'calc(100% - 64px)';
+    this.y = '-webkit-calc(100% - 64px)';
 
     this.add = document.createElement('div');
     this.add.className = 'btn';
@@ -1040,7 +1145,7 @@ WaveformButtons.prototype.save_experiment = function(){
 
 //go back to the previous screen
 WaveformButtons.prototype.go_back = function(){
-    alert('back');
+    gui.popConfig([]);
 }
 
 //-----------------------------//
