@@ -54,7 +54,7 @@ class CREATE_EXPERIMENT(COMMAND):
         from experiment import Experiment
         from server import Server
         Server.current_experiment = Experiment.create(web.data())
-        return Server.current_experiment.calculate_reply([], Server.current_experiment.graph.get_vertices())
+        return ''
 #==========================#
 
         

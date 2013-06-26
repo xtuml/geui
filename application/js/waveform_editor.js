@@ -73,7 +73,6 @@ WaveformEditor.prototype.openWaveform = function(name){
 
 //prepare the config before entry
 WaveformEditor.prototype.prepare = function(args){
-    //try{
     //update size and position
     this.chart.panel.updateSize(this.chart.height, this.chart.width);
     this.chart.panel.updatePosition(this.chart.x, this.chart.y);
@@ -88,9 +87,6 @@ WaveformEditor.prototype.prepare = function(args){
     //load a waveform
     this.openWaveform(args[0]);
 
-    //add label row
-    //this.table.labels = this.addMainRow();
-    //}catch(e){alert(e)}
 }
 
 //fly in animation
@@ -381,8 +377,7 @@ function WaveformTable(panel){
     }
 
     //adds the label row
-    //this.labels = this.addMainRow();
-    this.labels = null;
+    this.labels = this.addMainRow();
 }
 
 // add a value row
@@ -884,7 +879,7 @@ WaveformTable.prototype.update = function(row_num){
         update_message += '&position=' + (parseInt(row_num) - 1);
         var self = this;
         this.update_callback = function(data){
-            self.panel.gui.panels['TL'].view.updateChart(data);
+            self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
         }
         
         $.post('update_segment',update_message,this.update_callback);
@@ -992,7 +987,7 @@ WaveformTable.prototype.endDrag = function(ev){
     var self = this;
     this.move_callback = function(data){
 
-        self.panel.gui.panels['TL'].view.updateChart(data);
+        self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
     }
     $.post('move_segment',move_message,this.move_callback);
 
@@ -1080,24 +1075,19 @@ function WaveformButtons(panel){
 WaveformButtons.prototype.add_segment = function(){
     var add_message = '';
     add_message += 'start_value=0&end_value=0&rate=0&duration=10&repeat_value=1&position='
-    var position = this.panel.gui.panels['ML'].view.row_count;
+    var position = this.panel.gui.panels[gui.config.views['WaveformTable']].view.row_count;
     add_message += position;
     var self = this;
     this.add_callback = function(data){
         //add new table row
-        self.panel.gui.panels['ML'].view.addRow(position, [0,0,0,10,1]);
+        self.panel.gui.panels[gui.config.views['WaveformTable']].view.addRow(position, [0,0,0,10,1]);
 
         //update select dots
-        var selected = self.panel.gui.panels['ML'].view.getSelected();
-        if (selected.length == self.panel.gui.panels['ML'].view.row_count){
-            self.panel.gui.panels['ML'].view.labels.childNodes[0].childNodes[0].className = 'select-dot selected';
-        }
-        else{
-            self.panel.gui.panels['ML'].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
-        }
-        self.panel.gui.panels['TL'].view.updateChart(data);
+        self.panel.gui.panels[gui.config.views['WaveformTable']].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
 
-        //check if scrollbar needed
+        //update chart
+        self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
+
     }
     $.post('add_segment',add_message,this.add_callback);
 }
@@ -1105,7 +1095,7 @@ WaveformButtons.prototype.add_segment = function(){
 //deletes selected rows. if none selected, deletes the last one. if all selected, deletes all but the first one
 WaveformButtons.prototype.delete_segment = function(){
     //find rows to delete
-    var table = this.panel.gui.panels['ML'].view;
+    var table = this.panel.gui.panels[gui.config.views['WaveformTable']].view;
     positions = table.getSelected().reverse();  //reverse order so array indices don't get mixed up
     if (positions.length == 0){
         positions.push(table.rows.length - 1);
@@ -1130,7 +1120,7 @@ WaveformButtons.prototype.delete_segment = function(){
     //post the delete request
     var self = this;
     this.delete_callback = function(data){
-        self.panel.gui.panels['TL'].view.updateChart(data);
+        self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
     }
     $.post('delete_segment',csv,this.delete_callback); //post to server to delete segment
 }

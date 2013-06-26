@@ -13,6 +13,7 @@ class Server:
         '/css/(.*)','SERVE_CSS',
         '/favicon.ico','SERVE_ICON',
         '/img/(.*)','SERVE_IMG',
+        '/get_experiments','GET_EXPERIMENT_LIST',
         '/add_segment','ADD_SEGMENT',
         '/delete_segment','DELETE_SEGMENT',
         '/update_segment','UPDATE_SEGMENT',
