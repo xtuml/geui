@@ -3,12 +3,14 @@ var chart;
 
 $(document).ready(function(){ //function is called when the page is loaded and ready
 
+    //create client, interface, and gui
     client = new Client();
-    gui = new Gui(client);
 
-    welcome = new Welcome(gui);
-    editor = new WaveformEditor(gui);
+    //create the configs
+    welcome = new Welcome(client.gui);
+    editor = new WaveformEditor(client.gui);
 
-    gui.newConfig(welcome, []);
+    //add the first config
+    client.gui.newConfig(welcome, []);
 
 });

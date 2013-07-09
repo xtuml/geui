@@ -9,7 +9,131 @@ Gui and Panel have methods for adding deleting and moving views.
 // Client class ---------------//
 
 function Client(){
-    this.gui = null;
+    this.gui = new Gui();
+    this.eihttp = new eihttp();
+}
+
+//-----------------------------//
+
+
+
+// eihttp class ---------------//
+// interfaces with agent
+
+function eihttp(){
+}
+
+eihttp.prototype.save_experiment = function(){
+    var return_data = false;
+    $.ajax({
+        type: 'POST',
+        url: 'save',
+        data: name,
+        success: function(){return_data = true},
+        async:false
+    });
+    return return_data;
+}
+
+eihttp.prototype.get_experiments = function(){
+}
+
+eihttp.prototype.open_experiment = function(name){
+    var return_data = '';
+    $.ajax({
+        type: 'POST',
+        url: 'open',
+        data: name,
+        success: function(data){return_data = data},
+        async:false
+    });
+    return return_data;
+}
+
+eihttp.prototype.create_experiment = function(name){
+    var return_data = false;
+    $.ajax({
+        type: 'POST',
+        url: 'create',
+        data: name,
+        success: function(){return_data = true},
+        async:false
+    });
+    return return_data;
+}
+
+eihttp.prototype.add_segment = function(start_value, end_value, rate, duration, repeat_value, position){
+    var add_message = 
+        'start_value=' + start_value + '&' +
+        'end_value=' + end_value + '&' +
+        'rate=' + rate + '&' +
+        'duration=' + duration + '&' +
+        'repeat_value=' + repeat_value + '&' +
+        'position=' + position;
+                        
+    var return_data = '';
+    $.ajax({
+        type: 'POST',
+        url: 'add_segment',
+        data: add_message,
+        success: function(data){return_data = data},
+        async:false
+    });
+
+    return return_data;
+}
+
+eihttp.prototype.delete_segment = function(positions){
+    //create string of segments to delete
+    var csv = '';
+    for (var n = 0; n < positions.length; n++){
+        csv += positions[n].toString() + ',';
+    }
+    csv = csv.substring(0,csv.length - 1);
+    
+    var return_data = '';
+    $.ajax({
+        type: 'POST',
+        url: 'delete_segment',
+        data: csv,
+        success: function(data){return_data = data},
+        async:false
+    });
+    return return_data;
+}
+
+eihttp.prototype.update_segment = function(start_value, end_value, rate, duration, repeat_value, position){
+    var update_message = 
+        'start_value=' + start_value + '&' +
+        'end_value=' + end_value + '&' +
+        'rate=' + rate + '&' +
+        'duration=' + duration + '&' +
+        'repeat_value=' + repeat_value + '&' +
+        'position=' + position;
+
+    var return_data = '';
+    $.ajax({
+        type: 'POST',
+        url: 'update_segment',
+        data: update_message,
+        success: function(data){return_data = data},
+        async:false
+    });
+    return return_data;
+}
+
+eihttp.prototype.move_segment = function(position, destination){
+    var move_message = position + ',' + destination;
+
+    var return_data = '';
+    $.ajax({
+        type: 'POST',
+        url: 'move_segment',
+        data: move_message,
+        success: function(data){return_data = data},
+        async:false
+    });
+    return return_data;
 }
 
 //-----------------------------//
@@ -18,8 +142,7 @@ function Client(){
 
 // Gui class ------------------//
 
-function Gui(client){
-    this.client = client;
+function Gui(){
     this.config = null;         //current config or perspective
     this.configs = [];          //stack of configs or perspectives
     this.panels = {

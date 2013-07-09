@@ -25,9 +25,9 @@ function Welcome(gui){
     };
 
     //create the views
-    this.open = new OpenExperiment(gui.panels[this.views['OpenExperiment']]);
-    this.create = new CreateExperiment(gui.panels[this.views['CreateExperiment']]);
-    this.inst_status = new InstrumentStatus(gui.panels[this.views['InstrumentStatus']]);
+    this.open = new OpenExperiment(this.gui.panels[this.views['OpenExperiment']]);
+    this.create = new CreateExperiment(this.gui.panels[this.views['CreateExperiment']]);
+    this.inst_status = new InstrumentStatus(this.gui.panels[this.views['InstrumentStatus']]);
 
     //setup the animation
     this.open.element.style.left = 'calc(-100% - 10px)';
@@ -215,7 +215,7 @@ OpenExperiment.prototype.select = function(row_num){
 OpenExperiment.prototype.openFile = function(){
     if (this.selected_row != -1){
         //alert(this.rows[this.selected_row].innerHTML);
-        gui.newConfig(editor, [this.rows[this.selected_row].innerHTML]);
+        this.panel.gui.newConfig(editor, [this.rows[this.selected_row].innerHTML]);
     }
 }
 

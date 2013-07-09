@@ -25,9 +25,9 @@ function WaveformEditor(gui){
     };
 
     //create the views
-    this.chart = new WaveformChart(gui.panels[this.views['WaveformChart']]);
-    this.table = new WaveformTable(gui.panels[this.views['WaveformTable']]);
-    this.buttons = new WaveformButtons(gui.panels[this.views['WaveformButtons']]);
+    this.chart = new WaveformChart(this.gui.panels[this.views['WaveformChart']]);
+    this.table = new WaveformTable(this.gui.panels[this.views['WaveformTable']]);
+    this.buttons = new WaveformButtons(this.gui.panels[this.views['WaveformButtons']]);
 
     //setup the animation
     this.chart.element.style.left = 'calc(-100% - 10px)';
@@ -48,27 +48,25 @@ function WaveformEditor(gui){
 
 //load the waveform file
 WaveformEditor.prototype.openWaveform = function(name){
-    var self = this;
-    $.post('open',name,function(data){
-        //if there is no file, go back to open dialog
-        if (data != 'NoFile'){
-            self.chart.updateChart(data);
-            //create table rows from the file
-            var data2 = $.deparam(data);
-            var lines = data2["table"].split('\n');
-            for (line in lines){
-                var items = lines[line].split(',');
+    var data = client.eihttp.open_experiment(name);
+    //if there is no file, go back to open dialog
+    if (data != 'NoFile'){
+        this.chart.updateChart(data);
+        //create table rows from the file
+        var data2 = $.deparam(data);
+        var lines = data2["table"].split('\n');
+        for (line in lines){
+            var items = lines[line].split(',');
 
-                //populate array
-                var param_set  = [];
+            //populate array
+            var param_set  = [];
 
-                for (item in items){
-                    param_set.push(parseFloat(items[item]));
-                }
-                self.table.addRow(self.table.row_count, [param_set[0],param_set[1],param_set[2],param_set[3],1]);
+            for (item in items){
+                param_set.push(parseFloat(items[item]));
             }
+            this.table.addRow(this.table.row_count, [param_set[0],param_set[1],param_set[2],param_set[3],1]);
         }
-    });
+    }
 }
 
 //prepare the config before entry
@@ -870,19 +868,17 @@ WaveformTable.prototype.update = function(row_num){
         this.validateSimple([row_num, 6], 'repeat_value', this.value_format['repeat_value']['format']) &&
         this.validateComplex(row_num)
     ){
-        var update_message = '';
-        update_message += 'start_value=' + this.rows[parseInt(row_num) - 1].childNodes[2].childNodes[0].childNodes[0].value;
-        update_message += '&end_value=' + this.rows[parseInt(row_num) - 1].childNodes[3].childNodes[0].childNodes[0].value;
-        update_message += '&rate=' + this.rows[parseInt(row_num) - 1].childNodes[4].childNodes[0].childNodes[0].value;
-        update_message += '&duration=' + this.rows[parseInt(row_num) - 1].childNodes[5].childNodes[0].childNodes[0].value;
-        update_message += '&repeat_value=' + this.rows[parseInt(row_num) - 1].childNodes[6].childNodes[0].childNodes[0].value;
-        update_message += '&position=' + (parseInt(row_num) - 1);
-        var self = this;
-        this.update_callback = function(data){
-            self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
+        var start_value = this.rows[parseInt(row_num) - 1].childNodes[2].childNodes[0].childNodes[0].value;
+        var end_value = this.rows[parseInt(row_num) - 1].childNodes[3].childNodes[0].childNodes[0].value;
+        var rate = this.rows[parseInt(row_num) - 1].childNodes[4].childNodes[0].childNodes[0].value;
+        var duration = this.rows[parseInt(row_num) - 1].childNodes[5].childNodes[0].childNodes[0].value;
+        var repeat_value = this.rows[parseInt(row_num) - 1].childNodes[6].childNodes[0].childNodes[0].value;
+        var position = (parseInt(row_num) - 1);
+
+        var data = client.eihttp.update_segment(start_value, end_value, rate, duration, repeat_value, position);
+        if (data != ''){
+            this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.updateChart(data);
         }
-        
-        $.post('update_segment',update_message,this.update_callback);
     }
 }
 
@@ -983,13 +979,10 @@ WaveformTable.prototype.endDrag = function(ev){
     this.drag_row.className = 'table-row row-ease';
 
     //post updates to the server
-    var move_message = this.drag_initial_index + ',' + this.drag_row_index;
-    var self = this;
-    this.move_callback = function(data){
-
-        self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
+    var data = client.eihttp.move_segment(this.drag_initial_index, this.drag_row_index)
+    if (data != ''){
+        this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.updateChart(data);
     }
-    $.post('move_segment',move_message,this.move_callback);
 
     //remove listeners
     this.input_table.onmousemove = null;
@@ -1073,29 +1066,25 @@ function WaveformButtons(panel){
 
 //posts an add segment request to the server. adds a default row with start and end 0, rate 0, and duration 10
 WaveformButtons.prototype.add_segment = function(){
-    var add_message = '';
-    add_message += 'start_value=0&end_value=0&rate=0&duration=10&repeat_value=1&position='
-    var position = this.panel.gui.panels[gui.config.views['WaveformTable']].view.row_count;
-    add_message += position;
-    var self = this;
-    this.add_callback = function(data){
+
+    var position = this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.row_count;
+    var data = client.eihttp.add_segment(0,0,0,10,1,position);
+    if (data != ''){
         //add new table row
-        self.panel.gui.panels[gui.config.views['WaveformTable']].view.addRow(position, [0,0,0,10,1]);
+        this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.addRow(position, [0,0,0,10,1]);
 
         //update select dots
-        self.panel.gui.panels[gui.config.views['WaveformTable']].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
+        this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
 
         //update chart
-        self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
-
+        this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.updateChart(data);
     }
-    $.post('add_segment',add_message,this.add_callback);
 }
 
 //deletes selected rows. if none selected, deletes the last one. if all selected, deletes all but the first one
 WaveformButtons.prototype.delete_segment = function(){
     //find rows to delete
-    var table = this.panel.gui.panels[gui.config.views['WaveformTable']].view;
+    var table = this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view;
     positions = table.getSelected().reverse();  //reverse order so array indices don't get mixed up
     if (positions.length == 0){
         positions.push(table.rows.length - 1);
@@ -1108,34 +1097,36 @@ WaveformButtons.prototype.delete_segment = function(){
     var csv = '';
     for (var n = 0; n < positions.length; n++){
         csv += positions[n].toString() + ',';
-        table.input_table.removeChild(table.rows[positions[n]]);    //remove the element
-        table.rows.splice(positions[n], 1);                         //remove from row list
-        table.row_count --;
     }
     csv = csv.substring(0,csv.length - 1);
 
-    //update the rows in the table
-    table.updatePositions();
+    var data = client.eihttp.delete_segment(positions);
+    if (data != ''){
+        //delete rows
+        for (var n = 0; n < positions.length; n++){
+            table.input_table.removeChild(table.rows[positions[n]]);    //remove the element
+            table.rows.splice(positions[n], 1);                         //remove from row list
+            table.row_count --;
+        }
 
-    //post the delete request
-    var self = this;
-    this.delete_callback = function(data){
-        self.panel.gui.panels[gui.config.views['WaveformChart']].view.updateChart(data);
+        //update the rows in the table
+        table.updatePositions();
+
+        //post the delete request
+        this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.updateChart(data);
     }
-    $.post('delete_segment',csv,this.delete_callback); //post to server to delete segment
 }
 
 //posts a save to the server
 WaveformButtons.prototype.save_experiment = function(){
-    this.save_callback = function(data){
+    if (client.eihttp.save_experiment() == true){
         alert('saved');
     }
-    $.post('save',this.save_callback); //post to server to save experiment
 }
 
 //go back to the previous screen
 WaveformButtons.prototype.go_back = function(){
-    gui.popConfig([]);
+    client.gui.popConfig([]);
 }
 
 //-----------------------------//
