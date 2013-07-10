@@ -1,4 +1,4 @@
-from scripts.server import Server
+from agent.server import Server
 
 #main method. initializes server
 if __name__ == "__main__":
