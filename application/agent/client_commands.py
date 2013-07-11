@@ -1,4 +1,5 @@
 import web
+import eicomm.eibus
 
 #super class for commands from the client
 class COMMAND:
@@ -16,6 +17,12 @@ class COMMAND:
         from experiment import Experiment
         from server import Server
         return ''
+
+
+#get version command
+class VERSION(COMMAND):
+    def GET(self):
+        eicomm.eibus.get_version()
 
 
 #renders the initial html file upon load

@@ -1,6 +1,4 @@
 import gnosis.xml.pickle
-from gnosis.xml.pickle.util import setParanoia
-setParanoia(0)
 
 #data model for an experiment
 class Experiment:
@@ -9,8 +7,10 @@ class Experiment:
     graph = None
 
     def __init__(self, graph=None, name=''):
-       self.graph = graph
-       self.name = name
+        self.graph = graph
+        self.name = name
+        from gnosis.xml.pickle.util import setParanoia
+        setParanoia(0)
 
     #public static method to create an experiment
     @staticmethod

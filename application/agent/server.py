@@ -9,6 +9,7 @@ class Server:
     #urls is a web.py convention. determines how requests are handled
     urls = (
         '/','INDEX',
+        '/version','VERSION',
         '/js/(.*)','SERVE_JS',
         '/css/(.*)','SERVE_CSS',
         '/font/(.*)','SERVE_FONT',
