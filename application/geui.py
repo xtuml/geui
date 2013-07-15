@@ -1,5 +1,12 @@
-from agent.server import Server
+from httpcomm.server import Server
+from agent.agent import Agent
 
-#main method. initializes server
+#main method. initializes agent, server, and usblistener
 if __name__ == "__main__":
-    Server.run()
+    #define threads
+    agent = Agent('agent')
+    server = Server('server')
+
+    #start threads
+    agent.start()
+    server.start()

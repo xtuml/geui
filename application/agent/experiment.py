@@ -1,4 +1,6 @@
 import gnosis.xml.pickle
+from gnosis.xml.pickle.util import setParanoia
+setParanoia(0)
 
 #data model for an experiment
 class Experiment:
@@ -9,8 +11,6 @@ class Experiment:
     def __init__(self, graph=None, name=''):
         self.graph = graph
         self.name = name
-        from gnosis.xml.pickle.util import setParanoia
-        setParanoia(0)
 
     #public static method to create an experiment
     @staticmethod
@@ -84,7 +84,8 @@ class Experiment:
         else:
             reply += 'update=' + '\n'.join('%s,%s,%s'%(entry[0], entry[1].x, entry[1].y) for entry  in update)
 
-        return reply
+        #return reply
+        print reply
 
     #returns values to populate the clients table in csv format
     def calculate_table_reply(self):
@@ -96,7 +97,9 @@ class Experiment:
 
             #calculate csv  string
             reply = '\n'.join('%s,%s,%s,%s'%param_set for param_set in param_list)
-        return reply
+
+        #return reply
+        print reply
         
 
 class Graph:
