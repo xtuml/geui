@@ -13,4 +13,7 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     //add the first config
     client.gui.newConfig(welcome, []);
 
+    //run the polling
+    client.run();
+
 });

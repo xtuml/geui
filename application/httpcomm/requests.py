@@ -2,20 +2,15 @@ import web
 import threading
 import agent.eihttp
 
-#get version command
-class VERSION():
+#Outgoing command request
+class COMMAND():
     def GET(self):
-        #t.q.put()   #on the eicomm thread 
-        agent.eihttp.get_version()
-        return None
-
-
-#renders the initial html file upon load
-class INDEX():
-    def GET(self):
-        render = web.template.render('')
-        return render.index()
-
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                if len(t.commands) > 0:
+                    return t.commands.pop(0)
+                else:
+                    return None
 
 #I/O Commands
 #==========================#
@@ -43,11 +38,13 @@ class CREATE_EXPERIMENT():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.create_experiment, web.data()])
                 return None
+
 #==========================#
 
         
 #Graph manipulation commands
 #==========================#
+
 class ADD_SEGMENT():
     def POST(self):
         for t in threading.enumerate():
@@ -108,6 +105,28 @@ class MOVE_SEGMENT():
 #==========================#
 
 
+#Other commands
+#==========================#
+
+#get version command
+class VERSION():
+    def GET(self):
+        #t.q.put()   #on the eicomm thread 
+        agent.eihttp.get_version()
+        return None
+
+#==========================#
+
+
+#Static commands
+#==========================#
+
+#renders the initial html file upon load
+class INDEX():
+    def GET(self):
+        render = web.template.render('')
+        return render.index()
+
 #serve static files
 #serves js files upon load (included in html. basis of client side operations)
 class SERVE_JS():
@@ -121,10 +140,14 @@ class SERVE_CSS():
         script = open('css/'+url,'r')
         return script.read()
 
-#serves font files upon load. Used for special icons on buttons.
-class SERVE_FONT():
+class SERVE_IMG():
     def GET(self, url):
-        script = open('font/'+url,'r')
-        return script.read()
+        img = open('img/'+url,'rb')
+        return img.read()
 
+class SERVE_ICON():
+    def GET(self):
+        icon = open('img/favicon.ico','rb')
+        return icon.read()
 
+#==========================#

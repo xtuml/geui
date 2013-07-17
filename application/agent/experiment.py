@@ -1,4 +1,6 @@
 import gnosis.xml.pickle
+import threading
+import httpcomm.eihttp
 from gnosis.xml.pickle.util import setParanoia
 setParanoia(0)
 
@@ -86,6 +88,9 @@ class Experiment:
 
         #return reply
         print reply
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.update_chart, reply])
 
     #returns values to populate the clients table in csv format
     def calculate_table_reply(self):
@@ -100,6 +105,9 @@ class Experiment:
 
         #return reply
         print reply
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.load_table, reply])
         
 
 class Graph:

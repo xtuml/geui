@@ -1,32 +1,26 @@
 import threading
 import Queue
-from util import call
+from agent.util import call
 
-class Agent(threading.Thread):
+class HTTPcomm(threading.Thread):
 
-    #threading attributes
+    #queue for running commands
     q = None
     running = None
 
-    #container for experiments
-    experiments = None
-    current_experiment = None
-    
+    #holds commands to be sent to the GUI
+    commands = None
+
     def __init__(self, thread_name):
         threading.Thread.__init__(self, name=thread_name)
         self.q = Queue.Queue()
         self.running = False
-        self.experiments = []
-        self.current_experiment = None
+        self.commands = []
 
-    def select_experiment(self, name):
-        for exp in self.experiments:
-            if exp.name == name:
-                return exp 
-
-    def kill_agent(self):
+    def kill_httpcomm(self):
         self.running = False
 
+    #method to initialize the server
     def run(self):
         self.running = True
         while self.running:
@@ -36,3 +30,4 @@ class Agent(threading.Thread):
 
             #run command
             call(cmd)
+

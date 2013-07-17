@@ -1,10 +1,15 @@
+
 #eibus interface for communicating to the embedded code on the device
-import eicomm.execute
+
+import threading
+import signals
 
 #get version command sent from agent
 def get_version():
-    #execute command to call Jason's C program
-    eicomm.execute.run('./eicomm/ei-ver 1.23')
+    t = threading.currentThread()
+    t.signals.put(signals.get_version())
+    t.q.put([t.handle_signal])
+
 
 #version response from EC
 def version(version):
