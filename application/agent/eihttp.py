@@ -5,6 +5,13 @@ import eicomm.eibus
 
 #----- SIGNALS TO AGENT -----#
 
+#exit
+def exit():
+    for t in threading.enumerate():
+        if t.name == 'agent' or t.name == 'httpcomm' or t.name == 'eicomm':
+            t.q.put([t.kill_thread])
+
+
 #get version command sent from GUI 
 def get_version():
     for t in threading.enumerate():

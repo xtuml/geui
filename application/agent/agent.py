@@ -24,7 +24,7 @@ class Agent(threading.Thread):
             if exp.name == name:
                 return exp 
 
-    def kill_agent(self):
+    def kill_thread(self):
         self.running = False
 
     def run(self):

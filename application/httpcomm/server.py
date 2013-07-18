@@ -3,6 +3,8 @@ from requests import *
 import threading
 
 class Server(threading.Thread):
+    
+    app = None
 
     #urls is a web.py convention. determines how requests are handled
     urls = (
@@ -16,6 +18,7 @@ class Server(threading.Thread):
         '/update_segment','UPDATE_SEGMENT',
         '/move_segment','MOVE_SEGMENT',
         '/version','VERSION',
+        '/exit','EXIT',
         '/','INDEX',
         '/js/(.*)','SERVE_JS',
         '/css/(.*)','SERVE_CSS',
@@ -25,8 +28,8 @@ class Server(threading.Thread):
 
     def __init__(self, thread_name):
         threading.Thread.__init__(self, name=thread_name)
+        self.app = web.application(Server.urls, globals())
 
     #method to initialize the server
     def run(self):
-        app = web.application(Server.urls, globals())
-        app.run()
+        self.app.run()
