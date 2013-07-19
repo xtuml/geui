@@ -3,8 +3,9 @@ var chart;
 
 $(document).ready(function(){ //function is called when the page is loaded and ready
 
-    //create client, interface, and gui
+    //create client and httpcomm
     client = new Client();
+    httpcomm = new HTTPcomm();
 
     //create the configs
     welcome = new Welcome(client.gui);
@@ -14,6 +15,7 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     client.gui.newConfig(welcome, []);
 
     //run the polling
-    client.run();
+    httpcomm.run();
+
 
 });

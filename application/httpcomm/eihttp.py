@@ -2,6 +2,7 @@
 
 import threading
 import eicomm.eibus
+import json
 
 #----- SIGNALS TO GUI -----#
 
@@ -10,12 +11,19 @@ def version(version):
     pass
 
 #chart data response from agent
-def update_chart(data):
+def update_graph(delete, add, update):
+    data = {
+        'delete': delete,
+        'add': add,
+        'update': []
+    }
+    for point in update:
+        data['update'].append({'position': point[0], 'point': [point[1], point[2]]})
     t = threading.currentThread()
-    t.commands.append(data)
+    t.commands.append(json.dumps(data))
 
 #table data response from agent
-def load_table(data):
+def load_table(table):
     t = threading.currentThread()
     t.commands.append(data)
 

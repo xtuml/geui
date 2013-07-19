@@ -7,10 +7,8 @@ import eicomm.eibus
 
 #exit
 def exit():
-    for t in threading.enumerate():
-        if t.name == 'agent' or t.name == 'httpcomm' or t.name == 'eicomm':
-            t.q.put([t.kill_thread])
-
+    t = threading.currentThread()
+    t.q.put([t.exit])
 
 #get version command sent from GUI 
 def get_version():

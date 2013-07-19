@@ -56,6 +56,7 @@ class EIcomm(threading.Thread):
 
             #run command
             call(cmd)
+        print 'Exited EIcomm'
 
 class Transport(threading.Thread):
 

@@ -19,6 +19,13 @@ class Agent(threading.Thread):
         self.experiments = []
         self.current_experiment = None
 
+    def exit(self):
+        print 'Exiting...'
+        self.q.put([self.kill_thread()])
+        for t in threading.enumerate():
+            if t.name == 'httpcomm' or t.name == 'eicomm':
+                t.q.put([t.kill_thread])
+
     def select_experiment(self, name):
         for exp in self.experiments:
             if exp.name == name:
@@ -36,3 +43,4 @@ class Agent(threading.Thread):
 
             #run command
             call(cmd)
+        print 'Exited Agent'

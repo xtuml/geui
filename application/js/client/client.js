@@ -10,27 +10,26 @@ Gui and Panel have methods for adding deleting and moving views.
 
 function Client(){
     this.gui = new Gui();
-    this.eihttp = new eihttp();
-    this.running = false;
-}
 
-Client.prototype.run = function(){
-    this.running = true;
-    setInterval(function(){
-        console.log('polling');
-        var data = null
-        $.ajax({
-            type: 'GET',
-            url: 'command',
-            data: name,
-            success: function(d){data = d},
-            async:false
-        });
-        console.log(data);
-        if (this.running == false){
-            clearInterval();
-        }
-    }, 1000);
+    // eihttp class -----------//
+    // interfaces with agent
+    // incoming signals
+    this.eihttp = function(){
+        //interface definition
+    }
+
+    this.eihttp.update_graph = function(){
+    }
+
+    this.eihttp.load_table = function(){
+    }
+
+    this.eihttp.version = function(version){
+        alert('Version: ' + version);
+    }
+
+    //-------------------------//
+
 }
 
 //-----------------------------//

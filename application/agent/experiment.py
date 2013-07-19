@@ -108,7 +108,6 @@ class Experiment:
         for t in threading.enumerate():
             if t.name == 'httpcomm':
                 t.q.put([httpcomm.eihttp.load_table, reply])
-        
 
 class Graph:
     

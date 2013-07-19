@@ -38,4 +38,5 @@ class HTTPcomm(threading.Thread):
 
             #run command
             call(cmd)
+        print 'Exited HTTPcomm'
 
