@@ -25,11 +25,13 @@ class CommandLine(threading.Thread):
 
     def run(self):
         self.running = True
-        print "\nPress <Enter> to send 'get_version' command.\nType 'exit' to quit.\n"
+        print "\nType 'version' to send 'get_version' command.\nType 'wave' to send 'wave' command.\nType 'exit' to quit.\n"
         while self.running:
             x = raw_input()
-            if x == '':
+            if x == 'version':
                 self.agent.q.put([self.agent.get_version])
+            elif x == 'wave':
+                self.agent.q.put([self.agent.wave])
             elif x == 'exit':
                 self.end_program()
             else:

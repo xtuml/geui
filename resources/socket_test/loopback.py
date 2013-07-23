@@ -59,6 +59,10 @@ class Transport(threading.Thread):
                             if self.msg[0] == 1:
                                 self.messages.put(bytearray([0x01,0x04,0x00,0x02,0x06,0x01,0x03]))
 
+                            #if wave command received
+                            if self.msg[0] == 10:
+                                print 'Wave command received'
+
                             self.msg = bytearray()
                             receiving = False
 
