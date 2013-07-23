@@ -48,6 +48,7 @@ class Transport(threading.Thread):
                     self.kill_transport()
                     print 'exit'
                 else:
+                    print 'data received'
                     self.msg += data
                     if len(self.msg) >= 3:
                         msglen = self.msg[2] * 256 + self.msg[1] + 3
@@ -57,6 +58,10 @@ class Transport(threading.Thread):
                             #loopback version command [Version: 2.61-3]
                             if self.msg[0] == 1:
                                 self.messages.put(bytearray([0x01,0x04,0x00,0x02,0x06,0x01,0x03]))
+
+                            #catch wave command
+                            elif self.msg[0] == 10:
+                                print 'Wave command received'
 
                             self.msg = bytearray()
                             receiving = False
