@@ -8,24 +8,34 @@ import json
 
 #version response from agent
 def version(version):
-    pass
+    data = {'signal': 'version', 'version': version}
+    t = threading.currentThread()
+    t.commands.append(json.dumps(data))
 
 #chart data response from agent
 def update_graph(delete, add, update):
     data = {
+        'signal': 'update_graph',
         'delete': delete,
         'add': add,
         'update': []
     }
-    for point in update:
-        data['update'].append({'position': point[0], 'point': [point[1], point[2]]})
+    if update != None:
+        for point in update:
+            data['update'].append({'position': point[0], 'point': [point[1], point[2]]})
+    else:
+        data['update'] = None
     t = threading.currentThread()
     t.commands.append(json.dumps(data))
 
 #table data response from agent
-def load_table(table):
+def load_table(rows):
+    data = {
+        'signal': 'load_table',
+        'rows': rows
+    }
     t = threading.currentThread()
-    t.commands.append(data)
+    t.commands.append(json.dumps(data))
 
 
 #----- SIGNALS TO AGENT -----#

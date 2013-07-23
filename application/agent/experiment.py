@@ -59,38 +59,24 @@ class Experiment:
         #and adds them to an array to return
         elif len(new_vertices) > len(old_vertices):
             while len(new_vertices) != len(old_vertices): 
-                add.insert(0, new_vertices.pop(len(new_vertices)-1))
+                vertex = new_vertices.pop(len(new_vertices)-1)
+                add.insert(0, [vertex.x, vertex.y])
+        if len(add) == 0:
+            add = None
 
         #diff the two vertex sets -- resulting array is in form [index_to_update:int, vertex:Vertex]
         for i, vertex in enumerate(old_vertices): #for loop with an index, i and value, vertex
             if old_vertices[i].x != new_vertices[i].x or old_vertices[i].y != new_vertices[i].y:
-                update.append((i,new_vertices[i]))
+                update.append((i,new_vertices[i].x,new_vertices[i].y))
+        if len(update) == 0:
+            update = None
 
-        #print delete, add, diff   #print the ouptuts to test
-
-        #create reply string
-        reply = ''
-
-        #write deletes
-        reply = 'delete=' + str(delete) + '&'
-
-        #write adds
-        if not add:
-            reply += 'add=None&'
-        else:
-            reply += 'add=' + '\n'.join('%s,%s'%(vertex.x, vertex.y) for vertex in add) + '&'
-
-        #write updates 
-        if not update:
-            reply += 'update=None'
-        else:
-            reply += 'update=' + '\n'.join('%s,%s,%s'%(entry[0], entry[1].x, entry[1].y) for entry  in update)
+        #print delete, add, update   #print the ouptuts to test
 
         #return reply
-        print reply
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.update_chart, reply])
+                t.q.put([httpcomm.eihttp.update_graph, delete, add, update])
 
     #returns values to populate the clients table in csv format
     def calculate_table_reply(self):
@@ -100,14 +86,9 @@ class Experiment:
             for segment in self.graph.contents:
                 param_list.append((segment.start_value, segment.end_value, segment.rate, segment.duration))
 
-            #calculate csv  string
-            reply = '\n'.join('%s,%s,%s,%s'%param_set for param_set in param_list)
-
-        #return reply
-        print reply
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.load_table, reply])
+                t.q.put([httpcomm.eihttp.load_table, param_list])
 
 class Graph:
     

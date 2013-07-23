@@ -12,6 +12,12 @@ function HTTPcomm(){
 
     this.running = false;
 
+    this.signals = {
+        'version': new version(),
+        'update_graph': new update_graph(),
+        'load_table': new load_table()
+    }
+
     // eihttp class -----------//
     // interfaces with agent
     // outgoing signals
@@ -46,15 +52,13 @@ function HTTPcomm(){
     }
 
     this.eihttp.open_experiment = function(name){
-        var return_data = '';
         $.ajax({
             type: 'POST',
             url: 'open',
             data: name,
-            success: function(data){return_data = data},
-            async:false
+            success: null,
+            async:true
         });
-        return return_data;
     }
 
     this.eihttp.create_experiment = function(name){
@@ -160,10 +164,51 @@ HTTPcomm.prototype.run = function(){
             success: function(d){data = d},
             async:false
         });
-        console.log(data);
+        if (data != 'None'){
+            console.log(data);
+            httpcomm.unpack(JSON.parse(data));
+        }
         //check if still running
         if (httpcomm.running == false){
             clearInterval(id);
         }
-    }, 1000);
+    }, 200);
 }
+
+HTTPcomm.prototype.unpack = function(data){
+    this.signals[data.signal].unpack(data);
+}
+
+
+// Signals to the GUI
+
+version = function(){
+    this.enabled = false;
+    this.unpack = function(data){
+        client.eihttp.version(data.version);
+    }
+}
+
+update_graph = function(){
+    this.enable = false;
+    this.unpack = function(data){
+        if (this.enabled == true){
+            client.eihttp.update_graph(data.delete, data.add, data.update);
+        }
+    }
+}
+
+load_table = function(){
+    this.enabled = false;
+    this.unpack = function(data){
+        if (this.enabled == true){
+            client.eihttp.load_table(data.rows);
+        }
+    }
+}
+
+
+
+
+
+
