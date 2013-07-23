@@ -5,6 +5,11 @@ import eicomm.eibus
 
 #----- SIGNALS TO AGENT -----#
 
+#exit
+def exit():
+    t = threading.currentThread()
+    t.q.put([t.exit])
+
 #get version command sent from GUI 
 def get_version():
     for t in threading.enumerate():

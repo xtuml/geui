@@ -1,7 +1,7 @@
-from httpcomm.server import Server
 from httpcomm.httpcomm import HTTPcomm
 from agent.agent import Agent
 from eicomm.eicomm import EIcomm
+from agent.test_bench import TestBench
 
 #main method. initializes agent, server, and usblistener
 if __name__ == "__main__":
@@ -9,10 +9,12 @@ if __name__ == "__main__":
     agent = Agent('agent')
     eicomm = EIcomm('eicomm')
     httpcomm = HTTPcomm('httpcomm')
-    server = Server('server')
+
+    test = TestBench('test',5)
+    test.test = test.send_wave
 
     #start threads
     agent.start()
     eicomm.start()
     httpcomm.start()
-    server.start()
+    test.start()

@@ -111,9 +111,18 @@ class MOVE_SEGMENT():
 #get version command
 class VERSION():
     def GET(self):
-        #t.q.put()   #on the eicomm thread 
-        agent.eihttp.get_version()
-        return None
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                t.q.put([agent.eihttp.get_version])
+                return None
+
+#exit command
+class EXIT():
+    def GET(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                t.q.put([agent.eihttp.exit])
+                return None
 
 #==========================#
 

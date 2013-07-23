@@ -48,25 +48,7 @@ function WaveformEditor(gui){
 
 //load the waveform file
 WaveformEditor.prototype.openWaveform = function(name){
-    var data = client.eihttp.open_experiment(name);
-    //if there is no file, go back to open dialog
-    if (data != 'NoFile'){
-        this.chart.updateChart(data);
-        //create table rows from the file
-        var data2 = $.deparam(data);
-        var lines = data2["table"].split('\n');
-        for (line in lines){
-            var items = lines[line].split(',');
-
-            //populate array
-            var param_set  = [];
-
-            for (item in items){
-                param_set.push(parseFloat(items[item]));
-            }
-            this.table.addRow(this.table.row_count, [param_set[0],param_set[1],param_set[2],param_set[3],1]);
-        }
-    }
+    var data = httpcomm.eihttp.open_experiment(name);
 }
 
 //prepare the config before entry
@@ -84,6 +66,10 @@ WaveformEditor.prototype.prepare = function(args){
 
     //load a waveform
     this.openWaveform(args[0]);
+
+    //enable signals applying to this config
+    httpcomm.signals['update_graph'].enabled = true;
+    httpcomm.signals['load_table'].enabled = true;
 
 }
 
@@ -130,6 +116,9 @@ WaveformEditor.prototype.exit = function(delay){
     this.buttons.element.style.left = 'calc(-100% - 10px)';
     this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
 
+    //disable chart and table interface signals
+    httpcomm.signals['update_graph'].enabled = false;
+    httpcomm.signals['load_table'].enabled = false;
 }
 
 //-----------------------------//
@@ -229,17 +218,18 @@ WaveformChart.prototype.initiateChart = function(){
 }
 
 //updates chart points
-WaveformChart.prototype.updateChart = function(data){
+WaveformChart.prototype.updateChart = function(del, add, update){
     //deserialize data
-    var data2 = $.deparam(data);
+    //var data2 = $.deparam(data);
    
     //delete points 
-    var delete_num = parseInt(data2["delete"]);
+    var delete_num = parseInt(del);
     for (var c = 0; c < delete_num; c++){
         this.chart.series[0].data[this.chart.series[0].data.length - 1].remove() 
     }
 
     //add points
+    /*
     if (data2["add"] != 'None'){
         var lines = data2["add"].split('\n');
         for (line in lines){
@@ -256,8 +246,16 @@ WaveformChart.prototype.updateChart = function(data){
                 
         }
     }
+    */
+
+    if (add != 'None'){
+        for (point in add){
+            this.chart.series[0].addPoint(add[point]);
+        }
+    }
 
     //update points
+    /*
     if (data2["update"] != 'None'){
         var lines2 = data2["update"].split('\n');
         for (line in lines2){
@@ -271,6 +269,7 @@ WaveformChart.prototype.updateChart = function(data){
                     
         }
     }
+    */
     
 
 }
@@ -382,11 +381,11 @@ function WaveformTable(panel){
 WaveformTable.prototype.addRow = function(position, values){
     var row = document.createElement('div');
     row.className = 'table-row row-ease';
-    var y = position * 50;
+    var y = parseInt(position) * 50;
     row.style.top = y + 'px';
     row.parent_view = this;
     row.selected = false
-    row.row_num = position + 1;
+    row.row_num = parseInt(position) + 1;
     row.onblur = function(){alert('blur')};
 
     var select_cell = document.createElement('div');
@@ -427,9 +426,9 @@ WaveformTable.prototype.addRow = function(position, values){
     var number_cell = document.createElement('div');
     number_cell.className = 'number-cell';
     number_cell.name = 'number_cell';
-    number_cell.innerHTML = position + 1;
+    number_cell.innerHTML = parseInt(position) + 1;
     number_cell.parent_view = this;
-    number_cell.row_num = position + 1;
+    number_cell.row_num = parseInt(position) + 1;
     number_cell.onmouseover = function(e){e.target.parent_view.numOver(e.target);};
     number_cell.onmouseout = function(e){e.target.parent_view.numOut(e.target);};
     number_cell.onmousedown = function(e){e.target.parent_view.startDrag(e);};
@@ -635,6 +634,12 @@ WaveformTable.prototype.addRow = function(position, values){
     this.input_table.appendChild(row);
     this.row_count += 1;
     this.rows.push(row);
+}
+
+WaveformTable.prototype.loadTable = function(rows){
+    for (row in rows){
+        this.addRow(row, rows[row]);
+    }
 }
 
 // add the label row
@@ -875,7 +880,7 @@ WaveformTable.prototype.update = function(row_num){
         var repeat_value = this.rows[parseInt(row_num) - 1].childNodes[6].childNodes[0].childNodes[0].value;
         var position = (parseInt(row_num) - 1);
 
-        var data = client.eihttp.update_segment(start_value, end_value, rate, duration, repeat_value, position);
+        var data = httpcomm.eihttp.update_segment(start_value, end_value, rate, duration, repeat_value, position);
         if (data != ''){
             this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.updateChart(data);
         }
@@ -979,7 +984,7 @@ WaveformTable.prototype.endDrag = function(ev){
     this.drag_row.className = 'table-row row-ease';
 
     //post updates to the server
-    var data = client.eihttp.move_segment(this.drag_initial_index, this.drag_row_index)
+    var data = httpcomm.eihttp.move_segment(this.drag_initial_index, this.drag_row_index)
     if (data != ''){
         this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.updateChart(data);
     }
@@ -1068,7 +1073,7 @@ function WaveformButtons(panel){
 WaveformButtons.prototype.add_segment = function(){
 
     var position = this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.row_count;
-    var data = client.eihttp.add_segment(0,0,0,10,1,position);
+    var data = httpcomm.eihttp.add_segment(0,0,0,10,1,position);
     if (data != ''){
         //add new table row
         this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.addRow(position, [0,0,0,10,1]);
@@ -1100,7 +1105,7 @@ WaveformButtons.prototype.delete_segment = function(){
     }
     csv = csv.substring(0,csv.length - 1);
 
-    var data = client.eihttp.delete_segment(positions);
+    var data = httpcomm.eihttp.delete_segment(positions);
     if (data != ''){
         //delete rows
         for (var n = 0; n < positions.length; n++){
@@ -1119,7 +1124,7 @@ WaveformButtons.prototype.delete_segment = function(){
 
 //posts a save to the server
 WaveformButtons.prototype.save_experiment = function(){
-    if (client.eihttp.save_experiment() == true){
+    if (httpcomm.eihttp.save_experiment() == true){
         alert('saved');
     }
 }

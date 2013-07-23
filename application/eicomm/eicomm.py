@@ -29,7 +29,8 @@ class EIcomm(threading.Thread):
         self.signals = Queue.Queue()
         self.transport = None
 
-    def kill_eicomm(self):
+    def kill_thread(self):
+        self.transport.kill_thread()
         self.running = False
 
     def handle_signal(self):
@@ -55,6 +56,7 @@ class EIcomm(threading.Thread):
 
             #run command
             call(cmd)
+        print 'Exited EIcomm'
 
 class Transport(threading.Thread):
 
@@ -73,7 +75,9 @@ class Transport(threading.Thread):
         self.s = s
         self.msg = bytearray()
 
-    def kill_transport(self):
+    def kill_thread(self):
+        if self.s != None:
+            self.s.close()
         self.running = False
 
     def send(self):
@@ -95,7 +99,7 @@ class Transport(threading.Thread):
             else:
                 if len(data) == 0:
                     receiving = False
-                    self.kill_transport()
+                    self.kill_thread()
                 else:
                     self.msg += data
                     if len(self.msg) >= 3:
@@ -113,15 +117,22 @@ class Transport(threading.Thread):
                             receiving = False
 
     def connect(self):
-        self.s = socket.socket()
-        self.s.connect(('localhost',9000))
+        s = socket.socket()
+        try:
+            s.connect(('localhost',9000))
+        except socket.error, e:
+            if e.args[1] != 'Connection refused':
+                print e
+        else:
+            self.s = s
+            self.s.setblocking(0)
+            print 'Connected'
 
     def run(self):
         self.running = True
-        if self.s == None:
+        while self.s == None and self.running:
             self.connect()
-        self.s.setblocking(0)
-        print 'connected'
+            time.sleep(0.010)
         while self.running:
 
             #receive messages
