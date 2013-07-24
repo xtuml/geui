@@ -1,6 +1,7 @@
 import threading
 import Queue
 from util import call
+import time
 
 class Agent(threading.Thread):
 
@@ -43,4 +44,4 @@ class Agent(threading.Thread):
 
             #run command
             call(cmd)
-        print 'Exited Agent'
+        print 'Exited Agent at ' + time.ctime()

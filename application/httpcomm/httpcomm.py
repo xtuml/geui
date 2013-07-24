@@ -2,6 +2,7 @@ import threading
 import Queue
 from agent.util import call
 import server
+import time
 
 class HTTPcomm(threading.Thread):
 
@@ -38,5 +39,5 @@ class HTTPcomm(threading.Thread):
 
             #run command
             call(cmd)
-        print 'Exited HTTPcomm'
+        print 'Exited HTTPcomm at ' + time.ctime()
 

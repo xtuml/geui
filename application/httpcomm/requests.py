@@ -1,6 +1,7 @@
 import web
 import threading
 import agent.eihttp
+import json
 
 #Outgoing command request
 class COMMAND():
@@ -29,14 +30,16 @@ class OPEN_EXPERIMENT():
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
-                t.q.put([agent.eihttp.open_experiment, web.data()])
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.open_experiment, data['name']])
                 return None
 
 class CREATE_EXPERIMENT():
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
-                t.q.put([agent.eihttp.create_experiment, web.data()])
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.create_experiment, data['name']])
                 return None
 
 #==========================#
@@ -49,57 +52,34 @@ class ADD_SEGMENT():
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
-                form = web.input()
-                t.q.put([agent.eihttp.add_segment, float(form.start_value), float(form.end_value), float(form.rate), float(form.duration), float(form.repeat_value), int(form.position)])
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), float(data['repeat_value']), int(data['position'])])
                 return None
 
 class DELETE_SEGMENT():
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
-                data = web.data()
-                                                                                                        
-                #parse csv
-                to_delete = [] 
-                new_string = ''
-                for letter in data:
-                    if letter == ',':
-                        to_delete.append(int(new_string))
-                        new_string = ''
-                    else:
-                        new_string += letter
-                if new_string != '':
-                    to_delete.append(int(new_string))
-                        
-                t.q.put([agent.eihttp.delete_segment, to_delete])
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.delete_segment, data['positions']])
                 return None
 
 class UPDATE_SEGMENT():
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
-                form = web.input()
-                t.q.put([agent.eihttp.update_segment, float(form.start_value), float(form.end_value), float(form.rate), float(form.duration), float(form.repeat_value), int(form.position)])
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.update_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), float(data['repeat_value']), int(data['position'])])
+                #data = web.input()
+                #t.q.put([agent.eihttp.update_segment, float(form.start_value), float(form.end_value), float(form.rate), float(form.duration), float(form.repeat_value), int(form.position)])
                 return None
 
 class MOVE_SEGMENT():
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
-                data = web.data()
-                segs = []
-                new_data = ''
-                for letter in data:
-                    if letter == ',':
-                        segs.append(int(new_data))
-                        new_data = ''
-                    else:
-                        new_data += letter
-                if new_data != '':
-                    segs.append(int(new_data))
-
-                t.q.put([agent.eihttp.move_segment, segs[0], segs[1]])
-
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.move_segment, data['position'], data['destination']])
                 return None
 
 #==========================#

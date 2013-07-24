@@ -37,114 +37,111 @@ function HTTPcomm(){
     }
 
     this.eihttp.save_experiment = function(){
-        var return_data = false;
         $.ajax({
             type: 'POST',
             url: 'save',
-            data: name,
-            success: function(){return_data = true},
-            async:false
-        });
-        return return_data;
-    }
-
-    this.eihttp.get_experiments = function(){
-    }
-
-    this.eihttp.open_experiment = function(name){
-        $.ajax({
-            type: 'POST',
-            url: 'open',
             data: name,
             success: null,
             async:true
         });
     }
 
+    this.eihttp.get_experiments = function(){
+    }
+
+    this.eihttp.open_experiment = function(name){
+        obj = {
+            name: name
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'open',
+            data: data,
+            success: null,
+            async:true
+        });
+    }
+
     this.eihttp.create_experiment = function(name){
-        var return_data = false;
+        obj = {
+            name: name
+        }
+        data = JSON.stringify(obj);
         $.ajax({
             type: 'POST',
             url: 'create',
-            data: name,
-            success: function(){return_data = true},
-            async:false
+            data: data,
+            success: null,
+            async:true
         });
-        return return_data;
     }
 
     this.eihttp.add_segment = function(start_value, end_value, rate, duration, repeat_value, position){
-        var add_message = 
-            'start_value=' + start_value + '&' +
-            'end_value=' + end_value + '&' +
-            'rate=' + rate + '&' +
-            'duration=' + duration + '&' +
-            'repeat_value=' + repeat_value + '&' +
-            'position=' + position;
-                            
-        var return_data = '';
+        obj = {
+            start_value: start_value,
+            end_value: end_value,
+            rate: rate,
+            duration: duration,
+            repeat_value: repeat_value,
+            position: position
+        }
+        data = JSON.stringify(obj);
         $.ajax({
             type: 'POST',
             url: 'add_segment',
-            data: add_message,
-            success: function(data){return_data = data},
-            async:false
+            data: data,
+            success: null,
+            async:true
         });
-
-        return return_data;
     }
 
     this.eihttp.delete_segment = function(positions){
-        //create string of segments to delete
-        var csv = '';
-        for (var n = 0; n < positions.length; n++){
-            csv += positions[n].toString() + ',';
+        obj = {
+            positions: positions
         }
-        csv = csv.substring(0,csv.length - 1);
-        
-        var return_data = '';
+        data = JSON.stringify(obj);
         $.ajax({
             type: 'POST',
             url: 'delete_segment',
-            data: csv,
-            success: function(data){return_data = data},
-            async:false
+            data: data,
+            success: null,
+            async:true
         });
-        return return_data;
     }
 
     this.eihttp.update_segment = function(start_value, end_value, rate, duration, repeat_value, position){
-        var update_message = 
-            'start_value=' + start_value + '&' +
-            'end_value=' + end_value + '&' +
-            'rate=' + rate + '&' +
-            'duration=' + duration + '&' +
-            'repeat_value=' + repeat_value + '&' +
-            'position=' + position;
-
-        var return_data = '';
+        obj = {
+            start_value: start_value,
+            end_value: end_value,
+            rate: rate,
+            duration: duration,
+            repeat_value: repeat_value,
+            position: position
+        }
+        data = JSON.stringify(obj);
         $.ajax({
             type: 'POST',
             url: 'update_segment',
-            data: update_message,
-            success: function(data){return_data = data},
-            async:false
+            data: data,
+            success: null,
+            async:true
         });
-        return return_data;
     }
 
     this.eihttp.move_segment = function(position, destination){
-        var move_message = position + ',' + destination;
-
-        var return_data = '';
+        obj = {
+            position: position,
+            destination: destination
+        }
+        data = JSON.stringify(obj);
         $.ajax({
             type: 'POST',
             url: 'move_segment',
-            data: move_message,
-            success: function(data){return_data = data},
-            async:false
+            data: data,
+            success: null,
+            async:true
         });
-        return return_data;
     }
 
     //-------------------------//
@@ -164,6 +161,7 @@ HTTPcomm.prototype.run = function(){
             success: function(d){data = d},
             async:false
         });
+        //if we received data, execute the command
         if (data != 'None'){
             console.log(data);
             httpcomm.unpack(JSON.parse(data));
@@ -181,6 +179,8 @@ HTTPcomm.prototype.unpack = function(data){
 
 
 // Signals to the GUI
+// class definitions for how to handle
+// the command
 
 version = function(){
     this.enabled = false;
@@ -190,7 +190,7 @@ version = function(){
 }
 
 update_graph = function(){
-    this.enable = false;
+    this.enabled = false;
     this.unpack = function(data){
         if (this.enabled == true){
             client.eihttp.update_graph(data.delete, data.add, data.update);

@@ -51,4 +51,4 @@ class TestBench(threading.Thread):
         if self.test != None:
             print 'Running test...'
             call([self.test]) 
-        print 'Exited Test Bench'
+        print 'Exited Test Bench at ' + time.ctime()

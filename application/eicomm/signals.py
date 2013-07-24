@@ -24,8 +24,20 @@ def tobytes(value, num_bytes, little_endian=True):
 
 #--------- TO EC ---------#
 
+#class example:
+    
+    #name = 'example'       # name for logging
+    #code = 0               # op code to distinguish which command is being sent/received
+    #action = 'pack'        # if signal is to EC, this will be 'pack', else, it will be 'unpack'
+    #data = bytearray()     # byte data is stored here. in 'pack', data is outgoing. in 'unpack',
+                            # data is from the EC
+    #args = []              # arguments to pack (all core types)
+    #cmd = []               # if action is 'unpack', eibus call to be added to agent thread
+
+#get version request
 class get_version:
     
+    name = 'get_version'
     code = 1
     action = 'pack'
     data = bytearray()
@@ -33,6 +45,7 @@ class get_version:
     cmd = []
 
     def __init__(self, args=[], data=bytearray()):
+        self.name = 'get_version'
         self.code = 1
         self.action = 'pack'
         self.data = data
@@ -45,8 +58,10 @@ class get_version:
     def unpack(self):
         pass
 
+#send waveform to instrument
 class wave:
     
+    name = 'wave'
     code = 10
     action = 'pack'
     data = bytearray()
@@ -54,6 +69,7 @@ class wave:
     cmd = []
 
     def __init__(self, args=[], data=bytearray()):
+        self.name = 'wave'
         self.code = 10
         self.action = 'pack'
         self.data = data
@@ -145,8 +161,10 @@ class wave:
 
 #------- TO AGENT --------#
 
+#version response from agent
 class version:
     
+    name = 'version'
     code = 1
     action = 'unpack'
     data = bytearray()
@@ -154,6 +172,7 @@ class version:
     cmd =[]
 
     def __init__(self, args=[], data=bytearray()):
+        self.name = 'version'
         self.code = 1
         self.action = 'unpack'
         self.data = data
