@@ -11,7 +11,7 @@ class COMMAND():
                 if len(t.commands) > 0:
                     return t.commands.pop(0)
                 else:
-                    return None
+                    return 'NoLog'              #tells the webpy server not to log
 
 #I/O Commands
 #==========================#
@@ -21,7 +21,6 @@ class SAVE_EXPERIMENT():
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.save_experiment])
-                return None
 
 class GET_EXPERIMENT_LIST():
     pass
@@ -32,7 +31,6 @@ class OPEN_EXPERIMENT():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.open_experiment, data['name']])
-                return None
 
 class CREATE_EXPERIMENT():
     def POST(self):
@@ -40,7 +38,6 @@ class CREATE_EXPERIMENT():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.create_experiment, data['name']])
-                return None
 
 #==========================#
 
@@ -54,7 +51,6 @@ class ADD_SEGMENT():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), float(data['repeat_value']), int(data['position'])])
-                return None
 
 class DELETE_SEGMENT():
     def POST(self):
@@ -62,7 +58,6 @@ class DELETE_SEGMENT():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.delete_segment, data['positions']])
-                return None
 
 class UPDATE_SEGMENT():
     def POST(self):
@@ -72,7 +67,6 @@ class UPDATE_SEGMENT():
                 t.q.put([agent.eihttp.update_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), float(data['repeat_value']), int(data['position'])])
                 #data = web.input()
                 #t.q.put([agent.eihttp.update_segment, float(form.start_value), float(form.end_value), float(form.rate), float(form.duration), float(form.repeat_value), int(form.position)])
-                return None
 
 class MOVE_SEGMENT():
     def POST(self):
@@ -80,7 +74,6 @@ class MOVE_SEGMENT():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.move_segment, data['position'], data['destination']])
-                return None
 
 #==========================#
 
@@ -94,7 +87,6 @@ class VERSION():
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.get_version])
-                return None
 
 #exit command
 class EXIT():
@@ -102,7 +94,6 @@ class EXIT():
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.exit])
-                return None
 
 #==========================#
 

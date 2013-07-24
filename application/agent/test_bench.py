@@ -47,8 +47,8 @@ class TestBench(threading.Thread):
                 t.q.put([t.handle_signal])
 
     def run(self):
-        time.sleep(self.wait)
         if self.test != None:
+            time.sleep(self.wait)
             print 'Running test...'
             call([self.test]) 
-        print 'Exited Test Bench at ' + time.ctime()
+            print 'Exited Test Bench at ' + time.ctime()
