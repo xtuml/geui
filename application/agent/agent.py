@@ -44,4 +44,4 @@ class Agent(threading.Thread):
 
             #run command
             call(cmd)
-        print 'Exited Agent at ' + time.ctime()
+        print 'Exited Agent at [' + time.ctime() + ']'

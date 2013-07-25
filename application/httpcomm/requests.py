@@ -2,14 +2,17 @@ import web
 import threading
 import agent.eihttp
 import json
+import time
 
 #Outgoing command request
 class COMMAND():
     def GET(self):
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                if len(t.commands) > 0:
-                    return t.commands.pop(0)
+                if not t.commands.empty():
+                    message = t.commands.get()
+                    print 'Message sent: "' + message[0] + '" to GUI at [' + time.ctime() + ']'
+                    return message[1]
                 else:
                     return 'NoLog'              #tells the webpy server not to log
 

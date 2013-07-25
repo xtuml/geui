@@ -10,7 +10,7 @@ import json
 def version(version):
     data = {'signal': 'version', 'version': version}
     t = threading.currentThread()
-    t.commands.append(json.dumps(data))
+    t.commands.put(['version', json.dumps(data)])
 
 #chart data response from agent
 def update_graph(delete, add, update):
@@ -26,7 +26,7 @@ def update_graph(delete, add, update):
     else:
         data['update'] = None
     t = threading.currentThread()
-    t.commands.append(json.dumps(data))
+    t.commands.put(['update_graph', json.dumps(data)])
 
 #table data response from agent
 def load_table(rows):
@@ -35,7 +35,7 @@ def load_table(rows):
         'rows': rows
     }
     t = threading.currentThread()
-    t.commands.append(json.dumps(data))
+    t.commands.put(['load_table', json.dumps(data)])
 
 
 #----- SIGNALS TO AGENT -----#

@@ -20,7 +20,7 @@ class HTTPcomm(threading.Thread):
         threading.Thread.__init__(self, name=thread_name)
         self.q = Queue.Queue()
         self.running = False
-        self.commands = []
+        self.commands = Queue.Queue()
         self.server = None
 
     def kill_thread(self):
@@ -39,5 +39,5 @@ class HTTPcomm(threading.Thread):
 
             #run command
             call(cmd)
-        print 'Exited HTTPcomm at ' + time.ctime()
+        print 'Exited HTTPcomm at [' + time.ctime() + ']'
 

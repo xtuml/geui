@@ -59,7 +59,7 @@ class EIcomm(threading.Thread):
 
             #run command
             call(cmd)
-        print 'Exited EIcomm at ' + time.ctime()
+        print 'Exited EIcomm at [' + time.ctime() + ']'
 
 class Transport(threading.Thread):
 
@@ -88,7 +88,7 @@ class Transport(threading.Thread):
             message = self.messages.get(False)
             target = self.s.getpeername()
             self.s.sendall(message[1])                  #send message
-            print 'Message sent: "' + message[0] + '" to ' + target[0] + ':' + str(target[1]) + ' at ' + time.ctime()
+            print 'Message sent: "' + message[0] + '" to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']'
 
     def receive(self):
         receiving = True
@@ -104,7 +104,9 @@ class Transport(threading.Thread):
             else:
                 if len(data) == 0:                      #socket has closed
                     receiving = False
-                    self.kill_thread()
+                    for t in threading.enumerate():
+                        if t.name == 'eicomm':
+                            t.q.put([t.kill_thread])
                 else:                                   #socket has data
                     self.msg += data
                     if len(self.msg) >= 3:              #enough data received to calculate message length
@@ -114,7 +116,7 @@ class Transport(threading.Thread):
                             signal = EIcomm.codes[self.msg[0]](data=self.msg)
                             sender = self.s.getpeername()
 
-                            print 'Message received: "' + signal.name + '" from ' + sender[0] + ':' + str(sender[1]) + ' at ' + time.ctime()
+                            print 'Message received: "' + signal.name + '" from ' + sender[0] + ':' + str(sender[1]) + ' at [' + time.ctime() + ']'
 
                             #add signal received to queue
                             for t in threading.enumerate():
@@ -138,7 +140,7 @@ class Transport(threading.Thread):
             self.s = s
             self.s.setblocking(0)
             target = self.s.getpeername()
-            print 'Connected to ' + target[0] + ':' + str(target[1]) + ' at ' + time.ctime()
+            print 'Connected to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']'
 
     def run(self):
         self.running = True
