@@ -14,26 +14,31 @@ class Agent(threading.Thread):
     experiments = None
     current_experiment = None
     
-    def __init__(self, thread_name):
+    def __init__(self, thread_name='agent'):
         threading.Thread.__init__(self, name=thread_name)
         self.q = Queue.Queue()
         self.running = False
         self.experiments = []
         self.current_experiment = None
 
+    def version(self, data):
+        # unmarshall version data
+        version = str(data[0]) + '.' + str(data[1]) + str(data[2]) + '-' + str(data[3])
+        print 'Version: ' + version
+
     def exit(self):
         print 'Exiting...'
-        self.q.put([self.kill_thread()])
+        self.q.put([self.kill_thread])
         for t in threading.enumerate():
-            if t.name == 'httpcomm' or t.name == 'eicomm':
+            if t.name == 'httpcomm' or t.name == 'eicomm' or t.name == 'test':
                 t.q.put([t.kill_thread])
 
     def download(self):
         wave = self.current_experiment.graph.translate()
-        args = wave.pack()
+        data = wave.marshall()
         for t in threading.enumerate():
             if t.name == 'eicomm':
-                t.q.put([eicomm.eibus.wave, args])
+                t.q.put([eicomm.eibus.wave, data])
 
     def select_experiment(self, name):
         for exp in self.experiments:

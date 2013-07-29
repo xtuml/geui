@@ -1,4 +1,5 @@
 #mathematical representation of waveform
+from util import tobytes
 
 class Wave:
 
@@ -19,31 +20,26 @@ class Wave:
     def add_pattern(self, pattern):
         self.patterns.append(pattern)
 
-    def pack(self):     #pack up wave into an array of values
-        values = []
+    def marshall(self): #pack up wave into an array of values
+
+        # Wave marshalling documentation:
+        # Wave: waveID, E_final, N, n, (Pattern)*
+        # Pattern: N, n, (Segment)*
+        # Segment: ticks, n, (point)*
+
+        data = []
 
         #pack up header
-        values.append(self.waveID)
-        values.append(self.E_final)
-        values.append(self.N)
-        values.append(self.n)
+        data += tobytes(self.waveID, 2)
+        data += tobytes(self.E_final, 2)
+        data += tobytes(self.N, 2)
+        data += tobytes(self.n, 1)
 
         #pack up patterns
         for pattern in self.patterns:
-            values.append(pattern.N)
-            values.append(pattern.n)
+            data += pattern.marshall()
 
-            #pack up segments
-            for segment in pattern.segments:
-                values.append(segment.ticks)
-                values.append(segment.n)
-
-                #pack up points
-                for point in segment.points:
-                    values.append(point)
-
-        return values
-
+        return bytearray(data)
 
 class Pattern:
     
@@ -60,6 +56,14 @@ class Pattern:
     def add_segment(self, segment):
         self.segments.append(segment)
 
+    def marshall(self):
+        data = []
+        data += tobytes(self.N, 2)
+        data += tobytes(self.n, 1)
+        for segment in self.segments:
+            data += segment.marshall()
+        return data
+
 class Segment:
 
     ticks = None        #number of ticks between points
@@ -72,5 +76,13 @@ class Segment:
         self.n = n
         self.points = points
 
-    def add_point(self, point):
-        self.points.append(point)
+    def add_points(self, points):
+        self.points += points
+
+    def marshall(self):
+        data = []
+        data += tobytes(self.ticks, 2)
+        data += tobytes(self.n, 2)
+        for point in self.points:
+            data += tobytes(point, 2)
+        return data
