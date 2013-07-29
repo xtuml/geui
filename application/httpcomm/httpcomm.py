@@ -16,7 +16,7 @@ class HTTPcomm(threading.Thread):
     #holds commands to be sent to the GUI
     commands = None
 
-    def __init__(self, thread_name):
+    def __init__(self, thread_name='httpcomm'):
         threading.Thread.__init__(self, name=thread_name)
         self.q = Queue.Queue()
         self.running = False
@@ -30,7 +30,7 @@ class HTTPcomm(threading.Thread):
     #method to initialize the server
     def run(self):
         self.running = True
-        self.server = server.Server('server')
+        self.server = server.Server()
         self.server.start()
         while self.running:
 

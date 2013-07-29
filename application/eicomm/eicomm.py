@@ -1,79 +1,106 @@
-#virtual eicomm for socket test
-
 import threading
 import Queue
 from agent.util import call
+from agent.util import tobytes
 import time
 import socket
-import signals
+import agent.eibus
 
 class EIcomm(threading.Thread):
 
-    #incoming codes and corresponding classes
-    codes = [None,signals.version]
+    #incoming codes and information (static attribute)
+    incoming = [
+        None,
+        {
+            'name': 'version',
+            'method': agent.eibus.version
+        }
+    ]
+
+    #outgoing codes and information (static attribute)
+    outgoing = [
+        None,                                   # 0
+        {'name': 'get_version'},                # 1
+        None,                                   # 2
+        None,                                   # 3
+        None,                                   # 4
+        None,                                   # 5
+        None,                                   # 6
+        None,                                   # 7
+        None,                                   # 8
+        None,                                   # 9
+        {'name': 'wave'}                        # 10
+    ]
 
     #threading attributes
     q = None
     running = None
 
-    #queue for signals
-    signals = None
-
     #transport layer
     #takes care of all sending and receiving
     transport = None
 
-    def __init__(self, thread_name):
+    def __init__(self, thread_name='eicomm', s=None):
         threading.Thread.__init__(self, name=thread_name)
         self.q = Queue.Queue()
         self.running = False
-        self.signals = Queue.Queue()
-        self.transport = None
+        self.transport = Transport(s)
 
     def kill_thread(self):
         self.transport.kill_thread()
         self.running = False
 
-    def handle_signal(self):
-        while not self.signals.empty():
-            signal = self.signals.get()
-            #handle outgoing signals
-            if signal.action == 'pack':
-                signal.pack()                               #pack the signal
-                self.transport.messages.put([signal.name, signal.data])    #add the signal to transport layer
-            #handle incoming signals
-            else:
-                signal.unpack()                             #unpack the signal
-                for t in threading.enumerate():
-                    if t.name == 'agent':
-                        t.q.put(signal.cmd)                 #add eibus call to agent thread
+    def send(self, code, length, data):
+        msg = bytearray([code]) + bytearray(tobytes(length, 2)) + data
+        if self.transport.s != None:
+            self.transport.outbox.put(msg)
+            target = self.transport.s.getpeername()
+            print 'Message sent: "' + self.outgoing[code]['name'] + '" to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']'
+
+    def receive(self):
+        if not self.transport.inbox.empty():
+            msg = self.transport.inbox.get()
+            sender = self.transport.s.getpeername()
+            print 'Message received: "' + self.incoming[msg[0]]['name'] + '" from ' + sender[0] + ':' + str(sender[1]) + ' at [' + time.ctime() + ']'
+            for t in threading.enumerate():
+                if t.name == 'agent':
+                    t.q.put([self.incoming[msg[0]]['method'], bytearray(msg[3:])])
+                    break
 
     def run(self):
         self.running = True
-        self.transport = Transport('transport')
         self.transport.start()                              #start transport layer
         while self.running:
 
-            #wait for command
-            cmd = self.q.get()
+            #check for command
+            if not self.q.empty():
+                cmd = self.q.get()
+                #run command
+                call(cmd)
 
-            #run command
-            call(cmd)
+            #check inbox
+            self.receive()
+
+            #sleep for 10 milliseconds
+            time.sleep(0.010)
+
         print 'Exited EIcomm at [' + time.ctime() + ']'
 
 class Transport(threading.Thread):
 
     #threading attributes
-    messages = None
+    outbox = None
+    inbox = None
     running = None
 
     #socket
     s = None
     msg = None
     
-    def __init__(self, thread_name, s=None):
+    def __init__(self, s=None, thread_name='transport'):
         threading.Thread.__init__(self, name=thread_name)
-        self.messages = Queue.Queue()
+        self.outbox = Queue.Queue()
+        self.inbox = Queue.Queue()
         self.running = False
         self.s = s
         self.msg = bytearray()
@@ -83,14 +110,12 @@ class Transport(threading.Thread):
             self.s.close()
         self.running = False
 
-    def send(self):
-        if not self.messages.empty():                   #check for outgoing messages
-            message = self.messages.get(False)
-            target = self.s.getpeername()
-            self.s.sendall(message[1])                  #send message
-            print 'Message sent: "' + message[0] + '" to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']'
+    def push(self):
+        if not self.outbox.empty():                     #check for outgoing messages
+            message = self.outbox.get()
+            self.s.sendall(message)                     #send message
 
-    def receive(self):
+    def pull(self):
         receiving = True
         while receiving:
             try:
@@ -112,17 +137,8 @@ class Transport(threading.Thread):
                     if len(self.msg) >= 3:              #enough data received to calculate message length
                         msglen = self.msg[2] * 256 + self.msg[1] + 3
                         if len(self.msg) == msglen:     #full message received
-                            #create signal
-                            signal = EIcomm.codes[self.msg[0]](data=self.msg)
-                            sender = self.s.getpeername()
-
-                            print 'Message received: "' + signal.name + '" from ' + sender[0] + ':' + str(sender[1]) + ' at [' + time.ctime() + ']'
-
-                            #add signal received to queue
-                            for t in threading.enumerate():
-                                if t.name == 'eicomm':
-                                    t.signals.put(signal)
-                                    t.q.put([t.handle_signal])
+                            #add message to inbox
+                            self.inbox.put(self.msg)
 
                             #reset self.msg
                             self.msg = bytearray()
@@ -151,10 +167,10 @@ class Transport(threading.Thread):
         while self.running:
 
             #receive messages
-            self.receive()
+            self.pull()
 
             #send messages
-            self.send()
+            self.push()
 
             #sleep for 10 milliseconds
             time.sleep(0.010)

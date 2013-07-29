@@ -27,7 +27,7 @@ class Server(threading.Thread):
         '/favicon.ico','SERVE_ICON'
     )
 
-    def __init__(self, thread_name):
+    def __init__(self, thread_name='server'):
         threading.Thread.__init__(self, name=thread_name)
         self.app = web.application(Server.urls, globals())
 

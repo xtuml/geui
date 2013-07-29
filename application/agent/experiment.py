@@ -122,7 +122,7 @@ class Graph:
                     point_num += 1
 
                 #add points to segment
-                wave_segment.points = points
+                wave_segment.add_points(points)
 
                 #add segment to pattern
                 wave_pattern.add_segment(wave_segment)

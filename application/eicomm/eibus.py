@@ -1,22 +1,19 @@
-
 #eibus interface for communicating to the embedded code on the device
 
 import threading
-import signals
+from agent.util import tobytes
 
 #----- SIGNALS TO EC -----#
 
 #get version command sent from agent
 def get_version():
     t = threading.currentThread()
-    t.signals.put(signals.get_version())
-    t.q.put([t.handle_signal])
+    t.q.put([t.send, 1, 0, bytearray()])
 
 #wave download
-def wave(wave_args):
+def wave(data):
     t = threading.currentThread()
-    t.signals.put(signals.wave(args=wave_args))
-    t.q.put([t.handle_signal])
+    t.q.put([t.send, 10, len(data), data])
 
 
 #----- SIGNALS TO AGENT -----#

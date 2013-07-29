@@ -32,3 +32,24 @@ def call(args):
 
     else:
         pass
+
+#function to convert an integer to an array of bytes (in integer form 0 <= num < 256)
+def tobytes(value, num_bytes=0, little_endian=True):
+    import math
+    byte_array = []
+    num_need = int(math.ceil(float(math.log(value + 1, 256))))  #find number of bytes needed
+    while num_need > 0:
+        num_need -= 1                                           #num_need becomes multiplying factor to separate bytes
+        byte_array.append(int(math.floor(float(value / (256 ** num_need)))))
+        value = value % (256 ** num_need)
+
+    #add empty bytes to fill requirements
+    #if no num_bytes is specified, no extra zeroes will be added
+    while len(byte_array) < num_bytes:
+        byte_array.insert(0, 0)
+
+    #adjust endianness
+    if little_endian == True:
+        byte_array.reverse()
+
+    return byte_array

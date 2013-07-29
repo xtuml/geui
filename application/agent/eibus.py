@@ -6,11 +6,9 @@ import threading
 #----- SIGNALS TO AGENT -----#
 
 #version response from EC
-def version(version):
-    print 'Version: ' + version
-    for t in threading.enumerate():
-        if t.name == 'httpcomm':
-            t.q.put([httpcomm.eihttp.version, version])
+def version(data):
+    t = threading.currentThread()
+    t.version(data)
 
 #----- SIGNALS TO EC -----#
 
