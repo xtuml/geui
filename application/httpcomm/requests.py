@@ -5,7 +5,7 @@ import json
 import time
 
 #Outgoing command request
-class COMMAND():
+class COMMAND:
     def GET(self):
         for t in threading.enumerate():
             if t.name == 'httpcomm':
@@ -19,23 +19,23 @@ class COMMAND():
 #I/O Commands
 #==========================#
 
-class SAVE_EXPERIMENT():
+class SAVE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.save_experiment])
 
-class GET_EXPERIMENT_LIST():
+class GET_EXPERIMENT_LIST:
     pass
 
-class OPEN_EXPERIMENT():
+class OPEN_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.open_experiment, data['name']])
 
-class CREATE_EXPERIMENT():
+class CREATE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
@@ -48,21 +48,21 @@ class CREATE_EXPERIMENT():
 #Graph manipulation commands
 #==========================#
 
-class ADD_SEGMENT():
+class ADD_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), float(data['repeat_value']), int(data['position'])])
 
-class DELETE_SEGMENT():
+class DELETE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.delete_segment, data['positions']])
 
-class UPDATE_SEGMENT():
+class UPDATE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
@@ -71,7 +71,7 @@ class UPDATE_SEGMENT():
                 #data = web.input()
                 #t.q.put([agent.eihttp.update_segment, float(form.start_value), float(form.end_value), float(form.rate), float(form.duration), float(form.repeat_value), int(form.position)])
 
-class MOVE_SEGMENT():
+class MOVE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
@@ -85,18 +85,25 @@ class MOVE_SEGMENT():
 #==========================#
 
 #get version command
-class VERSION():
+class VERSION:
     def GET(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.get_version])
 
 #exit command
-class EXIT():
+class EXIT:
     def GET(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.exit])
+
+#download waveform command
+class DOWNLOAD:
+    def GET(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                t.q.put([agent.eihttp.download])
 
 #==========================#
 
@@ -105,30 +112,30 @@ class EXIT():
 #==========================#
 
 #renders the initial html file upon load
-class INDEX():
+class INDEX:
     def GET(self):
         render = web.template.render('')
         return render.index()
 
 #serve static files
 #serves js files upon load (included in html. basis of client side operations)
-class SERVE_JS():
+class SERVE_JS:
     def GET(self, url):
         script = open('js/'+url,'r')
         return script.read()
 
 #serves css files upon load. Used for styling (bootstrap)
-class SERVE_CSS():
+class SERVE_CSS:
     def GET(self, url):
         script = open('css/'+url,'r')
         return script.read()
 
-class SERVE_IMG():
+class SERVE_IMG:
     def GET(self, url):
         img = open('img/'+url,'rb')
         return img.read()
 
-class SERVE_ICON():
+class SERVE_ICON:
     def GET(self):
         icon = open('img/favicon.ico','rb')
         return icon.read()

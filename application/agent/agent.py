@@ -2,6 +2,7 @@ import threading
 import Queue
 from util import call
 import time
+import eicomm.eibus
 
 class Agent(threading.Thread):
 
@@ -26,6 +27,13 @@ class Agent(threading.Thread):
         for t in threading.enumerate():
             if t.name == 'httpcomm' or t.name == 'eicomm':
                 t.q.put([t.kill_thread])
+
+    def download(self):
+        wave = self.current_experiment.graph.translate()
+        args = wave.pack()
+        for t in threading.enumerate():
+            if t.name == 'eicomm':
+                t.q.put([eicomm.eibus.wave, args])
 
     def select_experiment(self, name):
         for exp in self.experiments:

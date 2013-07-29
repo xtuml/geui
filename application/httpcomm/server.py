@@ -19,6 +19,7 @@ class Server(threading.Thread):
         '/move_segment','MOVE_SEGMENT',
         '/version','VERSION',
         '/exit','EXIT',
+        '/download', 'DOWNLOAD',
         '/','INDEX',
         '/js/(.*)','SERVE_JS',
         '/css/(.*)','SERVE_CSS',

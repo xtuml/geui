@@ -40,6 +40,14 @@ def load_table(rows):
 
 #----- SIGNALS TO AGENT -----#
 
+#exit
+def exit():
+    pass
+
+#download waveform to device
+def download():
+    pass
+
 #get version command sent from GUI 
 def get_version():
     pass

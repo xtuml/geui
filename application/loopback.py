@@ -62,6 +62,10 @@ class Transport(threading.Thread):
                             #catch wave command
                             elif self.msg[0] == 10:
                                 print 'Wave command received'
+                                out = []
+                                for byte in self.msg:
+                                    out.append(byte)
+                                print out
 
                             self.msg = bytearray()
                             receiving = False

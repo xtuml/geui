@@ -3,9 +3,7 @@
 import httpcomm.eihttp
 import threading
 
-#get version command sent from agent
-def get_version():
-    pass
+#----- SIGNALS TO AGENT -----#
 
 #version response from EC
 def version(version):
@@ -13,3 +11,13 @@ def version(version):
     for t in threading.enumerate():
         if t.name == 'httpcomm':
             t.q.put([httpcomm.eihttp.version, version])
+
+#----- SIGNALS TO EC -----#
+
+#get version command sent from agent
+def get_version():
+    pass
+
+#wave download
+def wave(wave_args):
+    pass

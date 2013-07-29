@@ -11,7 +11,7 @@ if __name__ == "__main__":
     httpcomm = HTTPcomm('httpcomm')
 
     test = TestBench('test',5)
-    #test.test = test.send_wave
+    #test.test = test.create_experiment
 
     #start threads
     agent.start()

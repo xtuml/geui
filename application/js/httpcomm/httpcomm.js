@@ -206,9 +206,3 @@ load_table = function(){
         }
     }
 }
-
-
-
-
-
-

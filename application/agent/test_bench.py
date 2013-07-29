@@ -1,6 +1,7 @@
 import threading
 from util import call
 import time
+import eihttp
 
 class TestBench(threading.Thread):
     
@@ -11,6 +12,13 @@ class TestBench(threading.Thread):
         threading.Thread.__init__(self, name=thread_name)
         self.wait = wait
         self.test = None
+
+    def create_experiment(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                t.q.put([eihttp.create_experiment, 'test'])
+                t.q.put([eihttp.add_segment, 0, 0, 0, 10, 1, 0])
+                t.q.put([eihttp.save_experiment])
 
     def send_wave(self):
         import wave
