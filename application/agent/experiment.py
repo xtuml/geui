@@ -256,13 +256,12 @@ class Segment:
         self.rate = values[2]
         if self.duration != values[3]:
             self.duration = values[3]
-            self.parent.update_points(self.parent.contents.index(self))
+            self.parent.parent.update_points(self.parent.parent.contents.index(self.parent))
         for vertex in self.vertices:
             vertex.update()
 
     #calculate start time
     def calculate_start_time(self):
-        print self.parent.parent.contents
         pat_position = self.parent.parent.contents.index(self.parent)   #position of the containing pattern
         #calculate baseline time to start
         if pat_position > 0:
