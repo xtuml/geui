@@ -2,7 +2,7 @@ import threading
 import Queue
 from util import call
 import time
-import eihttp
+import eicomm.eibus
 
 class TestBench(threading.Thread):
 
@@ -46,7 +46,7 @@ class TestBench(threading.Thread):
 
         for t in threading.enumerate():
             if t.name == 'eicomm':
-                t.q.put([t.send, 10, len(x), x])
+                t.q.put([eicomm.eibus.wave, x])
 
     def run(self):
         self.running = True
