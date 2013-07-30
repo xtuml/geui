@@ -113,16 +113,13 @@ class Transport(threading.Thread):
         self.running = False
 
     def push(self):
-        if not self.outbox.empty():                     #check for outgoing messages
+        if not self.outbox.empty() and self.s != None:  #check for outgoing messages
             message = self.outbox.get()
             self.s.sendall(message)                     #send message
 
     def pull(self):
-        if self.s != None:
-            receiving = True
-        else:
-            receiving = False
-        while receiving:
+        receiving = True
+        while receiving and self.s != None:
             try:
                 data = self.s.recv(4096)
             except socket.error, e:                     #socket doesn't have data
@@ -169,6 +166,7 @@ class Transport(threading.Thread):
         while self.s == None and self.running:
             self.connect()
             time.sleep(0.010)
+        self.s.setblocking(0)
         while self.running:
 
             #receive messages
