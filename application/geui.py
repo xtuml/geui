@@ -13,6 +13,7 @@ class CommandLine(threading.Thread):
 
     commands = [
         '"send_wave" ---> Send test wave from test bench to EC.',
+        '"get_version" ---> Send get_version request to EC.',
         '"exit" ---> Quit program.',
         '"help" ---> Show command help.'
     ]
@@ -39,6 +40,11 @@ class CommandLine(threading.Thread):
                 for t in threading.enumerate():
                     if t.name == 'test':
                         t.q.put([t.send_wave])
+                        break
+            elif x == 'get_version':
+                for t in threading.enumerate():
+                    if t.name == 'agent':
+                        t.q.put([t.get_version])
                         break
             else:
                 print 'No command "' + x + '"'

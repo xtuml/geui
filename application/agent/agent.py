@@ -3,6 +3,7 @@ import Queue
 from util import call
 import time
 import eicomm.eibus
+import httpcomm.eihttp
 
 class Agent(threading.Thread):
 
@@ -21,10 +22,20 @@ class Agent(threading.Thread):
         self.experiments = []
         self.current_experiment = None
 
+    def get_version(self):
+        for t in threading.enumerate():
+            if t.name == 'eicomm':
+                t.q.put([eicomm.eibus.get_version])
+                break
+
     def version(self, data):
         # unmarshall version data
         version = str(data[0]) + '.' + str(data[1]) + str(data[2]) + '-' + str(data[3])
         print 'Version: ' + version
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.version, version])
+                break
 
     def exit(self):
         print 'Exiting...'

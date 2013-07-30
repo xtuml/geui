@@ -79,9 +79,19 @@ class Connector(threading.Thread):
         self.running = True
         s = socket.socket()
         s.setblocking(0)
-        s.bind(('localhost',9000))
-        s.listen(1)
-        print 'Listening...'
+        print 'Binding...'
+        bound = False
+        while self.running and not bound:
+            try:
+                s.bind(('localhost',9000))
+            except socket.error, e:
+                if e.args[1] != 'Address already in use':
+                    print e
+                time.sleep(0.010)
+            else:
+                s.listen(1)
+                print 'Listening...'
+                bound = True
         while self.running and self.demo.s == None:
             #try to connect
             self.connect(s)

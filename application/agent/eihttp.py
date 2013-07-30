@@ -17,10 +17,8 @@ def download():
 
 #get version command sent from GUI 
 def get_version():
-    for t in threading.enumerate():
-        if t.name == 'eicomm':
-            t.q.put([eicomm.eibus.get_version])
-            break
+    t = threading.currentThread()
+    t.q.put([t.get_version])
 
 #save experiment command sent from GUI 
 def save_experiment():

@@ -56,6 +56,8 @@ class EIcomm(threading.Thread):
             self.transport.outbox.put(msg)
             target = self.transport.s.getpeername()
             print 'Message sent: "' + self.outgoing[code]['name'] + '" to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']'
+        else:
+            print 'Message not sent: No EC connected. [' + time.ctime() + ']'
 
     def receive(self):
         if not self.transport.inbox.empty():
@@ -116,7 +118,10 @@ class Transport(threading.Thread):
             self.s.sendall(message)                     #send message
 
     def pull(self):
-        receiving = True
+        if self.s != None:
+            receiving = True
+        else:
+            receiving = False
         while receiving:
             try:
                 data = self.s.recv(4096)
@@ -129,9 +134,9 @@ class Transport(threading.Thread):
             else:
                 if len(data) == 0:                      #socket has closed
                     receiving = False
-                    for t in threading.enumerate():
-                        if t.name == 'eicomm':
-                            t.q.put([t.kill_thread])
+                    target = self.s.getpeername()
+                    print 'Connection to ' + target[0] + ':' + str(target[1]) + ' broken at [' + time.ctime() + ']'
+                    self.s = None
                 else:                                   #socket has data
                     self.msg += data
                     if len(self.msg) >= 3:              #enough data received to calculate message length
