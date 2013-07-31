@@ -166,7 +166,8 @@ class Transport(threading.Thread):
         while self.s == None and self.running:
             self.connect()
             time.sleep(0.010)
-        self.s.setblocking(0)
+        if self.s != None:
+            self.s.setblocking(0)
         while self.running:
 
             #receive messages

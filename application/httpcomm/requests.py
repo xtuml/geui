@@ -53,7 +53,7 @@ class ADD_SEGMENT:
         for t in threading.enumerate():
             if t.name == 'agent':
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), float(data['repeat_value']), int(data['position'])])
+                t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['repeat_value']), int(data['position'])])
 
 class DELETE_SEGMENT:
     def POST(self):

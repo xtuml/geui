@@ -3,8 +3,11 @@ from agent.agent import Agent
 from eicomm.eicomm import EIcomm
 from agent.test_bench import TestBench
 
+import agent.eihttp as eihttp
+
 import threading
 import time
+import re
 
 #thread for executing commands
 class CommandLine(threading.Thread):
@@ -14,6 +17,7 @@ class CommandLine(threading.Thread):
     commands = [
         '"send_wave" ---> Send test wave from test bench to EC.',
         '"get_version" ---> Send get_version request to EC.',
+        '"add_segment <args>" ---> Add a segment to the current experiment.',
         '"exit" ---> Quit program.',
         '"help" ---> Show command help.'
     ]
@@ -46,6 +50,11 @@ class CommandLine(threading.Thread):
                     if t.name == 'agent':
                         t.q.put([t.get_version])
                         break
+            elif re.search('add_segment', x) != None:
+                for t in threading.enumerate():
+                    if t.name == 'agent':
+                        args = x.split(' ')[1:]
+                        t.q.put([eihttp.add_segment, float(args[0]), float(args[1]), float(args[2]), float(args[3]), int(args[4]), 1])
             else:
                 print 'No command "' + x + '"'
         print 'Exited CommandLine at [' + time.ctime() + ']'
