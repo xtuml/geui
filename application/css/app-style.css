@@ -269,6 +269,21 @@ Styling sheet for X8 GUI
     background-image: url(../img/dots.png);
 }
 
+.new-btn {
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/new_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.new-btn:hover,
+.new-btn:focus {
+    background-image: url(../img/new.png);
+}
+
 /* Waveform table style classes */
 
 .input-table {
@@ -566,6 +581,19 @@ Styling sheet for X8 GUI
     opacity: 0;
     height: 100%;
     width: 100%;
+}
+
+.create-input {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    height: 34px;
+    width: calc(100% - 300px);
+    width: -webkit-calc(100% - 300px);
+    border: 1px solid #505050;
+    border-radius: 5px;
+    padding: 3px;
+    font-size: 23px;
 }
 
 /* Spinner styling */

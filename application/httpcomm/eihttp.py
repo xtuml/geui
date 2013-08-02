@@ -85,6 +85,10 @@ def open_experiment(name):
 def create_experiment(name):
     pass
 
+#delete experiment command sent from GUI 
+def delete_experiment(name):
+    pass
+
 #allows user to upload their own experiment files
 def upload_file(name, contents):
     pass

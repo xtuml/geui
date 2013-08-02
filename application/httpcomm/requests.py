@@ -45,6 +45,13 @@ class CREATE_EXPERIMENT:
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.create_experiment, data['name']])
 
+class DELETE_EXPERIMENT:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.delete_experiment, data['name']])
+
 class UPLOAD_FILE:
     def POST(self):
         for t in threading.enumerate():

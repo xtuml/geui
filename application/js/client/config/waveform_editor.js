@@ -37,14 +37,15 @@ function WaveformEditor(gui){
     this.buttons.element.style.left = 'calc(-100% - 10px)';
     this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
 
-
-    //initialize the chart
-    //this.chart.initiateChart();
 }
 
 //load the waveform file
 WaveformEditor.prototype.openWaveform = function(name){
     httpcomm.eihttp.open_experiment(name);
+}
+
+WaveformEditor.prototype.createWaveform = function(name){
+    httpcomm.eihttp.create_experiment(name);
 }
 
 //prepare the config before entry
@@ -79,7 +80,13 @@ WaveformEditor.prototype.prepare = function(args){
     this.row_count = 0;
 
     //open waveform
-    this.openWaveform(args[0]);
+    if (args[1] == 'open'){
+        this.openWaveform(args[0]);
+    }
+    else if (args[1] == 'create'){
+        this.createWaveform(args[0]);
+    }
+    else{}
 
     //enable signals applying to this config
     //disable all

@@ -21,7 +21,10 @@ class Experiment:
         new_graph = Graph()
         t = threading.currentThread()
         t.experiment_list.add_experiment(name)
-        return Experiment(new_graph, name)
+        new_experiment = Experiment(new_graph, name)
+        new_experiment.graph.add_pattern([0.0, 0.0, 0.0, 10.0, 1])
+        new_experiment.save()
+        return new_experiment
 
     #public static method to open an experiment with an experiment name
     @staticmethod

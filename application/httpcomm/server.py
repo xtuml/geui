@@ -13,6 +13,7 @@ class Server(threading.Thread):
         '/get_experiments','GET_EXPERIMENT_LIST',
         '/open','OPEN_EXPERIMENT',
         '/create','CREATE_EXPERIMENT',
+        '/delete','DELETE_EXPERIMENT',
         '/upload','UPLOAD_FILE',
         '/add_pattern','ADD_PATTERN',
         '/delete_pattern','DELETE_PATTERN',

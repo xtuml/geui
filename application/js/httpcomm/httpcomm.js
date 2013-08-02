@@ -86,6 +86,20 @@ function HTTPcomm(){
         });
     }
 
+    this.eihttp.delete_experiment = function(name){
+        obj = {
+            name: name
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'delete',
+            data: data,
+            success: null,
+            async:true
+        });
+    }
+
     this.eihttp.upload_file = function(name, contents){
         obj = {
             name: name,

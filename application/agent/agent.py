@@ -2,8 +2,11 @@ import threading
 import Queue
 from util import call
 import time
+import os
+
 import eicomm.eibus
 import httpcomm.eihttp
+
 import gnosis.xml.pickle
 from gnosis.xml.pickle.util import setParanoia
 setParanoia(0)
@@ -63,6 +66,13 @@ class Agent(threading.Thread):
         for t in threading.enumerate():
             if t.name == 'eicomm':
                 t.q.put([eicomm.eibus.wave, data])
+
+    def delete_experiment(self, name):
+        #remove name from list
+        self.experiment_list.names.pop(self.experiment_list.names.index(name))
+
+        #remove file
+        os.remove('data/'+name+'.xml')
 
     def check_upload(self, name, contents):
         try:

@@ -47,9 +47,14 @@ def create_experiment(name):
     t = threading.currentThread()
     from experiment import Experiment
     current_experiment = Experiment.create(name)
-    t.experiments.append(current_experiment)
     t.current_experiment = current_experiment
     current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
+    current_experiment.calculate_table_reply()
+
+#delete experiment command sent from GUI 
+def delete_experiment(name):
+    t = threading.currentThread()
+    t.delete_experiment(name);
 
 #allows user to upload their own experiment files
 def upload_file(name, contents):
