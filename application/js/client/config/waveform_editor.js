@@ -77,7 +77,7 @@ WaveformEditor.prototype.prepare = function(args){
         this.table.input_table.removeChild(this.table.rows[row]);       //remove the element
     }
     this.table.rows = [];
-    this.row_count = 0;
+    this.table.row_count = 0;
 
     //open waveform
     if (args[1] == 'open'){

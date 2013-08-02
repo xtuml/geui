@@ -549,7 +549,6 @@ Styling sheet for X8 GUI
     -o-user-select: none;
     user-select: none;
     font-size: 16px;
-    fotn-weight: bold;
     font-family: Arial;
     color: black;
     cursor: default;
@@ -587,13 +586,18 @@ Styling sheet for X8 GUI
     position: absolute;
     bottom: 5px;
     left: 5px;
-    height: 34px;
+    height: 30px;
     width: calc(100% - 300px);
     width: -webkit-calc(100% - 300px);
     border: 1px solid #505050;
     border-radius: 5px;
     padding: 3px;
-    font-size: 23px;
+    font-size: 20px;
+    font-family: Arial;
+    color: black;
+    cursor: default;
+    line-height: 30px;
+    text-indent: 15px;
 }
 
 /* Spinner styling */
