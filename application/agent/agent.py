@@ -4,6 +4,9 @@ from util import call
 import time
 import eicomm.eibus
 import httpcomm.eihttp
+import gnosis.xml.pickle
+from gnosis.xml.pickle.util import setParanoia
+setParanoia(0)
 
 class Agent(threading.Thread):
 
@@ -11,16 +14,26 @@ class Agent(threading.Thread):
     q = None
     running = None
 
-    #container for experiments
-    experiments = None
+    #current experiment
     current_experiment = None
+
+    #list of experiment names
+    experiment_list = None
     
     def __init__(self, thread_name='agent'):
         threading.Thread.__init__(self, name=thread_name)
         self.q = Queue.Queue()
         self.running = False
-        self.experiments = []
         self.current_experiment = None
+        exp_file = open('experiments.xml','r')
+        xml_string = exp_file.read()
+        exp_file.close()
+        self.experiment_list = gnosis.xml.pickle.loads(xml_string)
+
+    def get_experiments(self):
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.load_experiments, self.experiment_list.names])
 
     def get_version(self):
         for t in threading.enumerate():
@@ -51,10 +64,40 @@ class Agent(threading.Thread):
             if t.name == 'eicomm':
                 t.q.put([eicomm.eibus.wave, data])
 
-    def select_experiment(self, name):
-        for exp in self.experiments:
-            if exp.name == name:
-                return exp 
+    def check_upload(self, name, contents):
+        try:
+            test_exp = gnosis.xml.pickle.loads(contents)
+        except:
+            print 'Uploaded file wrong format. [' + time.ctime() + ']'
+            #send error to GUI here
+        else:
+            #check for duplicate name
+            name_num = 0                        #number of duplicates of that name
+            original_name = name
+            checking = True
+            while checking:
+                counter = 0
+                for n in self.experiment_list.names:
+                    if name == n:
+                        name_num += 1
+                        name = original_name + '(' + str(name_num) + ')'
+                    else:
+                        counter += 1
+                if counter == len(self.experiment_list.names):
+                    checking = False
+
+            #save the file 
+            save_file = open('data/'+name+'.xml','w')
+            save_file.write(contents)
+            save_file.close()
+
+            #add name to experiment_list
+            self.experiment_list.add_experiment(name)
+
+            #send successfull upload message
+            for t in threading.enumerate():
+                if t.name == 'httpcomm':
+                    t.q.put([httpcomm.eihttp.upload_success, name])
 
     def kill_thread(self):
         self.running = False
@@ -68,4 +111,25 @@ class Agent(threading.Thread):
 
             #run command
             call(cmd)
+
+        #persist experiment list
+        save_file = open('experiments.xml','w')
+        save_file.write(gnosis.xml.pickle.dumps(self.experiment_list))
+        save_file.close()
+
+        #log exit
         print 'Exited Agent at [' + time.ctime() + ']'
+
+#object for keeping names of experiments
+class ExperimentList:
+
+    names = []
+
+    def __init__(self, names=[]):
+        self.names = names
+
+    def add_experiment(self, name):
+        self.names.append(name)
+
+    def remove_experiment(self, name):
+        self.names.pop(self.names.index(name))

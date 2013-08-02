@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!DOCTYPE PyObject SYSTEM "PyObjects.dtd">
+<PyObject module="agent.experiment" class="Experiment" id="4357058360">
+<attr name="graph" type="PyObject" id="4429220104" module="agent.experiment" class="Graph">
+  <attr name="contents" type="list" id="4429395296" >
+    <item type="PyObject" id="4429220608" module="agent.experiment" class="Pattern">
+      <attr name="parent" type="PyObject" refid="4429220104" />
+      <attr name="contents" type="list" id="4429195456" >
+        <item type="PyObject" id="4429220248" module="agent.experiment" class="Segment">
+          <attr name="parent" type="PyObject" refid="4429220608" />
+          <attr name="end_value" type="numeric" value="0." />
+          <attr name="vertices" type="list" id="4429404928" >
+            <item type="PyObject" id="4429220464" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="0." />
+              <attr name="x" type="numeric" value="0" />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="4429220248" />
+            </item>
+            <item type="PyObject" id="4429220392" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="0." />
+              <attr name="x" type="numeric" value="2." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="4429220248" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="0." />
+          <attr name="duration" type="numeric" value="2." />
+          <attr name="start_value" type="numeric" value="0." />
+        </item>
+      </attr>
+      <attr name="repeat_value" type="numeric" value="1." />
+    </item>
+    <item type="PyObject" id="4429220176" module="agent.experiment" class="Pattern">
+      <attr name="parent" type="PyObject" refid="4429220104" />
+      <attr name="contents" type="list" id="4429174040" >
+        <item type="PyObject" id="4429220680" module="agent.experiment" class="Segment">
+          <attr name="parent" type="PyObject" refid="4429220176" />
+          <attr name="end_value" type="numeric" value="100." />
+          <attr name="vertices" type="list" id="4429403344" >
+            <item type="PyObject" id="4429220824" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="0." />
+              <attr name="x" type="numeric" value="2." />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="4429220680" />
+            </item>
+            <item type="PyObject" id="4429220896" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="100." />
+              <attr name="x" type="numeric" value="4." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="4429220680" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="50." />
+          <attr name="duration" type="numeric" value="2." />
+          <attr name="start_value" type="numeric" value="0." />
+        </item>
+      </attr>
+      <attr name="repeat_value" type="numeric" value="1." />
+    </item>
+    <item type="PyObject" id="4429220320" module="agent.experiment" class="Pattern">
+      <attr name="parent" type="PyObject" refid="4429220104" />
+      <attr name="contents" type="list" id="4357055408" >
+        <item type="PyObject" id="4429220968" module="agent.experiment" class="Segment">
+          <attr name="parent" type="PyObject" refid="4429220320" />
+          <attr name="end_value" type="numeric" value="-100." />
+          <attr name="vertices" type="list" id="4429402768" >
+            <item type="PyObject" id="4429221184" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="100." />
+              <attr name="x" type="numeric" value="4." />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="4429220968" />
+            </item>
+            <item type="PyObject" id="4429221256" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="-100." />
+              <attr name="x" type="numeric" value="8." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="4429220968" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="-50." />
+          <attr name="duration" type="numeric" value="4." />
+          <attr name="start_value" type="numeric" value="100." />
+        </item>
+      </attr>
+      <attr name="repeat_value" type="numeric" value="5." />
+    </item>
+    <item type="PyObject" id="4429220752" module="agent.experiment" class="Pattern">
+      <attr name="parent" type="PyObject" refid="4429220104" />
+      <attr name="contents" type="list" id="4429068336" >
+        <item type="PyObject" id="4429221328" module="agent.experiment" class="Segment">
+          <attr name="parent" type="PyObject" refid="4429220752" />
+          <attr name="end_value" type="numeric" value="0." />
+          <attr name="vertices" type="list" id="4429197040" >
+            <item type="PyObject" id="4429221472" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="-100." />
+              <attr name="x" type="numeric" value="24." />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="4429221328" />
+            </item>
+            <item type="PyObject" id="4429221544" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="0." />
+              <attr name="x" type="numeric" value="26." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="4429221328" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="50." />
+          <attr name="duration" type="numeric" value="2." />
+          <attr name="start_value" type="numeric" value="-100." />
+        </item>
+      </attr>
+      <attr name="repeat_value" type="numeric" value="1." />
+    </item>
+    <item type="PyObject" id="4429221040" module="agent.experiment" class="Pattern">
+      <attr name="parent" type="PyObject" refid="4429220104" />
+      <attr name="contents" type="list" id="4429405000" >
+        <item type="PyObject" id="4429221616" module="agent.experiment" class="Segment">
+          <attr name="parent" type="PyObject" refid="4429221040" />
+          <attr name="end_value" type="numeric" value="0." />
+          <attr name="vertices" type="list" id="4429193944" >
+            <item type="PyObject" id="4429221760" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="0." />
+              <attr name="x" type="numeric" value="26." />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="4429221616" />
+            </item>
+            <item type="PyObject" id="4429221832" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="0." />
+              <attr name="x" type="numeric" value="28." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="4429221616" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="0." />
+          <attr name="duration" type="numeric" value="2." />
+          <attr name="start_value" type="numeric" value="0." />
+        </item>
+      </attr>
+      <attr name="repeat_value" type="numeric" value="1." />
+    </item>
+  </attr>
+</attr>
+<attr name="name" type="string">mygraph</attr>
+</PyObject>

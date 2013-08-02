@@ -1,7 +1,7 @@
-import gnosis.xml.pickle
 import threading
 import httpcomm.eihttp
 import wave
+import gnosis.xml.pickle
 from gnosis.xml.pickle.util import setParanoia
 setParanoia(0)
 
@@ -18,7 +18,9 @@ class Experiment:
     #public static method to create an experiment
     @staticmethod
     def create(name):
-        new_graph = Graph() 
+        new_graph = Graph()
+        t = threading.currentThread()
+        t.experiment_list.add_experiment(name)
         return Experiment(new_graph, name)
 
     #public static method to open an experiment with an experiment name
@@ -146,7 +148,7 @@ class Graph:
         if position < len(self.contents):
             self.update_points(position)
 
-    #moves a segment from the given position to the given destination
+    #moves a pattern from the given position to the given destination
     def move_pattern(self, position, destination):
         temp_pattern = self.contents.pop(position)
         self.contents.insert(destination, temp_pattern)
@@ -155,13 +157,16 @@ class Graph:
         else:
             self.update_points(destination)
 
+    #updates a pattern's repeat_value
+    def update_pattern(self, repeat_value, position):
+        self.contents[position].repeat_value = repeat_value 
+        self.update_points(position)
+
     #returns array of vertices from the graph (some duplicates because each segment has exactly 2 endpoints)
     def get_vertices(self):
         vertices = []
         for pattern in self.contents:
-            for segment in pattern.contents:
-                for vertex in segment.vertices:
-                    vertices.append(Vertex(None, 0, vertex.x,vertex.y))
+            vertices += pattern.get_vertices()
         return vertices
 
     #updates the points that got moved below given position
@@ -218,16 +223,35 @@ class Pattern:
         if position < len(self.contents) - 1:
             self.update_points(position + 1)
 
+    #returns array of vertices from the pattern (some duplicates because each segment has exactly 2 endpoints)
+    def get_vertices(self):
+        vertices = []
+        iteration = 0       #keeps track of what repeat it's on
+        one_repeat = self.calculate_duration() / self.repeat_value  #duration of one iteration of the pattern
+        while iteration < self.repeat_value:
+            for segment in self.contents:
+                for vertex in segment.vertices:
+                    vertices.append(Vertex(None, 0, vertex.x + one_repeat * iteration,vertex.y))
+            iteration += 1
+        return vertices
+
     #calculates pattern end time
     def calculate_end_time(self):
         position = self.parent.contents.index(self)
-        duration = 0
-        for segment in self.contents:
-            duration += segment.duration
+        duration = self.calculate_duration()
         if position > 0:
             return self.parent.contents[position - 1].calculate_end_time() + duration
         else:
             return duration
+
+    #calculate duration of pattern
+    def calculate_duration(self):
+        duration = 0
+        for segment in self.contents:
+            duration += segment.duration
+        #account for repeats
+        duration *= self.repeat_value
+        return duration
 
 #segments that make up patterns
 class Segment:

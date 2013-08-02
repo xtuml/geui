@@ -28,15 +28,16 @@ def save_experiment():
 
 #get experiments command sent from GUI 
 def get_experiments():
-    pass
+    t = threading.currentThread()
+    t.get_experiments()
 
 #open experiment command sent from GUI 
 def open_experiment(name):
     t = threading.currentThread()
     from experiment import Experiment
     current_experiment = Experiment.open(name)
+    #return data to GUI
     if current_experiment != None:
-        t.experiments.append(current_experiment)
         t.current_experiment = current_experiment
         current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
         current_experiment.calculate_table_reply()
@@ -50,9 +51,13 @@ def create_experiment(name):
     t.current_experiment = current_experiment
     current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
 
-#add segment command sent from GUI 
-#only adds pattern
-def add_segment(start_value, end_value, rate, duration, repeat_value, position):
+#allows user to upload their own experiment files
+def upload_file(name, contents):
+    t = threading.currentThread()
+    t.check_upload(name, contents)
+
+#add pattern command sent from GUI 
+def add_pattern(start_value, end_value, rate, duration, repeat_value):
     t = threading.currentThread()
     if t.current_experiment != None:
         E = t.current_experiment 
@@ -60,9 +65,8 @@ def add_segment(start_value, end_value, rate, duration, repeat_value, position):
         E.graph.add_pattern([start_value, end_value, rate, duration, repeat_value])
         E.calculate_reply(old_vertices, E.graph.get_vertices())
 
-#delete segment command sent from GUI 
-#only deletes pattern
-def delete_segment(positions):
+#delete pattern command sent from GUI 
+def delete_pattern(positions):
     t = threading.currentThread()
     if t.current_experiment != None:
             E = t.current_experiment 
@@ -71,19 +75,8 @@ def delete_segment(positions):
                 E.graph.delete_pattern(position)
             E.calculate_reply(old_vertices, E.graph.get_vertices())
 
-#update segment command sent from GUI 
-#only updates first segment in pattern
-def update_segment(start_value, end_value, rate, duration, repeat_value, position):
-    t = threading.currentThread()
-    if t.current_experiment != None:
-        E = t.current_experiment 
-        old_vertices = list(E.graph.get_vertices())
-        E.graph.contents[position].contents[0].update([start_value, end_value, rate, duration])         # only updates first segment in pattern
-        E.calculate_reply(old_vertices, E.graph.get_vertices())                                         # change when update gui to allow pattern editing
-
-#move segment command sent from GUI 
-#only moves pattern
-def move_segment(position, destination):
+#move pattern command sent from GUI 
+def move_pattern(position, destination):
     t = threading.currentThread()
     if t.current_experiment != None:
         E = t.current_experiment 
@@ -91,6 +84,51 @@ def move_segment(position, destination):
         E.graph.move_pattern(position, destination)
         E.calculate_reply(old_vertices, E.graph.get_vertices())
 
+#update pattern command sent from GUI 
+def update_pattern(repeat_value, position):
+    t = threading.currentThread()
+    if t.current_experiment != None:
+        E = t.current_experiment 
+        old_vertices = list(E.graph.get_vertices())
+        E.graph.update_pattern(repeat_value, position)
+        E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+#add segment command sent from GUI 
+def add_segment(start_value, end_value, rate, duration, pattern):
+    t = threading.currentThread()
+    if t.current_experiment != None:
+        E = t.current_experiment 
+        old_vertices = list(E.graph.get_vertices())
+        E.graph.contents[pattern].add_segment([start_value, end_value, rate, duration])
+        E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+#delete segment command sent from GUI 
+def delete_segment(positions, pattern):
+    t = threading.currentThread()
+    if t.current_experiment != None:
+            E = t.current_experiment 
+            old_vertices = list(E.graph.get_vertices())
+            for position in positions:
+                E.graph.contents[pattern].delete_segment(position)
+            E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+#move segment command sent from GUI 
+def move_segment(position, destination, pattern):
+    t = threading.currentThread()
+    if t.current_experiment != None:
+        E = t.current_experiment 
+        old_vertices = list(E.graph.get_vertices())
+        E.graph.contents[pattern].move_segment(position, destination)
+        E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+#update segment command sent from GUI 
+def update_segment(start_value, end_value, rate, duration, position, pattern):
+    t = threading.currentThread()
+    if t.current_experiment != None:
+        E = t.current_experiment 
+        old_vertices = list(E.graph.get_vertices())
+        E.graph.contents[pattern].contents[position].update([start_value, end_value, rate, duration])
+        E.calculate_reply(old_vertices, E.graph.get_vertices())
 
 #----- SIGNALS TO GUI -----#
 
@@ -99,9 +137,17 @@ def version(version):
     pass
 
 #chart data response from agent
-def update_chart(data):
+def update_chart(delete, add, update):
     pass
 
 #table data response from agent
-def load_table(data):
+def load_table(rows):
+    pass
+
+#send GUI list of saved experiment
+def load_experiments(names):
+    pass
+
+#send GUI indication that the upload was a success
+def upload_success(name):
     pass

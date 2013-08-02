@@ -37,6 +37,23 @@ def load_table(rows):
     t = threading.currentThread()
     t.commands.put(['load_table', json.dumps(data)])
 
+#send GUI list of saved experiment
+def load_experiments(experiments):
+    data = {
+        'signal': 'load_experiments',
+        'experiments': experiments
+    }
+    t = threading.currentThread()
+    t.commands.put(['load_experiments', json.dumps(data)])
+
+#send GUI indication that the upload was a success
+def upload_success(name):
+    data = {
+        'signal': 'upload_success',
+        'name': name
+    }
+    t = threading.currentThread()
+    t.commands.put(['upload_success', json.dumps(data)])
 
 #----- SIGNALS TO AGENT -----#
 
@@ -68,6 +85,26 @@ def open_experiment(name):
 def create_experiment(name):
     pass
 
+#allows user to upload their own experiment files
+def upload_file(name, contents):
+    pass
+
+#add pattern command sent from GUI 
+def add_pattern(start_value, end_value, rate, duration, repeat_value):
+    pass
+
+#delete pattern command sent from GUI 
+def delete_pattern(positions):
+    pass
+
+#move pattern command sent from GUI 
+def move_pattern(position, destination):
+    pass
+
+#update pattern command sent from GUI 
+def update_pattern(repeat_value, position):
+    pass
+
 #add segment command sent from GUI 
 def add_segment(start_value, end_value, rate, duration, repeat_value, position):
     pass
@@ -76,10 +113,10 @@ def add_segment(start_value, end_value, rate, duration, repeat_value, position):
 def delete_segment(positions):
     pass
 
-#update segment command sent from GUI 
-def update_segment(start_value, end_value, rate, duration, repeat_value, position):
-    pass
-
 #move segment command sent from GUI 
 def move_segment(position, destination):
+    pass
+
+#update segment command sent from GUI 
+def update_segment(start_value, end_value, rate, duration, repeat_value, position):
     pass

@@ -37,15 +37,20 @@ function Welcome(gui){
     this.inst_status.element.style.left = 'calc(-100% - 10px)';
     this.inst_status.element.style.left = '-webkit-calc(-100% - 10px)';
 
+}
+
+//prepare the config before entry
+Welcome.prototype.prepare = function(args){
+    //remove the old elements
+    this.gui.panels[this.views['OpenExperiment']].removeView();
+    this.gui.panels[this.views['CreateExperiment']].removeView();
+    this.gui.panels[this.views['InstrumentStatus']].removeView();
+
     //add the elements
     this.gui.panels[this.views['OpenExperiment']].addView(this.open);
     this.gui.panels[this.views['CreateExperiment']].addView(this.create);
     this.gui.panels[this.views['InstrumentStatus']].addView(this.inst_status);
 
-}
-
-//prepare the config before entry
-Welcome.prototype.prepare = function(args){
     //update size and position
     this.open.panel.updateSize(this.open.height, this.open.width);
     this.open.panel.updatePosition(this.open.x, this.open.y);
@@ -53,6 +58,31 @@ Welcome.prototype.prepare = function(args){
     this.create.panel.updatePosition(this.create.x, this.create.y);
     this.inst_status.panel.updateSize(this.inst_status.height, this.inst_status.width);
     this.inst_status.panel.updatePosition(this.inst_status.x, this.inst_status.y);
+
+    //OPEN EXPERIMENT reset//
+
+    //clear table rows
+    for (row in this.open.rows){
+        this.open.open_table.removeChild(this.open.rows[row]);          //remove the element
+    }
+    this.open.rows = [];
+    this.open.row_count = 0;
+    this.open.selected_row = -1;
+
+    //clear uploader
+    this.open.dots_upload.value = '';
+
+    //enable signals applying to this config
+    //disable all
+    for (signal in httpcomm.signals){
+        httpcomm.signals[signal].enabled = false;
+    }
+    //enable the ones needed
+    httpcomm.signals['load_experiments'].enabled = true;
+    httpcomm.signals['upload_success'].enabled = true;
+
+    //send signal to load experiments
+    httpcomm.eihttp.get_experiments();
 }
 
 //animation of flying in
@@ -159,10 +189,12 @@ function OpenExperiment(panel){
     this.dots.parent_view = this;
     this.dots_symbol = document.createElement('div');
     this.dots_symbol.className = 'dots-btn';
-    this.dots_symbol.parent_view = this;
-    this.dots_symbol.onclick = function(e){alert('open dialog')};
-    this.dots_symbol.tabIndex = 0;
-    this.dots_symbol.onkeypress = function(e){if(e.keyCode == 13){alert('open dialog')}};
+    this.dots_upload = document.createElement('input');
+    this.dots_upload.type = 'file';
+    this.dots_upload.className = 'upload';
+    this.dots_upload.parent_view = this;
+    this.dots_upload.onchange = function(e){e.target.parent_view.uploadFile(e.target.files)};
+    this.dots_symbol.appendChild(this.dots_upload);
     this.dots.appendChild(this.dots_symbol);
     this.content_pane.appendChild(this.dots);
 
@@ -170,11 +202,6 @@ function OpenExperiment(panel){
     this.rows = [];
     this.row_count = 0;
     this.selected_row = -1;
-
-    this.addRow('Levi');
-    this.addRow('test');
-    this.addRow('test2');
-    this.addRow('mygraph');
 
 }
 
@@ -199,23 +226,54 @@ OpenExperiment.prototype.select = function(row_num){
 
     var row = this.rows[row_num];
     if (row.selected == false){
-        row.className = 'open-row selected-row';
+        row.className = 'open-row selected-row';                                //highlight as selected
+        row.selected = true;
         if (this.selected_row != -1){
-            this.rows[this.selected_row].className = 'open-row open-row-hover'
+            this.rows[this.selected_row].className = 'open-row open-row-hover'  //change selected to normal (only one selected at a time)
+            this.rows[this.selected_row].selected = false;
         }
         this.selected_row = row_num;
     }
     else{
-        row.className = 'open-row open-row-hover';
+        row.className = 'open-row open-row-hover';                              //back to normal
+        row.selected = false;
         this.selected_row = -1;
     }
 
 }
 
-OpenExperiment.prototype.openFile = function(){
-    if (this.selected_row != -1){
-        //alert(this.rows[this.selected_row].innerHTML);
-        this.panel.gui.newConfig(editor, [this.rows[this.selected_row].innerHTML]);
+OpenExperiment.prototype.openFile = function(name){
+    if (name != undefined){
+        //open file based on name argument
+        this.panel.gui.newConfig(editor, [name]);
+    }
+    else{
+        if (this.selected_row != -1){
+            //open file based on selected row
+            this.panel.gui.newConfig(editor, [this.rows[this.selected_row].innerHTML]);
+        }
+    }
+}
+
+//allows users to upload their own files
+OpenExperiment.prototype.uploadFile = function(files){
+    if (files.length == 1){
+        var file = files[0];
+        var contents;
+        var name
+        console.log(file.name);
+        name = file.name.substring(0, file.name.length - 4);
+        var r = new FileReader();
+        r.onload = function(evt){
+            contents = evt.target.result;
+            if (file.type == 'text/xml'){
+                httpcomm.eihttp.upload_file(name, contents);
+            }
+            else{
+                alert('Filetype must be .xml');
+            }
+        }
+        r.readAsText(file);
     }
 }
 

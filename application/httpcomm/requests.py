@@ -26,7 +26,10 @@ class SAVE_EXPERIMENT:
                 t.q.put([agent.eihttp.save_experiment])
 
 class GET_EXPERIMENT_LIST:
-    pass
+    def GET(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                t.q.put([agent.eihttp.get_experiments])
 
 class OPEN_EXPERIMENT:
     def POST(self):
@@ -42,41 +45,74 @@ class CREATE_EXPERIMENT:
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.create_experiment, data['name']])
 
+class UPLOAD_FILE:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.upload_file, data['name'], data['contents']])
+
 #==========================#
 
         
 #Graph manipulation commands
 #==========================#
 
+class ADD_PATTERN:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.add_pattern, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['repeat_value'])])
+
+class DELETE_PATTERN:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.delete_pattern, data['positions']])
+
+class MOVE_PATTERN:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.move_pattern, int(data['position']), int(data['destination'])])
+
+class UPDATE_PATTERN:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.update_pattern, float(data['repeat_value']), int(data['position'])])
+
 class ADD_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['repeat_value']), int(data['position'])])
+                t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['pattern'])])
 
 class DELETE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.delete_segment, data['positions']])
-
-class UPDATE_SEGMENT:
-    def POST(self):
-        for t in threading.enumerate():
-            if t.name == 'agent':
-                data = json.loads(web.data())
-                t.q.put([agent.eihttp.update_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), float(data['repeat_value']), int(data['position'])])
-                #data = web.input()
-                #t.q.put([agent.eihttp.update_segment, float(form.start_value), float(form.end_value), float(form.rate), float(form.duration), float(form.repeat_value), int(form.position)])
+                t.q.put([agent.eihttp.delete_segment, data['positions'], int(data['pattern'])])
 
 class MOVE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.move_segment, data['position'], data['destination']])
+                t.q.put([agent.eihttp.move_segment, int(data['position']), int(data['destination']), int(data['pattern'])])
+
+class UPDATE_SEGMENT:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.update_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['position']), int(data['pattern'])])
 
 #==========================#
 

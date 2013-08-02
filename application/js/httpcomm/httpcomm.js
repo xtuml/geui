@@ -15,7 +15,9 @@ function HTTPcomm(){
     this.signals = {
         'version': new version(),
         'update_graph': new update_graph(),
-        'load_table': new load_table()
+        'load_table': new load_table(),
+        'load_experiments': new load_experiments(),
+        'upload_success': new upload_success()
     }
 
     // eihttp class -----------//
@@ -47,6 +49,13 @@ function HTTPcomm(){
     }
 
     this.eihttp.get_experiments = function(){
+        $.ajax({
+            type: 'GET',
+            url: 'get_experiments',
+            data: null,
+            success: null,
+            async:true
+        });
     }
 
     this.eihttp.open_experiment = function(name){
@@ -77,14 +86,90 @@ function HTTPcomm(){
         });
     }
 
-    this.eihttp.add_segment = function(start_value, end_value, rate, duration, repeat_value, position){
+    this.eihttp.upload_file = function(name, contents){
+        obj = {
+            name: name,
+            contents: contents
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'upload',
+            data: data,
+            success: null,
+            async: true
+        });
+    }
+
+    this.eihttp.add_pattern = function(start_value, end_value, rate, duration, repeat_value){
         obj = {
             start_value: start_value,
             end_value: end_value,
             rate: rate,
             duration: duration,
+            repeat_value: repeat_value
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'add_pattern',
+            data: data,
+            success: null,
+            async:true
+        });
+    }
+
+    this.eihttp.delete_pattern = function(positions){
+        obj = {
+            positions: positions
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'delete_pattern',
+            data: data,
+            success: null,
+            async:true
+        });
+    }
+
+    this.eihttp.move_pattern = function(position, destination){
+        obj = {
+            position: position,
+            destination: destination
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'move_pattern',
+            data: data,
+            success: null,
+            async:true
+        });
+    }
+
+    this.eihttp.update_pattern = function(repeat_value, position){
+        obj = {
             repeat_value: repeat_value,
             position: position
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'update_pattern',
+            data: data,
+            success: null,
+            async:true
+        });
+    }
+
+   this.eihttp.add_segment = function(start_value, end_value, rate, duration, pattern){
+        obj = {
+            start_value: start_value,
+            end_value: end_value,
+            rate: rate,
+            duration: duration,
+            pattern: pattern
         }
         data = JSON.stringify(obj);
         $.ajax({
@@ -96,9 +181,10 @@ function HTTPcomm(){
         });
     }
 
-    this.eihttp.delete_segment = function(positions){
+    this.eihttp.delete_segment = function(positions, pattern){
         obj = {
-            positions: positions
+            positions: positions,
+            pattern: pattern
         }
         data = JSON.stringify(obj);
         $.ajax({
@@ -110,34 +196,35 @@ function HTTPcomm(){
         });
     }
 
-    this.eihttp.update_segment = function(start_value, end_value, rate, duration, repeat_value, position){
+    this.eihttp.move_segment = function(position, destination, pattern){
         obj = {
-            start_value: start_value,
-            end_value: end_value,
-            rate: rate,
-            duration: duration,
-            repeat_value: repeat_value,
-            position: position
+            position: position,
+            destination: destination,
+            pattern: pattern
         }
         data = JSON.stringify(obj);
         $.ajax({
             type: 'POST',
-            url: 'update_segment',
+            url: 'move_segment',
             data: data,
             success: null,
             async:true
         });
     }
 
-    this.eihttp.move_segment = function(position, destination){
+    this.eihttp.update_segment = function(start_value, end_value, rate, duration, position, pattern){
         obj = {
+            start_value: start_value,
+            end_value: end_value,
+            rate: rate,
+            duration: duration,
             position: position,
-            destination: destination
+            pattern: pattern
         }
         data = JSON.stringify(obj);
         $.ajax({
             type: 'POST',
-            url: 'move_segment',
+            url: 'update_segment',
             data: data,
             success: null,
             async:true
@@ -158,13 +245,15 @@ HTTPcomm.prototype.run = function(){
             type: 'GET',
             url: 'command',
             data: name,
+            dataType: 'json',
             success: function(d){data = d},
             async:false
         });
         //if we received data, execute the command
-        if (data != 'None'){
+        if (data != 'None' && data != null){
             console.log(data);
-            httpcomm.unpack(JSON.parse(data));
+            //httpcomm.unpack(JSON.parse(data));
+            httpcomm.unpack(data);
         }
         //check if still running
         if (httpcomm.running == false){
@@ -203,6 +292,24 @@ load_table = function(){
     this.unpack = function(data){
         if (this.enabled == true){
             client.eihttp.load_table(data.rows);
+        }
+    }
+}
+
+load_experiments = function(){
+    this.enabled = false;
+    this.unpack = function(data){
+        if (this.enabled == true){
+            client.eihttp.load_experiments(data.experiments);
+        }
+    }
+}
+
+upload_success = function(){
+    this.enabled = false;
+    this.unpack = function(data){
+        if (this.enabled == true){
+            client.eihttp.upload_success(data.name);
         }
     }
 }

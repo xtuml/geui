@@ -37,10 +37,6 @@ function WaveformEditor(gui){
     this.buttons.element.style.left = 'calc(-100% - 10px)';
     this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
 
-    //add the elements
-    this.gui.panels[this.views['WaveformChart']].addView(this.chart);
-    this.gui.panels[this.views['WaveformTable']].addView(this.table);
-    this.gui.panels[this.views['WaveformButtons']].addView(this.buttons);
 
     //initialize the chart
     //this.chart.initiateChart();
@@ -53,6 +49,16 @@ WaveformEditor.prototype.openWaveform = function(name){
 
 //prepare the config before entry
 WaveformEditor.prototype.prepare = function(args){
+    //remove the old elements
+    this.gui.panels[this.views['WaveformChart']].removeView();
+    this.gui.panels[this.views['WaveformTable']].removeView();
+    this.gui.panels[this.views['WaveformButtons']].removeView();
+    
+    //add the elements
+    this.gui.panels[this.views['WaveformChart']].addView(this.chart);
+    this.gui.panels[this.views['WaveformTable']].addView(this.table);
+    this.gui.panels[this.views['WaveformButtons']].addView(this.buttons);
+
     //update size and position
     this.chart.panel.updateSize(this.chart.height, this.chart.width);
     this.chart.panel.updatePosition(this.chart.x, this.chart.y);
@@ -65,9 +71,22 @@ WaveformEditor.prototype.prepare = function(args){
     this.chart.initiateChart();
 
     //load a waveform
+    //clear table rows
+    for (row in this.table.rows){
+        this.table.input_table.removeChild(this.table.rows[row]);       //remove the element
+    }
+    this.table.rows = [];
+    this.row_count = 0;
+
+    //open waveform
     this.openWaveform(args[0]);
 
     //enable signals applying to this config
+    //disable all
+    for (signal in httpcomm.signals){
+        httpcomm.signals[signal].enabled = false;
+    }
+    //enable the ones needed
     httpcomm.signals['update_graph'].enabled = true;
     httpcomm.signals['load_table'].enabled = true;
 
@@ -116,9 +135,6 @@ WaveformEditor.prototype.exit = function(delay){
     this.buttons.element.style.left = 'calc(-100% - 10px)';
     this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
 
-    //disable chart and table interface signals
-    httpcomm.signals['update_graph'].enabled = false;
-    httpcomm.signals['load_table'].enabled = false;
 }
 
 //-----------------------------//
@@ -241,6 +257,25 @@ WaveformChart.prototype.updateChart = function(del, add, update){
 
 }
 
+//update plotband
+WaveformChart.prototype.updateBand = function(position){
+    this.chart.xAxis[0].removePlotBand('band');
+    var options = {
+        color: {
+                linearGradient:  [0, 0, 0, 200],
+                stops: [
+                    [0, '#49559B'],
+                    [1, '#313967']
+                ]
+            },
+        from: this.chart.series[0].data[(position - 1) * 2].x,
+        to: this.chart.series[0].data[(position - 1) * 2 + 1].x,
+        id: 'band'
+    }
+    
+    this.chart.xAxis[0].addPlotBand(options);
+}
+
 //-----------------------------//
 
 
@@ -353,7 +388,9 @@ WaveformTable.prototype.addRow = function(position, values){
     row.parent_view = this;
     row.selected = false
     row.row_num = parseInt(position) + 1;
-    row.onblur = function(){alert('blur')};
+    row.onclick = function(e){
+        e.target.parent_view.panel.gui.panels[e.target.parent_view.panel.gui.config.views['WaveformChart']].view.updateBand(e.target.parent_row.row_num);
+    }
 
     var select_cell = document.createElement('div');
     select_cell.className = 'select-cell';
@@ -848,7 +885,8 @@ WaveformTable.prototype.update = function(row_num){
         var position = (parseInt(row_num) - 1);
 
         //send update signal
-        httpcomm.eihttp.update_segment(start_value, end_value, rate, duration, repeat_value, position);
+        httpcomm.eihttp.update_pattern(repeat_value, position);                                 //will change when pattern editing is ready
+        httpcomm.eihttp.update_segment(start_value, end_value, rate, duration, 0, position);    //will change when pattern editing is ready
     }
 }
 
@@ -949,7 +987,7 @@ WaveformTable.prototype.endDrag = function(ev){
     this.drag_row.className = 'table-row row-ease';
 
     //send move signal to the server
-    httpcomm.eihttp.move_segment(this.drag_initial_index, this.drag_row_index)
+    httpcomm.eihttp.move_pattern(this.drag_initial_index, this.drag_row_index)
 
     //remove listeners
     this.input_table.onmousemove = null;
@@ -1036,7 +1074,7 @@ WaveformButtons.prototype.add_segment = function(){
 
     var position = this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.row_count;
     //send add signal
-    httpcomm.eihttp.add_segment(0,0,0,10,1,position);
+    httpcomm.eihttp.add_pattern(0,0,0,10,1);
 
     //add new table row
     this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.addRow(position, [0,0,0,10,1]);
@@ -1058,7 +1096,7 @@ WaveformButtons.prototype.delete_segment = function(){
     }
 
     //send delete signal
-    httpcomm.eihttp.delete_segment(positions);
+    httpcomm.eihttp.delete_pattern(positions);
 
     //delete rows
     for (var n = 0; n < positions.length; n++){

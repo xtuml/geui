@@ -17,5 +17,4 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     //run the polling
     httpcomm.run();
 
-
 });

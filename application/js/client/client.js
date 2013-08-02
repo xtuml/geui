@@ -24,11 +24,20 @@ function Client(){
 
     this.eihttp.load_table = function(rows){
         client.gui.panels[client.gui.config.views['WaveformTable']].view.loadTable(rows);
-
     }
 
     this.eihttp.version = function(version){
         alert('Version: ' + version);
+    }
+
+    this.eihttp.load_experiments = function(experiments){
+        for (exp in experiments){
+            client.gui.panels[client.gui.config.views['OpenExperiment']].view.addRow(experiments[exp]);
+        }
+    }
+
+    this.eihttp.upload_success = function(name){
+        client.gui.panels[client.gui.config.views['OpenExperiment']].view.openFile(name);
     }
 
     //-------------------------//
@@ -52,6 +61,8 @@ function Gui(){
         'BL': new Panel('BL',this),
         'BR': new Panel('BR',this)
     };
+    this.loader = document.getElementById('spinner_container');
+    this.loader.style.display = 'none';
 }
 
 //add to config stack
@@ -61,21 +72,26 @@ Gui.prototype.newConfig = function(new_config, args){
     //set timeout
     var timeout = 0;
     if (this.config != null){
-        timeout = this.config.exit_time;
+        timeout = this.config.exit_time;        //timeout is in seconds
         this.config.exit(0);
     }
 
-    var self = this;
+    //adjust stack
+    this.configs.push(this.config);
+    this.config = new_config;
+
     setTimeout(function(){
+
         //prepare new config
         new_config.prepare(args);
 
-        //enter the new config
-        new_config.enter(0);
+        setTimeout(function(){
 
-        //adjust stack
-        self.configs.push(self.config);
-        self.config = new_config;
+            //enter the new config
+            new_config.enter(0);
+
+        }, 10);        //10 milliseconds to allow prepare
+
     },(timeout * 1000));
 
 }
@@ -87,19 +103,25 @@ Gui.prototype.popConfig = function(args){
     this.config.exit(0);
 
     var new_config = this.configs.pop();
-    var self = this;
-    setTimeout(function(){
-        if (new_config != null){
+
+    //adjust stack
+    this.config = new_config;
+
+    if (new_config != null){
+        setTimeout(function(){
+
             //prepare new config
             new_config.prepare(args);
 
-            //enter new config
-            new_config.enter(0);
-        }
+            setTimeout(function(){
 
-        //adjust stack
-        this.config = new_config;
-    }, (timeout * 1000));
+                //enter new config
+                new_config.enter(0);
+
+            }, 10);        //10 milliseconds to allow prepare
+
+        }, (timeout * 1000));
+    }
 
 }
 
@@ -122,7 +144,9 @@ Panel.prototype.addView = function(view){
 }
 
 Panel.prototype.removeView = function(){
-    this.element.removeChild(this.view.element);
+    if (this.view != null){
+        this.element.removeChild(this.view.element);
+    }
     this.view = null;
 }
 
