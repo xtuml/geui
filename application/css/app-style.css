@@ -129,10 +129,30 @@ Styling sheet for X8 GUI
     width: calc(100% - 4px);
     width: -webkit-calc(100% - 4px);
     border-radius: 8px;
-    overflow: hidden
+    overflow: hidden;
 }
 
-
+/*Shows panels for testing */
+/*
+#TL {
+    background-color: rgba(255,0,0,0.5);
+}
+#TR {
+    background-color: rgba(0,255,0,0.5);
+}
+#ML {
+    background-color: rgba(0,0,255,0.5);
+}
+#MR {
+    background-color: rgba(255,255,0,0.5);
+}
+#BL {
+    background-color: rgba(0,255,255,0.5);
+}
+#BR {
+    background-color: rgba(255,0,255,0.5);
+}
+*/
 
 /* button style classes */
 
@@ -301,7 +321,6 @@ Styling sheet for X8 GUI
     -webkit-user-select: none;
     -o-user-select: none;
     user-select: none;
-    min-width: 600px;
 }
 
 .main-row {
@@ -319,7 +338,6 @@ Styling sheet for X8 GUI
     -webkit-user-select: none;
     -o-user-select: none;
     user-select: none;
-    min-width: 600px;
 }
 
 .table-row {
@@ -339,18 +357,18 @@ Styling sheet for X8 GUI
     user-select: none;
 }
 
-.row-ease {
-    transition: top 0.25s;
-    -webkit-transition: top 0.25s;
-}
-
-.table-row:hover {
+.table-row-hover:hover {
     background-image: -webkit-gradient(linear, left top, left bottom, from(#DCEEE3), to(#86C49D)); /* Saf4+, Chrome */
     background-image: -webkit-linear-gradient(top, #DCEEE3, #86C49D); /* Chrome 10+, Saf5.1+ */
     background-image:    -moz-linear-gradient(top, #DCEEE3, #86C49D); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #DCEEE3, #86C49D); /* IE10 */
     background-image:      -o-linear-gradient(top, #DCEEE3, #86C49D); /* Opera 11.10+ */
     background-image:         linear-gradient(top, #DCEEE3, #86C49D);
+}
+
+.row-ease {
+    transition: top 0.25s;
+    -webkit-transition: top 0.25s;
 }
 
 .select-cell {
@@ -410,8 +428,6 @@ Styling sheet for X8 GUI
 .value-cell {
     position: absolute;
     height: 100%;
-    width: calc((100% - 150px) / 5);
-    width: -webkit-calc((100% - 150px) / 5);
     border: 1px solid #666666;
 }
 
@@ -427,8 +443,6 @@ Styling sheet for X8 GUI
 .label-cell {
     position: absolute;
     height: 100%;
-    width: calc((100% - 150px) / 5);
-    width: -webkit-calc((100% - 150px) / 5);
     border: 1px solid #666666;
     font-size: 18px;
     color: black;
@@ -437,6 +451,16 @@ Styling sheet for X8 GUI
     cursor: default;
     overflow: hidden;
     font-family: Arial;
+}
+
+.pattern-cell {
+    width: calc(100% - 150px);
+    width: -webkit-calc(100% - 150px);
+}
+
+.segment-cell {
+    width: calc((100% - 150px) / 4);
+    width: -webkit-calc((100% - 150px) / 4);
 }
 
 .update-cell {

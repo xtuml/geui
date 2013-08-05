@@ -2,8 +2,9 @@
 
 Defines the WaveformEditor configuration
 
-Defines WaveformChart, WaveformTable, and 
-WaveformButtons view classes.
+Defines WaveformChart, WaveformTablePatterns,  
+WaveformTableSegments, WaveformButtonsPatterns,
+and WaveformButtonsSegments view classes.
 
 */
 
@@ -20,23 +21,64 @@ function WaveformEditor(gui){
     //object holding addresses to each of the views
     this.views = {
         WaveformChart: 'TL',
-        WaveformTable: 'ML',
+        WaveformTablePatterns: 'ML',
+        WaveformTableSegments: 'MR',
         WaveformButtons: 'BL'
     };
 
     //create the views
     this.chart = new WaveformChart(this.gui.panels[this.views['WaveformChart']]);
-    this.table = new WaveformTable(this.gui.panels[this.views['WaveformTable']]);
+    this.table_patterns = new WaveformTablePatterns(this.gui.panels[this.views['WaveformTablePatterns']]);
+    this.table_segments = new WaveformTableSegments(this.gui.panels[this.views['WaveformTableSegments']]);
     this.buttons = new WaveformButtons(this.gui.panels[this.views['WaveformButtons']]);
 
     //setup the animation
     this.chart.element.style.left = 'calc(-100% - 10px)';
     this.chart.element.style.left = '-webkit-calc(-100% - 10px)';
-    this.table.element.style.left = 'calc(-100% - 10px)';
-    this.table.element.style.left = '-webkit-calc(-100% - 10px)';
+    this.table_patterns.element.style.left = 'calc(-100% - 10px)';
+    this.table_patterns.element.style.left = '-webkit-calc(-100% - 10px)';
+    this.table_segments.element.style.left = 'calc(-200% - 10px)';
+    this.table_segments.element.style.left = '-webkit-calc(-200% - 10px)';
     this.buttons.element.style.left = 'calc(-100% - 10px)';
     this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
 
+}
+
+//load tables
+WaveformEditor.prototype.loadTable = function(rows, table_id){
+    if (table_id == 'pattern'){
+
+        //clear table rows
+        for (row in this.table_patterns.rows){
+            this.table_patterns.input_table.removeChild(this.table_patterns.rows[row]);       //remove the element
+        }
+        this.table_patterns.rows = [];
+        this.table_patterns.row_count = 0;
+        this.table_patterns.selected_row = -1;
+
+        //add new rows
+        for (row in rows){
+            this.table_patterns.addRow(this.table_patterns.row_count, rows[row]);
+        }
+
+        //select the first row
+        this.table_patterns.select(0);
+    }
+    else if (table_id == 'segment'){
+
+        //clear table rows
+        for (row in this.table_segments.rows){
+            this.table_segments.input_table.removeChild(this.table_segments.rows[row]);       //remove the element
+        }
+        this.table_segments.rows = [];
+        this.table_segments.row_count = 0;
+
+        //add new rows
+        for (row in rows){
+            this.table_segments.addRow(this.table_segments.row_count, rows[row]);
+        }
+    }
+    else{console.log(table_id);}
 }
 
 //load the waveform file
@@ -44,6 +86,7 @@ WaveformEditor.prototype.openWaveform = function(name){
     httpcomm.eihttp.open_experiment(name);
 }
 
+//create a waveform
 WaveformEditor.prototype.createWaveform = function(name){
     httpcomm.eihttp.create_experiment(name);
 }
@@ -51,33 +94,31 @@ WaveformEditor.prototype.createWaveform = function(name){
 //prepare the config before entry
 WaveformEditor.prototype.prepare = function(args){
     //remove the old elements
-    this.gui.panels[this.views['WaveformChart']].removeView();
-    this.gui.panels[this.views['WaveformTable']].removeView();
-    this.gui.panels[this.views['WaveformButtons']].removeView();
+    this.gui.clearPanels();
     
     //add the elements
     this.gui.panels[this.views['WaveformChart']].addView(this.chart);
-    this.gui.panels[this.views['WaveformTable']].addView(this.table);
+    this.gui.panels[this.views['WaveformTablePatterns']].addView(this.table_patterns);
+    this.gui.panels[this.views['WaveformTableSegments']].addView(this.table_segments);
     this.gui.panels[this.views['WaveformButtons']].addView(this.buttons);
 
     //update size and position
     this.chart.panel.updateSize(this.chart.height, this.chart.width);
     this.chart.panel.updatePosition(this.chart.x, this.chart.y);
-    this.table.panel.updateSize(this.table.height, this.table.width);
-    this.table.panel.updatePosition(this.table.x, this.table.y);
+    this.table_patterns.panel.updateSize(this.table_patterns.height, this.table_patterns.width);
+    this.table_patterns.panel.updatePosition(this.table_patterns.x, this.table_patterns.y);
+    this.table_segments.panel.updateSize(this.table_segments.height, this.table_segments.width);
+    this.table_segments.panel.updatePosition(this.table_segments.x, this.table_segments.y);
     this.buttons.panel.updateSize(this.buttons.height, this.buttons.width);
     this.buttons.panel.updatePosition(this.buttons.x, this.buttons.y);
 
+    // WAVEFORM CHART reset//
     //initate the chart
     this.chart.initiateChart();
 
-    //load a waveform
-    //clear table rows
-    for (row in this.table.rows){
-        this.table.input_table.removeChild(this.table.rows[row]);       //remove the element
-    }
-    this.table.rows = [];
-    this.table.row_count = 0;
+    // WAVEFORM TABLE PATTERNS reset//
+
+    // WAVEFORM TABLE SEGMENTS reset//
 
     //open waveform
     if (args[1] == 'open'){
@@ -108,14 +149,19 @@ WaveformEditor.prototype.enter = function(delay){
     $(this.chart.element).css('-webkit-transition-delay', (delay + 0.5) + 's');
     this.chart.element.style.left = '5px';
 
-    this.table.element.className = 'app-cubby fly';
-    $(this.table.element).css('transition-delay', (delay + 0.65) + 's');
-    $(this.table.element).css('-webkit-transition-delay', (delay + 0.65) + 's');
-    this.table.element.style.left = '5px';
+    this.table_segments.element.className = 'app-cubby fly';
+    $(this.table_segments.element).css('transition-delay', (delay + 0.65) + 's');
+    $(this.table_segments.element).css('-webkit-transition-delay', (delay + 0.65) + 's');
+    this.table_segments.element.style.left = '5px';
+
+    this.table_patterns.element.className = 'app-cubby fly';
+    $(this.table_patterns.element).css('transition-delay', (delay + 0.8) + 's');
+    $(this.table_patterns.element).css('-webkit-transition-delay', (delay + 0.8) + 's');
+    this.table_patterns.element.style.left = '5px';
 
     this.buttons.element.className = 'app-cubby fly';
-    $(this.buttons.element).css('transition-delay', (delay + 0.8) + 's');
-    $(this.buttons.element).css('-webkit-transition-delay', (delay + 0.8) + 's');
+    $(this.buttons.element).css('transition-delay', (delay + 0.95) + 's');
+    $(this.buttons.element).css('-webkit-transition-delay', (delay + 0.95) + 's');
     this.buttons.element.style.left = '5px';
 
 }
@@ -130,15 +176,21 @@ WaveformEditor.prototype.exit = function(delay){
     this.chart.element.style.left = 'calc(-100% - 10px)';
     this.chart.element.style.left = '-webkit-calc(-100% - 10px)';
 
-    this.table.element.className = 'app-cubby fly';
-    $(this.table.element).css('transition-delay', (delay + 0.15) + 's');
-    $(this.table.element).css('-webkit-transition-delay', (delay + 0.15) + 's');
-    this.table.element.style.left = 'calc(-100% - 10px)';
-    this.table.element.style.left = '-webkit-calc(-100% - 10px)';
+    this.table_patterns.element.className = 'app-cubby fly';
+    $(this.table_patterns.element).css('transition-delay', (delay + 0.15) + 's');
+    $(this.table_patterns.element).css('-webkit-transition-delay', (delay + 0.15) + 's');
+    this.table_patterns.element.style.left = 'calc(-100% - 10px)';
+    this.table_patterns.element.style.left = '-webkit-calc(-100% - 10px)';
+
+    this.table_segments.element.className = 'app-cubby fly';
+    $(this.table_segments.element).css('transition-delay', (delay + 0.3) + 's');
+    $(this.table_segments.element).css('-webkit-transition-delay', (delay + 0.3) + 's');
+    this.table_segments.element.style.left = 'calc(-200% - 10px)';
+    this.table_segments.element.style.left = '-webkit-calc(-200% - 10px)';
 
     this.buttons.element.className = 'app-cubby fly';
-    $(this.buttons.element).css('transition-delay', (delay + 0.3) + 's');
-    $(this.buttons.element).css('-webkit-transition-delay', (delay + 0.3) + 's');
+    $(this.buttons.element).css('transition-delay', (delay + 0.45) + 's');
+    $(this.buttons.element).css('-webkit-transition-delay', (delay + 0.45) + 's');
     this.buttons.element.style.left = 'calc(-100% - 10px)';
     this.buttons.element.style.left = '-webkit-calc(-100% - 10px)';
 
@@ -275,8 +327,8 @@ WaveformChart.prototype.updateBand = function(position){
                     [1, '#313967']
                 ]
             },
-        from: this.chart.series[0].data[(position - 1) * 2].x,
-        to: this.chart.series[0].data[(position - 1) * 2 + 1].x,
+        from: this.chart.series[0].data[(position) * 2].x,
+        to: this.chart.series[0].data[(position) * 2 + 1].x,
         id: 'band'
     }
     
@@ -287,9 +339,9 @@ WaveformChart.prototype.updateBand = function(position){
 
 
 
-// WaveformTable class --------//
+// WaveformTablePatterns class --------//
 
-function WaveformTable(panel){
+function WaveformTablePatterns(panel){
     //attributes that all views have:
     this.panel = panel;
     this.element = document.createElement('div');
@@ -301,8 +353,466 @@ function WaveformTable(panel){
 
     this.height = 'calc((100% - 64px) / 2)';
     this.height = '-webkit-calc((100% - 64px) / 2)';
-    this.width = '100%';
+    this.width = 'calc(100% - (150px + (((100% - 300px) / 5) * 4)))';
+    this.width = '-webkit-calc(100% - (150px + (((100% - 300px) / 5) * 4)))';
     this.x = '0px';
+    this.y = 'calc((100% - 64px) / 2)';
+    this.y = '-webkit-calc((100% - 64px) / 2)';
+
+    //container for the value rows
+    this.input_table = document.createElement('div');
+    this.input_table.className = 'input-table';
+    this.input_table.parent_view = this;
+    this.content_pane.appendChild(this.input_table);
+
+    this.rows = [];             //container for table rows
+    this.row_count = 0;         //number of rows in the table
+    this.current_row;           //row number of the row that's being edited
+    this.selected_row = -1;     //keep track of row that is selected
+
+    //drag attributes
+    this.y_offset = 0;
+    this.table_offset = 0;
+    this.drag_row = null;
+    this.drag_row_index = 0;
+    this.drag_initial_index = 0;
+
+    //object for checking input format
+    this.validate_methods = {
+        integer: {
+            method: function integer(value){
+                return /^(0|-?[1-9][0-9]*)$/.test(value);
+            },
+            message: 'Enter a valid integer',
+            decimals: 0
+        },
+    }
+
+    //object for input placeholders, label names, units, and number format
+    this.value_format = {
+        repeat_value: {
+            placeholder: 'Repeat number',
+            label: 'Number of Repeats',
+            units: 'times',
+            format: 'integer'
+        }
+    }
+
+    //adds the label row
+    this.labels = this.addMainRow();
+
+}
+
+// add a value row
+WaveformTablePatterns.prototype.addRow = function(position, values){
+
+    var table_patterns = this;
+
+    var row = document.createElement('div');
+    row.className = 'table-row row-ease table-row-hover';
+    var y = parseInt(position) * 50;
+    row.style.top = y + 'px';
+    row.selected = false;
+    row.full_selected = false;
+    row.row_num = parseInt(position) + 1;
+    row.onclick = function(){
+        table_patterns.select(row.row_num - 1);
+    }
+
+    var select_cell = document.createElement('div');
+    select_cell.className = 'select-cell';
+    select_cell.name = 'select_cell';
+    var select_dot = document.createElement('div');
+    select_dot.className = 'select-dot';
+    select_cell.appendChild(select_dot);
+    select_cell.onclick = function(){table_patterns.select_dots(select_dot, row)};
+    row.appendChild(select_cell);
+
+    var number_cell = document.createElement('div');
+    number_cell.className = 'number-cell';
+    number_cell.name = 'number_cell';
+    number_cell.innerHTML = parseInt(position) + 1;
+    number_cell.row_num = parseInt(position) + 1;
+    number_cell.onmouseover = function(){table_patterns.numOver(number_cell)};
+    number_cell.onmouseout = function(){table_patterns.numOut(number_cell)};
+    number_cell.onmousedown = function(e){table_patterns.startDrag(e, row)};
+    row.appendChild(number_cell);
+
+    var repeat_cell = document.createElement('div');
+    repeat_cell.className = 'value-cell pattern-cell';
+    repeat_cell.name = 'repeat_cell';
+    repeat_cell.style.left = '100px';
+    var repeat_input_wrapper = document.createElement('div');
+    repeat_input_wrapper.className = 'input-wrapper';
+    var repeat_input = document.createElement('input');
+    repeat_input.className = 'value-input';
+    repeat_input.placeholder = this.value_format['repeat_value']['placeholder'];
+    repeat_input.value = this.formatNum(values[0], this.value_format['repeat_value']['format']);
+    repeat_input.onblur = function(){
+        table_patterns.validateSimple([row.row_num, 2],'repeat_value', table_patterns.value_format['repeat_value']['format']);
+    };
+    repeat_input.onkeypress = function(e){
+       if (e.keyCode == 13){        //enter key 
+           table_patterns.update(row.row_num);
+       }
+    }
+    var repeat_label = document.createElement('div');
+    repeat_label.className = 'input-label';
+    repeat_label.innerHTML = this.value_format['repeat_value']['units'];
+    repeat_input_wrapper.appendChild(repeat_input);
+    repeat_input_wrapper.appendChild(repeat_label);
+    repeat_cell.appendChild(repeat_input_wrapper);
+    row.appendChild(repeat_cell);
+
+    var update_cell = document.createElement('div');
+    update_cell.className = 'update-cell';
+    update_cell.style.left = 'calc(100% - 50px)';
+    update_cell.style.left = '-webkit-calc(100% - 50px)';
+    update_cell.name = 'update_cell';
+    var update_button = document.createElement('div');
+    update_button.className = 'btn';
+    update_button.style.height = '44px';
+    update_button.style.width = '44px';
+    update_button.style.top = '2px';
+    update_button.style.left = '2px';
+    var update_symbol = document.createElement('div');
+    update_symbol.className = 'update-btn';
+    update_symbol.tabIndex = 0;
+    update_symbol.onclick = function(){table_patterns.update(row.row_num)}
+    update_symbol.onkeypress = function(e){
+        if (e.keyCode == 13){        //enter key 
+            table_patterns.update(row.row_num);
+        }
+    }
+    update_button.appendChild(update_symbol);
+    update_cell.appendChild(update_button);
+    row.appendChild(update_cell);
+
+    this.input_table.appendChild(row);
+    this.row_count += 1;
+    this.rows.push(row);
+}
+
+// add the label row
+WaveformTablePatterns.prototype.addMainRow = function(){
+
+    var table_patterns = this;
+
+    var row = document.createElement('div');
+    row.className = 'main-row';
+    row.style.top = '0px';
+    row.parent_view = this;
+
+    var select_cell = document.createElement('div');
+    select_cell.className = 'select-cell';
+    select_cell.parent_view = this;
+    var select_dot = document.createElement('div');
+    select_dot.className = 'select-dot';
+    select_dot.style.top = '7px';
+    select_dot.parent_view = this;
+    select_cell.appendChild(select_dot);
+    select_cell.onclick = function(){
+        if (select_dot.className == 'select-dot'){
+            select_dot.className = 'select-dot selected';
+            for (var c = 0;c < table_patterns.rows.length;c++){
+                table_patterns.rows[c].selected = true;
+                table_patterns.rows[c].childNodes[0].childNodes[0].className = 'select-dot selected';
+            }
+        }
+        else{
+            select_dot.className = 'select-dot';
+            for (var c = 0;c < table_patterns.rows.length;c++){
+                table_patterns.rows[c].selected = false;
+                table_patterns.rows[c].childNodes[0].childNodes[0].className = 'select-dot';
+            }
+        }
+    };
+    row.appendChild(select_cell);
+
+    var number_cell = document.createElement('div');
+    number_cell.className = 'number-cell';
+    number_cell.parent_view = this;
+    row.appendChild(number_cell);
+
+    var repeat_cell = document.createElement('div');
+    repeat_cell.className = 'label-cell pattern-cell';
+    repeat_cell.style.left = '100px';
+    repeat_cell.parent_view = this;
+    repeat_cell.innerHTML = this.value_format['repeat_value']['label'];
+    row.appendChild(repeat_cell);
+
+    var update_cell = document.createElement('div');
+    update_cell.className = 'update-cell';
+    update_cell.style.left = 'calc(100% - 50px)';
+    update_cell.style.left = '-webkit-calc(100% - 50px)';
+    update_cell.parent_view = this;
+    row.appendChild(update_cell);
+
+    this.content_pane.appendChild(row);
+    return row;
+}
+
+// changes appearance of number cell when hovered
+WaveformTablePatterns.prototype.numOver = function(num){
+    num.innerHTML = '';
+    num.className = 'number-cell dots';
+}
+
+// changes appearance of number cell when mouse out
+WaveformTablePatterns.prototype.numOut = function(num){
+    num.className = 'number-cell';
+    num.innerHTML = num.row_num;
+}
+
+
+//validates the format of the numbers only
+//called everytime the focus leaves the input box and when it is submitted
+WaveformTablePatterns.prototype.validateSimple = function(address, type, method){
+    //validation code 
+    var value_cell = this.rows[address[0] - 1].childNodes[address[1]];
+    var value = $.trim(value_cell.childNodes[0].childNodes[0].value);
+
+    if (value == '' || this.validate_methods[method]['method'](value)){                                 //all ok
+        value_cell.className = 'value-cell pattern-cell';                                               //put back to normal
+        value_cell.childNodes[0].childNodes[0].placeholder = this.value_format[type]['placeholder'];    //reset placeholder
+        if (value != ''){
+            value_cell.childNodes[0].childNodes[0].value = this.formatNum(value, method);               //format number
+        }
+        return true;
+    }
+    else{                                                                                               //invalid fomat
+        value_cell.className = 'value-cell pattern-cell value-invalid';                                 //turn red
+        value_cell.childNodes[0].childNodes[0].value = '';                                              //clear cell
+        value_cell.childNodes[0].childNodes[0].placeholder = this.validate_methods[method]['message'];  //give error message
+        return false;
+    }
+
+}
+
+//validates the interdependencies of the values 
+WaveformTablePatterns.prototype.validateComplex = function(row_num){
+    //variable if ok to submit or not
+    var submit = false;
+
+    //check repeat cell
+    var repeat_input = this.rows[row_num - 1].childNodes[2].childNodes[0].childNodes[0]
+    //check if it's blank
+    if (repeat_input.value == ''){
+        repeat_input.parentNode.parentNode.className = 'value-cell pattern-cell value-invalid';
+        repeat_input.placeholder = 'Must enter a value';
+        submit = false;
+    }
+    else{
+        submit = true;
+    }
+
+    return submit;
+}
+
+//puts a number to a specified number of decimals (through this.validate_methods)
+WaveformTablePatterns.prototype.formatNum = function(value, method){
+    return (value*1).toFixed(this.validate_methods[method]['decimals']);
+}
+
+//updates a row's values and posts the update to the server
+WaveformTablePatterns.prototype.update = function(row_num){
+    //row_num is row index (starting at 1)
+    if (this.validateSimple([row_num, 2], 'repeat_value', this.value_format['repeat_value']['format'])){
+        if (this.validateComplex(row_num)){
+            var repeat_value = this.rows[parseInt(row_num) - 1].childNodes[2].childNodes[0].childNodes[0].value;
+            var position = (parseInt(row_num) - 1);
+
+            //send update signal
+            httpcomm.eihttp.update_pattern(repeat_value, position);
+        }
+    }
+}
+
+// gets the selected rows and returns as array of row indices
+WaveformTablePatterns.prototype.getSelected = function(){
+    var selected = [];
+    for (var c = 0;c < this.rows.length;c++){
+        if (this.rows[c].selected == true){
+            selected.push(c);
+        }
+    }
+    return selected;
+}
+
+//Selects row for deleting
+WaveformTablePatterns.prototype.select_dots = function(dot, row){
+    if (dot.className == 'select-dot'){
+            dot.className = 'select-dot selected';
+            row.selected = true;
+        }
+        else{
+            dot.className = 'select-dot';
+            row.selected = false;
+        }
+        var selected = this.getSelected();
+        if (selected.length == this.row_count){
+            this.labels.childNodes[0].childNodes[0].className = 'select-dot selected';
+        }
+        else{
+            this.labels.childNodes[0].childNodes[0].className = 'select-dot';
+        }
+}
+
+//Selects row to display segments inside
+WaveformTablePatterns.prototype.select = function(row_num){
+
+    console.log('selecting');
+
+    var row = this.rows[row_num];
+    if (row.full_selected == false){
+        //update row
+        row.className = 'table-row row-ease selected-row';                                  //highlight as selected
+        row.full_selected = true;
+
+        //update plot band
+        this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.updateBand(row_num);
+
+        // reload segment table
+        httpcomm.eihttp.request_table('segment', row_num);
+
+        if (this.selected_row != -1){
+            this.rows[this.selected_row].className = 'table-row row-ease open-row-hover'    //change selected to normal (only one selected at a time)
+            this.rows[this.selected_row].full_selected = false;
+        }
+        this.selected_row = row_num;
+    }
+
+}
+
+// updates the positions of the rows when it's deleted or moved
+WaveformTablePatterns.prototype.updatePositions = function(){
+    for (var c = 0;c < this.rows.length;c++){
+        var y = c * 50;
+        this.rows[c].style.top = y + 'px';
+        this.rows[c].childNodes[1].innerHTML = (c + 1);
+        this.rows[c].row_num = (c + 1);
+        this.rows[c].childNodes[1].row_num = (c + 1);
+    }
+}
+
+//starts drag of a row
+WaveformTablePatterns.prototype.startDrag = function(ev, row){
+
+    //unselect all
+    this.selected_row = -1;
+    for (r in this.rows){
+        this.rows[r].className = 'table-row row-ease table-row-hover';
+        this.rows[r].full_selected = false;
+    }
+
+    //bring row to front
+    for (var c = 0;c < this.rows.length;c++){
+        this.rows[c].style.zIndex = 0;
+    }
+    row.style.zIndex = 1;
+
+    //set offset variables
+    this.y_offset = ev.offsetY;
+    this.table_offset = ev.pageY - (ev.offsetY + ev.target.parentNode.offsetTop);
+    this.drag_row = row;
+    this.drag_row_index = this.drag_row.row_num - 1;
+    this.drag_initial_index = this.drag_row_index;
+    this.drag_row.className = 'table-row table-row-hover';
+
+    //add listeners
+    var table_patterns = this
+
+    this.input_table.onmousemove = function(e){
+        table_patterns.drag(e);
+    };
+    this.input_table.onmouseup = function(e){
+        table_patterns.endDrag(e);
+    };
+    $(this.input_table).mouseleave(function(e){
+        table_patterns.endDrag(e);
+    });
+}
+
+//dragging a row
+WaveformTablePatterns.prototype.drag = function(ev){
+    //move row
+    var new_y = ev.pageY - (this.y_offset + this.table_offset);
+    if (new_y < 0){
+        new_y = 0;
+    }
+    else if (new_y > (this.row_count - 1) * 50){
+        new_y = (this.row_count - 1) * 50;
+    }
+    var index = Math.round(new_y / 50);
+    this.drag_row.style.top = new_y + 'px';
+
+    //rearrange other rows
+    if (index != this.drag_row_index){                  //if it has moved a position
+        this.rows.splice(this.drag_row_index, 1);
+        this.rows.splice(index, 0, this.drag_row);
+        this.drag_row_index = index;
+        for (var c = 0;c < this.rows.length;c++){
+            if (c != index){                            //all the other rows
+                var y = c * 50;
+                this.rows[c].style.top = y + 'px';
+                this.rows[c].childNodes[1].innerHTML = (c + 1);
+            }
+            this.rows[c].row_num = (c + 1);
+            this.rows[c].childNodes[1].row_num = (c + 1);
+        }
+    }
+
+}
+
+//ends the drag of a row
+WaveformTablePatterns.prototype.endDrag = function(ev){
+    //lock to a multiple of 50
+    var new_y = ev.pageY - (this.y_offset + this.table_offset);
+    var index = new_y / 50;
+    new_y = Math.round(index) * 50;
+    if (new_y < 0){
+        new_y = 0;
+    }
+    else if (new_y > (this.row_count - 1) * 50){
+        new_y = (this.row_count - 1) * 50;
+    }
+    this.drag_row.style.top = new_y + 'px';
+    this.drag_row.className = 'table-row row-ease table-row-hover';
+
+    //update selected row
+    this.select(this.drag_row_index);
+
+    //send move signal to the server
+    httpcomm.eihttp.move_pattern(this.drag_initial_index, this.drag_row_index)
+
+    //remove listeners
+    this.input_table.onmousemove = null;
+    $(this.input_table).unbind();
+    this.input_table.onmouseup = null;
+}
+
+//-----------------------------//
+
+
+
+// WaveformTableSegments class --------//
+
+function WaveformTableSegments(panel){
+    //attributes that all views have:
+    this.panel = panel;
+    this.element = document.createElement('div');
+    this.element.className = 'app-cubby';
+    this.content_pane = document.createElement('div');
+    this.content_pane.className = 'app-content';
+    this.element.appendChild(this.content_pane);
+    //------------------------------//
+
+    this.height = 'calc((100% - 64px) / 2)';
+    this.height = '-webkit-calc((100% - 64px) / 2)';
+    this.width = 'calc(100% - (150px + ((100% - 300px) / 5)))';
+    this.width = '-webkit-calc(100% - (150px + ((100% - 300px) / 5)))';
+    this.x = 'calc(150px + ((100% - 300px) / 5))';
+    this.x = '-webkit-calc(150px + ((100% - 300px) / 5))';
     this.y = 'calc((100% - 64px) / 2)';
     this.y = '-webkit-calc((100% - 64px) / 2)';
 
@@ -325,13 +835,6 @@ function WaveformTable(panel){
 
     //object for checking input format
     this.validate_methods = {
-        integer: {
-            method: function integer(value){
-                return /^(0|-?[1-9][0-9]*)$/.test(value);
-            },
-            message: 'Enter a valid integer',
-            decimals: 0
-        },
         real: {
             method: function real(value){
                 return /^(0|(-?([1-9][0-9]*)?\.[0-9]*)|(-?[1-9][0-9]*)|(0\.[0-9]*)|(-?0?\.[0-9]*[1-9][0-9]*))$/.test(value);
@@ -373,12 +876,6 @@ function WaveformTable(panel){
             label: 'Duration',
             units: 's',
             format: 'positive_real'
-        },
-        repeat_value: {
-            placeholder: 'Repeat number',
-            label: 'Number of Repeats',
-            units: 'times',
-            format: 'integer'
         }
     }
 
@@ -387,17 +884,14 @@ function WaveformTable(panel){
 }
 
 // add a value row
-WaveformTable.prototype.addRow = function(position, values){
+WaveformTableSegments.prototype.addRow = function(position, values){
     var row = document.createElement('div');
-    row.className = 'table-row row-ease';
+    row.className = 'table-row row-ease table-row-hover';
     var y = parseInt(position) * 50;
     row.style.top = y + 'px';
     row.parent_view = this;
     row.selected = false
     row.row_num = parseInt(position) + 1;
-    row.onclick = function(e){
-        e.target.parent_view.panel.gui.panels[e.target.parent_view.panel.gui.config.views['WaveformChart']].view.updateBand(e.target.parent_row.row_num);
-    }
 
     var select_cell = document.createElement('div');
     select_cell.className = 'select-cell';
@@ -446,7 +940,7 @@ WaveformTable.prototype.addRow = function(position, values){
     row.appendChild(number_cell);
 
     var start_cell = document.createElement('div');
-    start_cell.className = 'value-cell';
+    start_cell.className = 'value-cell segment-cell';
     start_cell.name = 'start_cell';
     start_cell.style.left = '100px';
     start_cell.parent_view = this;
@@ -479,10 +973,10 @@ WaveformTable.prototype.addRow = function(position, values){
     row.appendChild(start_cell);
 
     var end_cell = document.createElement('div');
-    end_cell.className = 'value-cell';
+    end_cell.className = 'value-cell segment-cell';
     end_cell.name = 'end_cell';
-    end_cell.style.left = 'calc(((100% - 150px) / 5) + 100px)';
-    end_cell.style.left = '-webkit-calc(((100% - 150px) / 5) + 100px)';
+    end_cell.style.left = 'calc(((100% - 150px) / 4) + 100px)';
+    end_cell.style.left = '-webkit-calc(((100% - 150px) / 4) + 100px)';
     end_cell.parent_view = this;
     var end_input_wrapper = document.createElement('div');
     end_input_wrapper.className = 'input-wrapper';
@@ -513,10 +1007,10 @@ WaveformTable.prototype.addRow = function(position, values){
     row.appendChild(end_cell);
 
     var rate_cell = document.createElement('div');
-    rate_cell.className = 'value-cell';
+    rate_cell.className = 'value-cell segment-cell';
     rate_cell.name = 'rate_cell';
-    rate_cell.style.left = 'calc((((100% - 150px) / 5) * 2) + 100px)';
-    rate_cell.style.left = '-webkit-calc((((100% - 150px) / 5) * 2) + 100px)';
+    rate_cell.style.left = 'calc((((100% - 150px) / 4) * 2) + 100px)';
+    rate_cell.style.left = '-webkit-calc((((100% - 150px) / 4) * 2) + 100px)';
     rate_cell.parent_view = this;
     var rate_input_wrapper = document.createElement('div');
     rate_input_wrapper.className = 'input-wrapper';
@@ -547,10 +1041,10 @@ WaveformTable.prototype.addRow = function(position, values){
     row.appendChild(rate_cell);
 
     var duration_cell = document.createElement('div');
-    duration_cell.className = 'value-cell';
+    duration_cell.className = 'value-cell segment-cell';
     duration_cell.name = 'duration_cell';
-    duration_cell.style.left = 'calc((((100% - 150px) / 5) * 3) + 100px)';
-    duration_cell.style.left = '-webkit-calc((((100% - 150px) / 5) * 3) + 100px)';
+    duration_cell.style.left = 'calc((((100% - 150px) / 4) * 3) + 100px)';
+    duration_cell.style.left = '-webkit-calc((((100% - 150px) / 4) * 3) + 100px)';
     duration_cell.parent_view = this;
     var duration_input_wrapper = document.createElement('div');
     duration_input_wrapper.className = 'input-wrapper';
@@ -579,40 +1073,6 @@ WaveformTable.prototype.addRow = function(position, values){
     duration_input_wrapper.appendChild(duration_label);
     duration_cell.appendChild(duration_input_wrapper);
     row.appendChild(duration_cell);
-
-    var repeat_cell = document.createElement('div');
-    repeat_cell.className = 'value-cell';
-    repeat_cell.name = 'repeat_cell';
-    repeat_cell.style.left = 'calc((((100% - 150px) / 5) * 4) + 100px)';
-    repeat_cell.style.left = '-webkit-calc((((100% - 150px) / 5) * 4) + 100px)';
-    repeat_cell.parent_view = this;
-    var repeat_input_wrapper = document.createElement('div');
-    repeat_input_wrapper.className = 'input-wrapper';
-    repeat_input_wrapper.parent_view = this;
-    repeat_input_wrapper.parent_row = this;
-    var repeat_input = document.createElement('input');
-    repeat_input.className = 'value-input';
-    repeat_input.placeholder = this.value_format['repeat_value']['placeholder'];
-    repeat_input.parent_view = this;
-    repeat_input.parent_row = row;
-    repeat_input.value = this.formatNum(values[4], this.value_format['repeat_value']['format']);
-    repeat_input.onblur = function(e){
-        e.target.parent_view.validateSimple([e.target.parent_row.row_num, 6],'repeat_value',e.target.parent_view.value_format['repeat_value']['format']);
-    };
-    repeat_input.onkeypress = function(e){
-       if (e.keyCode == 13){        //enter key 
-           e.target.parent_view.update(e.target.parent_row.row_num);
-       }
-    }
-    var repeat_label = document.createElement('div');
-    repeat_label.className = 'input-label';
-    repeat_label.parent_view = this;
-    repeat_label.parent_row = this;
-    repeat_label.innerHTML = this.value_format['repeat_value']['units'];
-    repeat_input_wrapper.appendChild(repeat_input);
-    repeat_input_wrapper.appendChild(repeat_label);
-    repeat_cell.appendChild(repeat_input_wrapper);
-    row.appendChild(repeat_cell);
 
     var update_cell = document.createElement('div');
     update_cell.className = 'update-cell';
@@ -647,14 +1107,8 @@ WaveformTable.prototype.addRow = function(position, values){
     this.rows.push(row);
 }
 
-WaveformTable.prototype.loadTable = function(rows){
-    for (row in rows){
-        this.addRow(row, rows[row]);
-    }
-}
-
 // add the label row
-WaveformTable.prototype.addMainRow = function(){
+WaveformTableSegments.prototype.addMainRow = function(){
     var row = document.createElement('div');
     row.className = 'main-row';
     row.style.top = '0px';
@@ -699,43 +1153,35 @@ WaveformTable.prototype.addMainRow = function(){
     row.appendChild(number_cell);
 
     var start_cell = document.createElement('div');
-    start_cell.className = 'label-cell';
+    start_cell.className = 'label-cell segment-cell';
     start_cell.style.left = '100px';
     start_cell.parent_view = this;
     start_cell.innerHTML = this.value_format['start_value']['label'];
     row.appendChild(start_cell);
 
     var end_cell = document.createElement('div');
-    end_cell.className = 'label-cell';
-    end_cell.style.left = 'calc(((100% - 150px) / 5) + 100px)';
-    end_cell.style.left = '-webkit-calc(((100% - 150px) / 5) + 100px)';
+    end_cell.className = 'label-cell segment-cell';
+    end_cell.style.left = 'calc(((100% - 150px) / 4) + 100px)';
+    end_cell.style.left = '-webkit-calc(((100% - 150px) / 4) + 100px)';
     end_cell.parent_view = this;
     end_cell.innerHTML = this.value_format['end_value']['label'];
     row.appendChild(end_cell);
 
     var rate_cell = document.createElement('div');
-    rate_cell.className = 'label-cell';
-    rate_cell.style.left = 'calc((((100% - 150px) / 5) * 2) + 100px)';
-    rate_cell.style.left = '-webkit-calc((((100% - 150px) / 5) * 2) + 100px)';
+    rate_cell.className = 'label-cell segment-cell';
+    rate_cell.style.left = 'calc((((100% - 150px) / 4) * 2) + 100px)';
+    rate_cell.style.left = '-webkit-calc((((100% - 150px) / 4) * 2) + 100px)';
     rate_cell.parent_view = this;
     rate_cell.innerHTML = this.value_format['rate']['label'];
     row.appendChild(rate_cell);
 
     var duration_cell = document.createElement('div');
-    duration_cell.className = 'label-cell';
-    duration_cell.style.left = 'calc((((100% - 150px) / 5) * 3) + 100px)';
-    duration_cell.style.left = '-webkit-calc((((100% - 150px) / 5) * 3) + 100px)';
+    duration_cell.className = 'label-cell segment-cell';
+    duration_cell.style.left = 'calc((((100% - 150px) / 5) * 4) + 100px)';
+    duration_cell.style.left = '-webkit-calc((((100% - 150px) / 4) * 3) + 100px)';
     duration_cell.parent_view = this;
     duration_cell.innerHTML = this.value_format['duration']['label'];
     row.appendChild(duration_cell);
-
-    var repeat_cell = document.createElement('div');
-    repeat_cell.className = 'label-cell';
-    repeat_cell.style.left = 'calc((((100% - 150px) / 5) * 4) + 100px)';
-    repeat_cell.style.left = '-webkit-calc((((100% - 150px) / 5) * 4) + 100px)';
-    repeat_cell.parent_view = this;
-    repeat_cell.innerHTML = this.value_format['repeat_value']['label'];
-    row.appendChild(repeat_cell);
 
     var update_cell = document.createElement('div');
     update_cell.className = 'update-cell';
@@ -749,13 +1195,13 @@ WaveformTable.prototype.addMainRow = function(){
 }
 
 // changes appearance of number cell when hovered
-WaveformTable.prototype.numOver = function(num){
+WaveformTableSegments.prototype.numOver = function(num){
     num.innerHTML = '';
     num.className = 'number-cell dots';
 }
 
 // changes appearance of number cell when mouse out
-WaveformTable.prototype.numOut = function(num){
+WaveformTableSegments.prototype.numOut = function(num){
     num.className = 'number-cell';
     num.innerHTML = num.row_num;
 }
@@ -763,30 +1209,30 @@ WaveformTable.prototype.numOut = function(num){
 
 //validates the format of the numbers only
 //called everytime the focus leaves the input box and when it is submitted
-WaveformTable.prototype.validateSimple = function(address, type, method){
+WaveformTableSegments.prototype.validateSimple = function(address, type, method){
     //validation code 
     var value_cell = this.rows[address[0] - 1].childNodes[address[1]];
     var value = $.trim(value_cell.childNodes[0].childNodes[0].value);
 
-    if (value == '' || this.validate_methods[method]['method'](value)){
-        value_cell.className = 'value-cell';
-        value_cell.childNodes[0].childNodes[0].placeholder = this.value_format[type]['placeholder'];
+    if (value == '' || this.validate_methods[method]['method'](value)){         //all ok
+        value_cell.className = 'value-cell segment-cell';                       //set to normal
+        value_cell.childNodes[0].childNodes[0].placeholder = this.value_format[type]['placeholder'];    //reset placeholder
         if (value != ''){
-            value_cell.childNodes[0].childNodes[0].value = this.formatNum(value, method);
+            value_cell.childNodes[0].childNodes[0].value = this.formatNum(value, method);               //format number
         }
         return true;
     }
-    else{
-        value_cell.className = 'value-cell value-invalid';
-        value_cell.childNodes[0].childNodes[0].value = '';
-        value_cell.childNodes[0].childNodes[0].placeholder = this.validate_methods[method]['message'];
+    else{                                                                       //wrong format
+        value_cell.className = 'value-cell segment-cell value-invalid';         //turn red
+        value_cell.childNodes[0].childNodes[0].value = '';                      //clear cell
+        value_cell.childNodes[0].childNodes[0].placeholder = this.validate_methods[method]['message'];  //give error message
         return false;
     }
 
 }
 
 //validates the interdependencies of the values 
-WaveformTable.prototype.validateComplex = function(row_num){
+WaveformTableSegments.prototype.validateComplex = function(row_num){
     //variable if ok to submit or not
     var submit = false;
 
@@ -797,15 +1243,6 @@ WaveformTable.prototype.validateComplex = function(row_num){
         this.rows[row_num - 1].childNodes[4].childNodes[0].childNodes[0],
         this.rows[row_num - 1].childNodes[5].childNodes[0].childNodes[0]
     ];
-
-    var repeat_input = this.rows[row_num - 1].childNodes[6].childNodes[0];
-
-    //check repeat cell
-    //check if it's blank
-    if (repeat_input.value == ''){
-        repeat_input.parentNode.className = 'value-cell value-invalid';
-        repeat_input.placeholder = 'Must enter a value';
-    }
 
     //check interdependent cells
     //check how many blank cells there are
@@ -869,36 +1306,35 @@ WaveformTable.prototype.validateComplex = function(row_num){
 }
 
 //puts a number to a specified number of decimals (through this.validate_methods)
-WaveformTable.prototype.formatNum = function(value, method){
+WaveformTableSegments.prototype.formatNum = function(value, method){
     return (value*1).toFixed(this.validate_methods[method]['decimals']);
 }
 
 //updates a row's values and posts the update to the server
-WaveformTable.prototype.update = function(row_num){
+WaveformTableSegments.prototype.update = function(row_num){
     //row_num is row index (starting at 1)
     if (
         this.validateSimple([row_num, 2], 'start_value', this.value_format['start_value']['format']) &&
         this.validateSimple([row_num, 3], 'end_value', this.value_format['end_value']['format']) &&
         this.validateSimple([row_num, 4], 'rate', this.value_format['rate']['format']) &&
-        this.validateSimple([row_num, 5], 'duration', this.value_format['duration']['format']) &&
-        this.validateSimple([row_num, 6], 'repeat_value', this.value_format['repeat_value']['format']) &&
-        this.validateComplex(row_num)
+        this.validateSimple([row_num, 5], 'duration', this.value_format['duration']['format'])
     ){
-        var start_value = this.rows[parseInt(row_num) - 1].childNodes[2].childNodes[0].childNodes[0].value;
-        var end_value = this.rows[parseInt(row_num) - 1].childNodes[3].childNodes[0].childNodes[0].value;
-        var rate = this.rows[parseInt(row_num) - 1].childNodes[4].childNodes[0].childNodes[0].value;
-        var duration = this.rows[parseInt(row_num) - 1].childNodes[5].childNodes[0].childNodes[0].value;
-        var repeat_value = this.rows[parseInt(row_num) - 1].childNodes[6].childNodes[0].childNodes[0].value;
-        var position = (parseInt(row_num) - 1);
+        if (this.validateComplex(row_num)){
+            var start_value = this.rows[parseInt(row_num) - 1].childNodes[2].childNodes[0].childNodes[0].value;
+            var end_value = this.rows[parseInt(row_num) - 1].childNodes[3].childNodes[0].childNodes[0].value;
+            var rate = this.rows[parseInt(row_num) - 1].childNodes[4].childNodes[0].childNodes[0].value;
+            var duration = this.rows[parseInt(row_num) - 1].childNodes[5].childNodes[0].childNodes[0].value;
+            var position = (parseInt(row_num) - 1);
 
-        //send update signal
-        httpcomm.eihttp.update_pattern(repeat_value, position);                                 //will change when pattern editing is ready
-        httpcomm.eihttp.update_segment(start_value, end_value, rate, duration, 0, position);    //will change when pattern editing is ready
+            //send update signal
+            var pattern = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.selected_row;
+            httpcomm.eihttp.update_segment(start_value, end_value, rate, duration, position, pattern);
+        }
     }
 }
 
 // gets the selected rows and returns as array of row indices
-WaveformTable.prototype.getSelected = function(){
+WaveformTableSegments.prototype.getSelected = function(){
     var selected = [];
     for (var c = 0;c < this.rows.length;c++){
         if (this.rows[c].selected == true){
@@ -909,7 +1345,7 @@ WaveformTable.prototype.getSelected = function(){
 }
 
 // updates the positions of the rows when it's deleted or moved
-WaveformTable.prototype.updatePositions = function(){
+WaveformTableSegments.prototype.updatePositions = function(){
     for (var c = 0;c < this.rows.length;c++){
         var y = c * 50;
         this.rows[c].style.top = y + 'px';
@@ -920,7 +1356,7 @@ WaveformTable.prototype.updatePositions = function(){
 }
 
 //starts drag of a row
-WaveformTable.prototype.startDrag = function(ev){
+WaveformTableSegments.prototype.startDrag = function(ev){
     //bring row to front
     for (var c = 0;c < this.rows.length;c++){
         this.rows[c].style.zIndex = 0;
@@ -948,7 +1384,7 @@ WaveformTable.prototype.startDrag = function(ev){
 }
 
 //dragging a row
-WaveformTable.prototype.drag = function(ev){
+WaveformTableSegments.prototype.drag = function(ev){
     //move row
     var new_y = ev.pageY - (this.y_offset + this.table_offset);
     if (new_y < 0){
@@ -979,7 +1415,7 @@ WaveformTable.prototype.drag = function(ev){
 }
 
 //ends the drag of a row
-WaveformTable.prototype.endDrag = function(ev){
+WaveformTableSegments.prototype.endDrag = function(ev){
     //lock to a multiple of 50
     var new_y = ev.pageY - (this.y_offset + this.table_offset);
     var index = new_y / 50;
@@ -994,7 +1430,7 @@ WaveformTable.prototype.endDrag = function(ev){
     this.drag_row.className = 'table-row row-ease';
 
     //send move signal to the server
-    httpcomm.eihttp.move_pattern(this.drag_initial_index, this.drag_row_index)
+    httpcomm.eihttp.move_segment(this.drag_initial_index, this.drag_row_index)
 
     //remove listeners
     this.input_table.onmousemove = null;
@@ -1079,21 +1515,21 @@ function WaveformButtons(panel){
 //posts an add segment request to the server. adds a default row with start and end 0, rate 0, and duration 10
 WaveformButtons.prototype.add_segment = function(){
 
-    var position = this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.row_count;
+    var position = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.row_count;
     //send add signal
     httpcomm.eihttp.add_pattern(0,0,0,10,1);
 
     //add new table row
-    this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.addRow(position, [0,0,0,10,1]);
+    this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.addRow(position, [0,0,0,10,1]);
 
     //update select dots
-    this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
+    this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
 }
 
 //deletes selected rows. if none selected, deletes the last one. if all selected, deletes all but the first one
 WaveformButtons.prototype.delete_segment = function(){
     //find rows to delete
-    var table = this.panel.gui.panels[this.panel.gui.config.views['WaveformTable']].view;
+    var table = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view;
     positions = table.getSelected().reverse();  //reverse order so array indices don't get mixed up
     if (positions.length == 0){
         positions.push(table.rows.length - 1);

@@ -22,8 +22,8 @@ function Client(){
         client.gui.panels[client.gui.config.views['WaveformChart']].view.updateChart(del, add, update);
     }
 
-    this.eihttp.load_table = function(rows){
-        client.gui.panels[client.gui.config.views['WaveformTable']].view.loadTable(rows);
+    this.eihttp.load_table = function(rows, table_id){
+        client.gui.config.loadTable(rows, table_id);
     }
 
     this.eihttp.version = function(version){
@@ -65,8 +65,16 @@ function Gui(){
     this.loader.style.display = 'none';
 }
 
-//add to config stack
+//update panel positions
+Gui.prototype.clearPanels = function(){
+    for (panel in this.panels){
+        this.panels[panel].removeView();
+        this.panels[panel].updateSize(0, 0);
+        this.panels[panel].updatePosition(0, 0);
+    }
+}
 
+//add to config stack
 Gui.prototype.newConfig = function(new_config, args){
 
     //set timeout

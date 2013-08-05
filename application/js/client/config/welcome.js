@@ -42,9 +42,7 @@ function Welcome(gui){
 //prepare the config before entry
 Welcome.prototype.prepare = function(args){
     //remove the old elements
-    this.gui.panels[this.views['OpenExperiment']].removeView();
-    this.gui.panels[this.views['CreateExperiment']].removeView();
-    this.gui.panels[this.views['InstrumentStatus']].removeView();
+    this.gui.clearPanels();
 
     //add the elements
     this.gui.panels[this.views['OpenExperiment']].addView(this.open);

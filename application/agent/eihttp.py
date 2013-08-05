@@ -8,17 +8,17 @@ import eicomm.eibus
 #exit
 def exit():
     t = threading.currentThread()
-    t.q.put([t.exit])
+    t.exit()
 
 #download waveform to device
 def download():
     t = threading.currentThread()
-    t.q.put([t.download])
+    t.download()
 
 #get version command sent from GUI 
 def get_version():
     t = threading.currentThread()
-    t.q.put([t.get_version])
+    t.get_version()
 
 #save experiment command sent from GUI 
 def save_experiment():
@@ -31,6 +31,15 @@ def get_experiments():
     t = threading.currentThread()
     t.get_experiments()
 
+#request table command sent from GUI 
+def request_table(table_id, position):
+    t = threading.currentThread()
+    if t.current_experiment != None:
+        if table_id == 'pattern':
+            t.current_experiment.graph.calculate_pattern_params()
+        elif table_id == 'segment':
+            t.current_experiment.graph.contents[position].calculate_segment_params()
+
 #open experiment command sent from GUI 
 def open_experiment(name):
     t = threading.currentThread()
@@ -40,7 +49,7 @@ def open_experiment(name):
     if current_experiment != None:
         t.current_experiment = current_experiment
         current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
-        current_experiment.calculate_table_reply()
+        current_experiment.graph.calculate_pattern_params()
 
 #create experiment command sent from GUI 
 def create_experiment(name):
@@ -49,7 +58,7 @@ def create_experiment(name):
     current_experiment = Experiment.create(name)
     t.current_experiment = current_experiment
     current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
-    current_experiment.calculate_table_reply()
+    current_experiment.graph.calculate_pattern_params()
 
 #delete experiment command sent from GUI 
 def delete_experiment(name):
@@ -146,7 +155,7 @@ def update_chart(delete, add, update):
     pass
 
 #table data response from agent
-def load_table(rows):
+def load_table(rows, table_id):
     pass
 
 #send GUI list of saved experiment

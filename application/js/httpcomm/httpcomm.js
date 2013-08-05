@@ -58,6 +58,21 @@ function HTTPcomm(){
         });
     }
 
+    this.eihttp.request_table = function(table_id, position){
+        obj = {
+            table_id: table_id,
+            position: position
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'table',
+            data: data,
+            success: null,
+            async:true
+        });
+    }
+
     this.eihttp.open_experiment = function(name){
         obj = {
             name: name
@@ -305,7 +320,7 @@ load_table = function(){
     this.enabled = false;
     this.unpack = function(data){
         if (this.enabled == true){
-            client.eihttp.load_table(data.rows);
+            client.eihttp.load_table(data.rows, data.table);
         }
     }
 }

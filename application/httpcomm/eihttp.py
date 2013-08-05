@@ -29,9 +29,10 @@ def update_graph(delete, add, update):
     t.commands.put(['update_graph', json.dumps(data)])
 
 #table data response from agent
-def load_table(rows):
+def load_table(rows, table_id):
     data = {
         'signal': 'load_table',
+        'table': table_id,
         'rows': rows
     }
     t = threading.currentThread()
@@ -75,6 +76,10 @@ def save_experiment():
 
 #get experiments command sent from GUI 
 def get_experiments():
+    pass
+
+#request table command sent from GUI 
+def request_table(table_id, position):
     pass
 
 #open experiment command sent from GUI 

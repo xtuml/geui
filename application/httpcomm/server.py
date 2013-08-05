@@ -11,6 +11,7 @@ class Server(threading.Thread):
         '/command','COMMAND',
         '/save','SAVE_EXPERIMENT',
         '/get_experiments','GET_EXPERIMENT_LIST',
+        '/table','REQUEST_TABLE',
         '/open','OPEN_EXPERIMENT',
         '/create','CREATE_EXPERIMENT',
         '/delete','DELETE_EXPERIMENT',

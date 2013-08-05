@@ -84,19 +84,6 @@ class Experiment:
             if t.name == 'httpcomm':
                 t.q.put([httpcomm.eihttp.update_graph, delete, add, update])
 
-    #returns values to populate the clients table in csv format
-    def calculate_table_reply(self):
-        reply = ''
-        if (len(self.graph.contents) != 0):
-            param_list = []
-            for pattern in self.graph.contents:
-                for segment in pattern.contents:
-                    param_list.append((segment.start_value, segment.end_value, segment.rate, segment.duration, pattern.repeat_value))
-
-        for t in threading.enumerate():
-            if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.load_table, param_list])
-
 #Graph as a whole as defined by the user
 class Graph:
     
@@ -136,8 +123,6 @@ class Graph:
             waveform.add_pattern(wave_pattern)
 
         return waveform
-
-
 
     #appends a pattern to the graph's contents
     def add_pattern(self, values):
@@ -181,6 +166,17 @@ class Graph:
         #recursively update next pattern
         if position < len(self.contents) - 1:
             self.update_points(position + 1)
+
+    #returns values to populate the clients table
+    def calculate_pattern_params(self):
+        if (len(self.contents) != 0):
+            param_list = []
+            for pattern in self.contents:
+                param_list.append([pattern.repeat_value])
+
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.load_table, param_list, 'pattern'])
 
 #Patterns that make up the graph
 class Pattern:
@@ -255,6 +251,17 @@ class Pattern:
         #account for repeats
         duration *= self.repeat_value
         return duration
+
+    #returns values to populate the clients table
+    def calculate_segment_params(self):
+        if (len(self.contents) != 0):
+            param_list = []
+            for segment in self.contents:
+                param_list.append([segment.start_value, segment.end_value, segment.rate, segment.duration])
+
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.load_table, param_list, 'segment'])
 
 #segments that make up patterns
 class Segment:

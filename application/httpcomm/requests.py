@@ -31,6 +31,13 @@ class GET_EXPERIMENT_LIST:
             if t.name == 'agent':
                 t.q.put([agent.eihttp.get_experiments])
 
+class REQUEST_TABLE:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.request_table, data['table_id'], data['position']])
+
 class OPEN_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
