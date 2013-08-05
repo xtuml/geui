@@ -192,7 +192,7 @@ function HTTPcomm(){
         });
     }
 
-   this.eihttp.add_segment = function(start_value, end_value, rate, duration, pattern){
+    this.eihttp.add_segment = function(start_value, end_value, rate, duration, pattern){
         obj = {
             start_value: start_value,
             end_value: end_value,

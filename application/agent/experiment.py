@@ -172,7 +172,10 @@ class Graph:
         if (len(self.contents) != 0):
             param_list = []
             for pattern in self.contents:
-                param_list.append([pattern.repeat_value])
+                if self.contents.index(pattern) > 0:
+                    param_list.append([pattern.repeat_value, self.contents[self.contents.index(pattern) - 1].calculate_end_time()])
+                else:
+                    param_list.append([pattern.repeat_value, 0])
 
         for t in threading.enumerate():
             if t.name == 'httpcomm':
@@ -197,12 +200,18 @@ class Pattern:
         self.contents.append(new_segment)
         for vertex in new_segment.vertices:
             vertex.update()
+        #update following patterns
+        if self.parent.contents.index(self) + 1 < len(self.parent.contents):
+            self.parent.update_points(self.parent.contents.index(self) + 1)
         
     #deletes segment from the patterns's contents at the specified position
     def delete_segment(self, position):
         self.contents.pop(position)    
         if position < len(self.contents):
             self.update_points(position)
+        #update following patterns
+        if self.parent.contents.index(self) + 1 < len(self.parent.contents):
+            self.parent.update_points(self.parent.contents.index(self) + 1)
 
     #moves a segment from the given position to the given destination
     def move_segment(self, position, destination):
@@ -218,7 +227,7 @@ class Pattern:
         #update this pattern
         for vertex in self.contents[position].vertices:
             vertex.update()
-        #recursively update next pattern
+        #recursively update next segment 
         if position < len(self.contents) - 1:
             self.update_points(position + 1)
 
@@ -304,7 +313,7 @@ class Segment:
             base = 0
         seg_position = self.parent.contents.index(self)                 #position of the segment
         if seg_position > 0:
-            return self.parent.contents[seg_position - 1].calculate_start_time() + self.parent.contents[seg_position - 1].duration + base
+            return self.parent.contents[seg_position - 1].calculate_start_time() + self.parent.contents[seg_position - 1].duration
         else:
             return base
 
