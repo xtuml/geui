@@ -65,8 +65,8 @@ WaveformEditor.prototype.loadTable = function(rows, table_id){
             this.table_patterns.addRow(this.table_patterns.row_count, rows[row]);
         }
 
-        //select the first row
-        this.table_patterns.select(0);
+        //select the last row
+        this.table_patterns.select(this.table_patterns.rows.length - 1);
     }
     else if (table_id == 'segment'){
 
@@ -244,6 +244,8 @@ function WaveformChart(panel){
     this.panel.updateSize(this.height, this.width);
     this.content_pane.id = 'chart_container';           //if want to have multiple waveforms loaded, 
                                                         //must change to a unique container name
+
+    this.highlighted_segment = -1;                      //keeps track of which segment has a plot band
 }
 
 //starts up the chart
@@ -292,18 +294,20 @@ WaveformChart.prototype.initiateChart = function(){
         legend: {
             enabled: false
         },
+        /*/
         tooltip: {
             formatter: function() {
                 return ''+this.x+', '+ this.y +'s';
             }
         },
+        /*/
         plotOptions: {
             line: {
-                marker: {
-                    enable: false
-                },
                 animation: false 
             }
+        },
+        tooltip: {
+            enabled: false
         },
         series: [{
             color: '#07F862',
@@ -315,26 +319,44 @@ WaveformChart.prototype.initiateChart = function(){
 }
 
 //updates chart points
-WaveformChart.prototype.updateChart = function(del, add, update){
+WaveformChart.prototype.updateChart = function(points){
    
-    //delete points 
-    for (var c = 0; c < del; c++){
-        this.chart.series[0].data[this.chart.series[0].data.length - 1].remove() 
-    }
-
     //add points
-    if (add != null){
-        for (point in add){
-            this.chart.series[0].addPoint(add[point]);
+    if (points != null){
+        var options = {
+            color: '#07F862',
+            marker: {
+                enabled: true,
+                symbol: 'circle',
+                states: {
+                    select: {
+                        fillColor: 'red'
+                    }
+                }
+            },
+            states: {
+                hover: {
+                    enabled: false
+                }
+            },
+            data: points
         }
+        this.chart.series[0].remove(false);
+        this.chart.addSeries(options);
     }
 
-    //update points
-    if (update != null){
-        for (point in update){
-            this.chart.series[0].data[update[point].position].update(update[point].point);
-        }
+    //update band
+    var pattern = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.selected_row;
+    if (pattern != -1){
+        this.updateBand(pattern);
     }
+
+    //update segment band
+    var position = this.highlighted_segment
+    if (this.highlighted_segment != -1){
+        this.removeSegmentBand(this.highlighted_segment);
+    }
+    this.addSegmentBand(position);
 
 }
 
@@ -345,6 +367,7 @@ WaveformChart.prototype.updateBand = function(position){
     var pattern_rows = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.rows;
     var segment_rows = this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.rows;
 
+    //assign start
     var start = pattern_rows[position].start_time;
 
     //add up all durations
@@ -356,6 +379,21 @@ WaveformChart.prototype.updateBand = function(position){
     //multiply by number of repeats
     duration *= pattern_rows[position].childNodes[2].childNodes[0].childNodes[0].value;
 
+    //update other patterns start times
+    if (pattern_rows[position].duration != 0){
+        var d_change = duration - pattern_rows[position].duration;
+    }
+    else{
+        var d_change = 0;
+    }
+    for (var c = position + 1; c < pattern_rows.length; c++){
+        pattern_rows[c].start_time += d_change;
+    }
+
+    //update pattern duration
+    pattern_rows[position].duration = duration;
+
+    //assign stop
     var stop = start + duration;
 
     //remove old band
@@ -366,8 +404,8 @@ WaveformChart.prototype.updateBand = function(position){
         color: {
                 linearGradient:  [0, 0, 0, 200],
                 stops: [
-                    [0, '#49559B'],
-                    [1, '#313967']
+                    [0, '#414C8B'],
+                    [1, '#313867']
                 ]
             },
         from: start,
@@ -377,6 +415,70 @@ WaveformChart.prototype.updateBand = function(position){
     
     //add new band
     this.chart.xAxis[0].addPlotBand(options);
+}
+
+//add plotband for segment
+WaveformChart.prototype.addSegmentBand = function(position){
+    if (this.highlighted_segment != position){
+
+        //update highlighted segment
+        this.highlighted_segment = position;
+
+        //calculate start and stop
+        var table_patterns = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view;
+        var pattern = table_patterns.rows[table_patterns.selected_row];
+        var segment_rows = this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.rows;
+
+        //assign start
+        var start = pattern.start_time;
+        for (var c = 0; c < position; c++){
+            start += parseFloat(segment_rows[c].childNodes[5].childNodes[0].childNodes[0].value);
+        }
+
+        //assign stop
+        var stop = start + parseFloat(segment_rows[position].childNodes[5].childNodes[0].childNodes[0].value);
+
+        //assign number of bands
+        var num_bands = parseInt(pattern.childNodes[2].childNodes[0].childNodes[0].value);
+
+        for (var c = 0; c < num_bands; c++){
+            //set options
+            var options = {
+                color: {
+                        linearGradient:  [0, 0, 0, 200],
+                        stops: [
+                            [0, '#7E0000'],
+                            [0.75, '#4C0000']
+                        ]
+                    },
+                from: start + (c * pattern.duration / num_bands),
+                to: stop + (c * pattern.duration / num_bands),
+                id: position + '_' + c
+            }
+            
+            //add new band
+            this.chart.xAxis[0].addPlotBand(options);
+        }
+    }
+}
+
+//remove plotband for segment
+WaveformChart.prototype.removeSegmentBand = function(position){
+    if (this.highlighted_segment == position){
+
+        //update highlighted segment
+        this.highlighted_segment = -1;
+
+        var table_patterns = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view;
+        var pattern = table_patterns.rows[table_patterns.selected_row];
+
+        //assign number of bands
+        var num_bands = parseInt(pattern.childNodes[2].childNodes[0].childNodes[0].value);
+        
+        for (var c = 0; c < num_bands; c++){
+            this.chart.xAxis[0].removePlotBand(position + '_' + c);
+        }
+    }
 }
 
 //-----------------------------//
@@ -458,6 +560,7 @@ WaveformTablePatterns.prototype.addRow = function(position, values){
     row.selected = false;
     row.full_selected = false;
     row.start_time = values[1];
+    row.duration = values[2];
     row.row_num = position;
     row.onclick = function(){
         table_patterns.select(row.row_num);
@@ -661,6 +764,7 @@ WaveformTablePatterns.prototype.update = function(row_num){
 
             //send update signal
             httpcomm.eihttp.update_pattern(repeat_value, position);
+
         }
     }
 }
@@ -696,7 +800,7 @@ WaveformTablePatterns.prototype.select_dots = function(dot, row){
 }
 
 //Selects row to display segments inside
-WaveformTablePatterns.prototype.select = function(row_num){
+WaveformTablePatterns.prototype.select = function(row_num, reload){
 
     var row = this.rows[row_num];
     if (row.full_selected == false){
@@ -704,8 +808,6 @@ WaveformTablePatterns.prototype.select = function(row_num){
         row.className = 'table-row row-ease selected-row';                                  //highlight as selected
         row.full_selected = true;
 
-        // reload segment table
-        httpcomm.eihttp.request_table('segment', row_num);
 
         //unselect old selected
         if (this.selected_row != -1){
@@ -713,6 +815,11 @@ WaveformTablePatterns.prototype.select = function(row_num){
             this.rows[this.selected_row].full_selected = false;
         }
         this.selected_row = row_num;
+    }
+
+    if (reload != false){
+        // reload segment table
+        httpcomm.eihttp.request_table('segment', row_num);
     }
 
 }
@@ -736,6 +843,9 @@ WaveformTablePatterns.prototype.startDrag = function(ev, row){
         this.rows[r].className = 'table-row row-ease table-row-hover';
         this.rows[r].full_selected = false;
     }
+
+    //update selected row
+    this.select(row.row_num);
 
     //bring row to front
     for (var c = 0;c < this.rows.length;c++){
@@ -810,11 +920,29 @@ WaveformTablePatterns.prototype.endDrag = function(ev){
     this.drag_row.style.top = new_y + 'px';
     this.drag_row.className = 'table-row row-ease table-row-hover';
 
-    //update selected row
-    this.select(this.drag_row_index);
-
     //send move signal to the server
     httpcomm.eihttp.move_pattern(this.drag_initial_index, this.drag_row_index)
+
+    //update each row's start_time
+    for (var c = 0; c < this.rows.length; c++){
+        if (c == 0){
+            this.rows[c].start_time = 0;
+        }
+        else{
+            console.log(this.rows[c - 1].start_time, this.rows[c - 1].duration);
+            this.rows[c].start_time = this.rows[c - 1].start_time + this.rows[c - 1].duration;
+        }
+    }
+
+    //unselect all
+    this.selected_row = -1;
+    for (r in this.rows){
+        this.rows[r].className = 'table-row row-ease table-row-hover';
+        this.rows[r].full_selected = false;
+    }
+
+    //update selected row
+    this.select(this.drag_row_index, false);
 
     //remove listeners
     this.input_table.onmousemove = null;
@@ -924,6 +1052,10 @@ WaveformTableSegments.prototype.addRow = function(position, values){
     row.style.top = y + 'px';
     row.selected = false
     row.row_num = parseInt(position);
+
+    var chart = this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view;
+    $(row).mouseenter(function(){chart.addSegmentBand(row.row_num)});
+    $(row).mouseleave(function(){chart.removeSegmentBand(row.row_num)});
 
     var select_cell = document.createElement('div');
     select_cell.className = 'select-cell';
@@ -1304,6 +1436,10 @@ WaveformTableSegments.prototype.update = function(row_num){
             //send update signal
             var pattern = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.selected_row;
             httpcomm.eihttp.update_segment(start_value, end_value, rate, duration, position, pattern);
+
+            //add segment plot band
+            this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.addSegmentBand(position);
+
         }
     }
 }
@@ -1408,6 +1544,11 @@ WaveformTableSegments.prototype.endDrag = function(ev){
     var pattern = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.selected_row;
     httpcomm.eihttp.move_segment(this.drag_initial_index, this.drag_row_index, pattern)
 
+    //update highlighted segment
+    var chart = this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view;
+    chart.removeSegmentBand(chart.highlighted_segment);
+    chart.addSegmentBand(this.drag_row_index);
+
     //remove listeners
     this.input_table.onmousemove = null;
     $(this.input_table).unbind();
@@ -1466,15 +1607,15 @@ WaveformButtonsPatterns.prototype.add_pattern = function(){
 
     var add_defaults = [0, 0, 0, 10, 1];
 
-    var position = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.row_count;
+    var table_patterns = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view;
+
+    var position = table_patterns.row_count;
     //send add signal
     httpcomm.eihttp.add_pattern(add_defaults[0], add_defaults[1], add_defaults[2], add_defaults[3], add_defaults[4]);
 
-    //add new table row
-    this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.addRow(position, [add_defaults[4]]);
-
     //update select dots
-    this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
+    table_patterns.labels.childNodes[0].childNodes[0].className = 'select-dot';
+
 }
 
 //deletes selected rows. if none selected, deletes the last one. if all selected, deletes all but the first one
@@ -1492,15 +1633,6 @@ WaveformButtonsPatterns.prototype.delete_pattern = function(){
     //send delete signal
     httpcomm.eihttp.delete_pattern(positions);
 
-    //delete rows
-    for (var n = 0; n < positions.length; n++){
-        table.input_table.removeChild(table.rows[positions[n]]);    //remove the element
-        table.rows.splice(positions[n], 1);                         //remove from row list
-        table.row_count --;
-    }
-
-    //update the rows in the table
-    table.updatePositions();
 }
 
 //-----------------------------//
@@ -1589,6 +1721,7 @@ WaveformButtonsSegments.prototype.add_segment = function(){
 
     //update select dots
     this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.labels.childNodes[0].childNodes[0].className = 'select-dot';
+
 }
 
 //deletes selected rows. if none selected, deletes the last one. if all selected, deletes all but the first one
@@ -1616,6 +1749,7 @@ WaveformButtonsSegments.prototype.delete_segment = function(){
 
     //update the rows in the table
     table.updatePositions();
+
 }
 
 //posts a save to the server

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE PyObject SYSTEM "PyObjects.dtd">
-<PyObject module="agent.agent" class="ExperimentList" id="4390269800">
-<attr name="names" type="list" id="4390081960" >
+<PyObject module="agent.agent" class="ExperimentList" id="4371721248">
+<attr name="names" type="list" id="4371665912" >
   <item type="string">mygraph</item>
   <item type="string">test2</item>
   <item type="string">test</item>

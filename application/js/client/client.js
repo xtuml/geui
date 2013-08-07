@@ -18,8 +18,8 @@ function Client(){
         //interface definition
     }
 
-    this.eihttp.update_graph = function(del, add, update){
-        client.gui.panels[client.gui.config.views['WaveformChart']].view.updateChart(del, add, update);
+    this.eihttp.update_graph = function(points){
+        client.gui.panels[client.gui.config.views['WaveformChart']].view.updateChart(points);
     }
 
     this.eihttp.load_table = function(rows, table_id){

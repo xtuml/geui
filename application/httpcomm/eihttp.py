@@ -13,18 +13,11 @@ def version(version):
     t.commands.put(['version', json.dumps(data)])
 
 #chart data response from agent
-def update_graph(delete, add, update):
+def update_graph(points):
     data = {
         'signal': 'update_graph',
-        'delete': delete,
-        'add': add,
-        'update': []
+        'points': points
     }
-    if update != None:
-        for point in update:
-            data['update'].append({'position': point[0], 'point': [point[1], point[2]]})
-    else:
-        data['update'] = None
     t = threading.currentThread()
     t.commands.put(['update_graph', json.dumps(data)])
 

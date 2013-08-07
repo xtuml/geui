@@ -78,6 +78,7 @@ def add_pattern(start_value, end_value, rate, duration, repeat_value):
         old_vertices = list(E.graph.get_vertices())
         E.graph.add_pattern([start_value, end_value, rate, duration, repeat_value])
         E.calculate_reply(old_vertices, E.graph.get_vertices())
+        E.graph.calculate_pattern_params()
 
 #delete pattern command sent from GUI 
 def delete_pattern(positions):
@@ -88,6 +89,7 @@ def delete_pattern(positions):
             for position in positions:
                 E.graph.delete_pattern(position)
             E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.calculate_pattern_params()
 
 #move pattern command sent from GUI 
 def move_pattern(position, destination):
@@ -151,7 +153,7 @@ def version(version):
     pass
 
 #chart data response from agent
-def update_chart(delete, add, update):
+def update_graph(points):
     pass
 
 #table data response from agent

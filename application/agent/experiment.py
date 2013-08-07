@@ -50,39 +50,15 @@ class Experiment:
     #replies to the client points to delete, add, and update
     def calculate_reply(self, old_vertices, new_vertices):
 
-        delete = 0
-        add = []
-        update = []
+        points = []
 
-        #points to delete -- if thee is a net loss of vertices, deletes the last ones
-        #and counts how many it deleted
-        if len(old_vertices) > len(new_vertices):
-            while len(new_vertices) != len(old_vertices): 
-                old_vertices.pop(len(old_vertices)-1)
-                delete += 1
-            
-        #points to add -- if there is a net gain of vertices, pops the last ones
-        #and adds them to an array to return
-        elif len(new_vertices) > len(old_vertices):
-            while len(new_vertices) != len(old_vertices): 
-                vertex = new_vertices.pop(len(new_vertices)-1)
-                add.insert(0, [vertex.x, vertex.y])
-        if len(add) == 0:
-            add = None
-
-        #diff the two vertex sets -- resulting array is in form [index_to_update:int, vertex:Vertex]
-        for i, vertex in enumerate(old_vertices): #for loop with an index, i and value, vertex
-            if old_vertices[i].x != new_vertices[i].x or old_vertices[i].y != new_vertices[i].y:
-                update.append((i,new_vertices[i].x,new_vertices[i].y))
-        if len(update) == 0:
-            update = None
-
-        #print delete, add, update   #print the ouptuts to test
+        for vertex in new_vertices:
+            points.append([vertex.x, vertex.y])
 
         #return reply
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.update_graph, delete, add, update])
+                t.q.put([httpcomm.eihttp.update_graph, points])
 
 #Graph as a whole as defined by the user
 class Graph:
@@ -173,9 +149,11 @@ class Graph:
             param_list = []
             for pattern in self.contents:
                 if self.contents.index(pattern) > 0:
-                    param_list.append([pattern.repeat_value, self.contents[self.contents.index(pattern) - 1].calculate_end_time()])
+                    start_time = self.contents[self.contents.index(pattern) - 1].calculate_end_time()
                 else:
-                    param_list.append([pattern.repeat_value, 0])
+                    start_time = 0
+                #return repeat_value, start_time, and duration
+                param_list.append([pattern.repeat_value, start_time, pattern.calculate_duration()])
 
         for t in threading.enumerate():
             if t.name == 'httpcomm':

@@ -281,7 +281,6 @@ HTTPcomm.prototype.run = function(){
         //if we received data, execute the command
         if (data != 'None' && data != null){
             console.log(data);
-            //httpcomm.unpack(JSON.parse(data));
             httpcomm.unpack(data);
         }
         //check if still running
@@ -311,7 +310,7 @@ update_graph = function(){
     this.enabled = false;
     this.unpack = function(data){
         if (this.enabled == true){
-            client.eihttp.update_graph(data.delete, data.add, data.update);
+            client.eihttp.update_graph(data.points);
         }
     }
 }
