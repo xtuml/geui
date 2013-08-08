@@ -253,6 +253,7 @@ WaveformChart.prototype.initiateChart = function(){
     //table options
     var options = {
         chart: {
+            animation: false,
             renderTo: 'chart_container',
             type: 'line',
             style: {

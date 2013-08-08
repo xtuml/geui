@@ -30,10 +30,10 @@ function HTTPcomm(){
     this.eihttp.graph_test = function(){
         var counter = 0
         id = setInterval(function(){
-            if (counter < 64){
+            if (counter < 160){
                 obj = {
-                    from: counter * 25,
-                    to: (counter + 1) * 25 
+                    from: counter * 10,
+                    to: (counter + 1) * 10 
                 }
                 data = JSON.stringify(obj);
                 $.ajax({
@@ -48,7 +48,7 @@ function HTTPcomm(){
             else{
                 clearInterval(id);
             }
-        }, 250);
+        }, 50);
     }
 
     this.eihttp.exit = function(){
@@ -311,7 +311,7 @@ HTTPcomm.prototype.run = function(){
         if (httpcomm.running == false){
             clearInterval(id);
         }
-    }, 250);
+    }, 100);
 }
 
 HTTPcomm.prototype.unpack = function(data){
