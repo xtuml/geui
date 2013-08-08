@@ -91,7 +91,7 @@ WaveformEditor.prototype.loadTable = function(rows, table_id){
 
 //load the waveform file
 WaveformEditor.prototype.openWaveform = function(name){
-    httpcomm.eihttp.open_experiment(name);
+    //httpcomm.eihttp.open_experiment(name);
 }
 
 //create a waveform
@@ -278,7 +278,9 @@ WaveformChart.prototype.initiateChart = function(){
                     return this.value +'s';
                 }
             },
-            showLastLabel: true
+            showLastLabel: true,
+            max: 0.8,
+            min: 0
         },
         yAxis: {
             title: {
@@ -289,7 +291,9 @@ WaveformChart.prototype.initiateChart = function(){
                     return this.value;
                 }
             },
-            lineWidth: 2
+            lineWidth: 2,
+            max: 0.0000157839,
+            min: -0.0000255252
         },
         legend: {
             enabled: false
@@ -311,22 +315,8 @@ WaveformChart.prototype.initiateChart = function(){
         },
         series: [{
             color: '#07F862',
-            data: []
-        }]
-    };
-
-    this.chart = new Highcharts.Chart(options);
-}
-
-//updates chart points
-WaveformChart.prototype.updateChart = function(points){
-   
-    //add points
-    if (points != null){
-        var options = {
-            color: '#07F862',
             marker: {
-                enabled: true,
+                enabled: false,
                 symbol: 'circle',
                 states: {
                     select: {
@@ -339,10 +329,23 @@ WaveformChart.prototype.updateChart = function(points){
                     enabled: false
                 }
             },
-            data: points
+            data: []
+        }]
+    };
+
+    this.chart = new Highcharts.Chart(options);
+}
+
+//updates chart points
+WaveformChart.prototype.updateChart = function(points){
+   
+    //add points
+    //this.chart.series[0].setData([], false);
+    if (points != null){
+        for (p in points){
+            this.chart.series[0].addPoint(points[p], false);
         }
-        this.chart.series[0].remove(false);
-        this.chart.addSeries(options);
+        this.chart.redraw();
     }
 
     //update band

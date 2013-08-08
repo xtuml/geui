@@ -9,6 +9,7 @@ class Server(threading.Thread):
     #urls is a web.py convention. determines how requests are handled
     urls = (
         '/command','COMMAND',
+        '/test','GRAPH_TEST',
         '/save','SAVE_EXPERIMENT',
         '/get_experiments','GET_EXPERIMENT_LIST',
         '/table','REQUEST_TABLE',

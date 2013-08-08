@@ -16,6 +16,14 @@ class COMMAND:
                 else:
                     return 'NoLog'              #tells the webpy server not to log
 
+#graphing test
+class GRAPH_TEST:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.graph_test, data['from'], data['to']])
+
 #I/O Commands
 #==========================#
 

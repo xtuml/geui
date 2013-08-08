@@ -27,6 +27,30 @@ function HTTPcomm(){
         //interface definition
     }
 
+    this.eihttp.graph_test = function(){
+        var counter = 0
+        id = setInterval(function(){
+            if (counter < 64){
+                obj = {
+                    from: counter * 25,
+                    to: (counter + 1) * 25 
+                }
+                data = JSON.stringify(obj);
+                $.ajax({
+                    type: 'POST',
+                    url: 'test',
+                    data: data,
+                    success: null,
+                    async:true
+                });
+                counter ++;
+            }
+            else{
+                clearInterval(id);
+            }
+        }, 250);
+    }
+
     this.eihttp.exit = function(){
         $.ajax({
             type: 'GET',
@@ -287,7 +311,7 @@ HTTPcomm.prototype.run = function(){
         if (httpcomm.running == false){
             clearInterval(id);
         }
-    }, 200);
+    }, 250);
 }
 
 HTTPcomm.prototype.unpack = function(data){

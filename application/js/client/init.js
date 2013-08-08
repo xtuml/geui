@@ -12,7 +12,8 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     editor = new WaveformEditor(client.gui);
 
     //add the first config
-    client.gui.newConfig(welcome, []);
+    //client.gui.newConfig(welcome, []);
+    client.gui.newConfig(editor, ['test', 'open']);
 
     //run the polling
     httpcomm.run();
