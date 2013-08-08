@@ -33,22 +33,31 @@ class Agent(threading.Thread):
         exp_file.close()
         self.experiment_list = gnosis.xml.pickle.loads(xml_string)
 
+    def graph_test(self):
         #graph test
         open_file = open('test.txt','r')
-        self.data = open_file.readlines()
+        lines = open_file.readlines()
         open_file.close()
         points = []
-        for point in self.data:
+        for point in lines:
             p = point.rsplit(', ')
             points.append([float(p[0]), float(p[1])])
-        self.data = points
 
-    def graph_test(self, frm, to):
-        points = self.data[frm:to]
-        for t in threading.enumerate():
-            if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.update_graph, points])
-        
+        #send data
+        c = 0
+        rate = 4                        #updates per second
+        iterations = rate * 16          #updates in 16s
+        pack_size = 1600 / iterations   #number of points in each packet
+        while c < iterations:
+            data = points[c * pack_size:(c + 1) * pack_size]
+            for t in threading.enumerate():
+                if t.name == 'httpcomm':
+                    t.q.put([httpcomm.eihttp.update_graph, data])
+            c += 1
+            time.sleep(1 / float(rate))
+        print '#####################'
+        print 'DONE'
+        print '#####################'
 
     def get_experiments(self):
         for t in threading.enumerate():

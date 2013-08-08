@@ -15,6 +15,7 @@ class CommandLine(threading.Thread):
     running = None
 
     commands = [
+        '"test_data" ---> Send test data to GUI.',
         '"send_wave" ---> Send test wave from test bench to EC.',
         '"get_version" ---> Send get_version request to EC.',
         '"add_segment <args>" ---> Add a segment to the current experiment.',
@@ -40,6 +41,11 @@ class CommandLine(threading.Thread):
             elif x == 'help':
                 for command in self.commands:
                     print command
+            elif x == 'test_data':
+                for t in threading.enumerate():
+                    if t.name == 'agent':
+                        t.q.put([t.graph_test])
+                        break
             elif x == 'send_wave':
                 for t in threading.enumerate():
                     if t.name == 'test':

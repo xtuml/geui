@@ -2,15 +2,17 @@
 
 import threading
 import eicomm.eibus
-import json
 
 #----- SIGNALS TO GUI -----#
 
 #version response from agent
 def version(version):
-    data = {'signal': 'version', 'version': version}
+    data = {
+        'signal': 'version',
+        'version': version
+    }
     t = threading.currentThread()
-    t.commands.put(['version', json.dumps(data)])
+    t.commands.put(data)
 
 #chart data response from agent
 def update_graph(points):
@@ -19,7 +21,7 @@ def update_graph(points):
         'points': points
     }
     t = threading.currentThread()
-    t.commands.put(['update_graph', json.dumps(data)])
+    t.commands.put(data)
 
 #table data response from agent
 def load_table(rows, table_id):
@@ -29,7 +31,7 @@ def load_table(rows, table_id):
         'rows': rows
     }
     t = threading.currentThread()
-    t.commands.put(['load_table', json.dumps(data)])
+    t.commands.put(data)
 
 #send GUI list of saved experiment
 def load_experiments(experiments):
@@ -38,7 +40,7 @@ def load_experiments(experiments):
         'experiments': experiments
     }
     t = threading.currentThread()
-    t.commands.put(['load_experiments', json.dumps(data)])
+    t.commands.put(data)
 
 #send GUI indication that the upload was a success
 def upload_success(name):
@@ -47,7 +49,7 @@ def upload_success(name):
         'name': name
     }
     t = threading.currentThread()
-    t.commands.put(['upload_success', json.dumps(data)])
+    t.commands.put(data)
 
 #----- SIGNALS TO AGENT -----#
 

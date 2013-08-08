@@ -10,19 +10,24 @@ class COMMAND:
         for t in threading.enumerate():
             if t.name == 'httpcomm':
                 if not t.commands.empty():
-                    message = t.commands.get()
-                    print 'Message sent: "' + message[0] + '" to GUI at [' + time.ctime() + ']'
-                    return message[1]
+                    messages = []
+                    while not t.commands.empty():
+                        message = t.commands.get()
+                        messages.append(message)
+                        print 'Message sent: "' + message['signal'] + '" to GUI at [' + time.ctime() + ']'
+                    data = {
+                        'data': messages
+                    }
+                    return json.dumps(data)
                 else:
                     return 'NoLog'              #tells the webpy server not to log
 
 #graphing test
 class GRAPH_TEST:
-    def POST(self):
+    def GET(self):
         for t in threading.enumerate():
             if t.name == 'agent':
-                data = json.loads(web.data())
-                t.q.put([agent.eihttp.graph_test, data['from'], data['to']])
+                t.q.put([agent.eihttp.graph_test])
 
 #I/O Commands
 #==========================#

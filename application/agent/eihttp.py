@@ -5,11 +5,6 @@ import eicomm.eibus
 
 #----- SIGNALS TO AGENT -----#
 
-#graphing test
-def graph_test(frm, to):
-    t = threading.currentThread()
-    t.graph_test(frm, to)
-
 #exit
 def exit():
     t = threading.currentThread()
