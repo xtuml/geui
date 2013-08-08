@@ -53,6 +53,18 @@ class Agent(threading.Thread):
                 t.q.put([httpcomm.eihttp.version, version])
                 break
 
+    def data(self, data):
+        # unmarshall data
+        points = data
+
+        #persist data
+
+        #send data to GUI
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.data, points])
+                break
+
     def exit(self):
         print 'Exiting...'
         self.q.put([self.kill_thread])
@@ -66,6 +78,11 @@ class Agent(threading.Thread):
         for t in threading.enumerate():
             if t.name == 'eicomm':
                 t.q.put([eicomm.eibus.wave, data])
+
+    def run_experiment(self):
+        for t in threading.enumerate():
+            if t.name == 'eicomm':
+                t.q.put([eicomm.eibus.run])
 
     def delete_experiment(self, name):
         #remove name from list

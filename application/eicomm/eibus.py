@@ -15,9 +15,18 @@ def wave(data):
     t = threading.currentThread()
     t.q.put([t.send, 10, len(data), data])
 
+#run current experiment
+def run():
+    t = threading.currentThread()
+    t.q.put([t.send, 3, 0, bytearray()])
+
 
 #----- SIGNALS TO AGENT -----#
 
 #version response from EC
 def version(version):
+    pass
+
+#data packet from EC
+def data(data):
     pass

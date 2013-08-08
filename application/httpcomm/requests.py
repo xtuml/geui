@@ -16,6 +16,26 @@ class COMMAND:
                 else:
                     return 'NoLog'              #tells the webpy server not to log
 
+#Outgoing data packet
+class DATA:
+    def GET(self):
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                if not t.data.empty():
+                    packet = []
+                    while not t.data.empty():
+                        print 'building packet...'
+                        points = t.data.get()
+                        packet += points
+                    print 'Message sent: "data" to GUI at [' + time.ctime() + ']'
+                    data = {
+                        'signal': 'data',
+                        'points': packet
+                    }
+                    return json.dumps(data)
+                else:
+                    return 'NoLog'              #tells the webpy server not to log
+
 #I/O Commands
 #==========================#
 

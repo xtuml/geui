@@ -10,10 +10,15 @@ class EIcomm(threading.Thread):
 
     #incoming codes and information (static attribute)
     incoming = [
-        None,
-        {
+        None,                                   # 0
+        {                                       # 1
             'name': 'version',
             'method': agent.eibus.version
+        },
+        None,                                   # 2
+        {                                       # 3
+            'name': 'data',
+            'method': agent.eibus.data
         }
     ]
 

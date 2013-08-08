@@ -15,9 +15,10 @@ class CommandLine(threading.Thread):
     running = None
 
     commands = [
+        '"run" ---> Run current experiment.',
+        '"test_data" ---> Send test data to GUI.',
         '"send_wave" ---> Send test wave from test bench to EC.',
         '"get_version" ---> Send get_version request to EC.',
-        '"add_segment <args>" ---> Add a segment to the current experiment.',
         '"exit" ---> Quit program.',
         '"help" ---> Show command help.'
     ]
@@ -31,15 +32,39 @@ class CommandLine(threading.Thread):
         print 'Type "help" for command list.'
         while self.running:
             x = raw_input()
-            if x == 'exit':
+            if x == 'run':
                 for t in threading.enumerate():
                     if t.name == 'agent':
-                        t.q.put([t.exit])
+                        t.q.put([t.run_experiment])
                         break
-                self.running = False
-            elif x == 'help':
-                for command in self.commands:
-                    print command
+            elif x == 'test_data':
+                for t in threading.enumerate():
+                    if t.name == 'agent':
+                        #graph test
+                        print 'Sending test data...'
+                        open_file = open('test.txt','r')
+                        lines = open_file.readlines()
+                        open_file.close()
+                        points = [] 
+                        for n, point in enumerate(lines):
+                            if n % 10 == 0:
+                                p = point.rsplit(', ')
+                                points.append([float(p[0]), float(p[1])])
+
+                        print len(points)
+
+                        #send data
+                        c = 0
+                        rate = 10                               #updates per second
+                        iterations = rate * 16                  #updates in 16s
+                        pack_size = len(points) / iterations    #number of points in each packet
+                        while c < iterations:
+                            data = points[c * pack_size:(c + 1) * pack_size]
+                            t.q.put([t.data, data])
+                            c += 1
+                            time.sleep(1 / float(rate))
+                        print 'Done sending test data.'
+                        break
             elif x == 'send_wave':
                 for t in threading.enumerate():
                     if t.name == 'test':
@@ -50,11 +75,15 @@ class CommandLine(threading.Thread):
                     if t.name == 'agent':
                         t.q.put([t.get_version])
                         break
-            elif re.search('add_segment', x) != None:
+            elif x == 'exit':
                 for t in threading.enumerate():
                     if t.name == 'agent':
-                        args = x.split(' ')[1:]
-                        t.q.put([eihttp.add_segment, float(args[0]), float(args[1]), float(args[2]), float(args[3]), int(args[4]), 1])
+                        t.q.put([t.exit])
+                        break
+                self.running = False
+            elif x == 'help':
+                for command in self.commands:
+                    print command
             else:
                 print 'No command "' + x + '"'
         print 'Exited CommandLine at [' + time.ctime() + ']'

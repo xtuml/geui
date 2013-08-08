@@ -11,9 +11,11 @@ defines incoming side of the eihttp interface
 function HTTPcomm(){
 
     this.running = false;
+    this.receiving_data = false;
 
     this.signals = {
         'version': new version(),
+        'data': new data(),
         'update_graph': new update_graph(),
         'load_table': new load_table(),
         'load_experiments': new load_experiments(),
@@ -264,16 +266,17 @@ function HTTPcomm(){
 
 }
 
+//polling for async communication
 HTTPcomm.prototype.run = function(){
     this.running = true;
     id = setInterval(function(){
         //poll server
-        console.log('polling');
+        //console.log('polling');
         var data = null
         $.ajax({
             type: 'GET',
             url: 'command',
-            data: name,
+            data: null,
             dataType: 'json',
             success: function(d){data = d},
             async:false
@@ -287,7 +290,33 @@ HTTPcomm.prototype.run = function(){
         if (httpcomm.running == false){
             clearInterval(id);
         }
-    }, 200);
+    }, 500);
+}
+
+//polling for data packets
+HTTPcomm.prototype.receive_data = function(){
+    this.receiving_data = true;
+    id = setInterval(function(){
+        //poll server
+        console.log('getting data...');
+        var data = null
+        $.ajax({
+            type: 'GET',
+            url: 'data',
+            data: null,
+            dataType: 'json',
+            success: function(d){data = d},
+            async: false
+        });
+        //if we received data, execute the command
+        if (data != 'None' && data != null){
+            httpcomm.unpack(data);
+        }
+        //check if still running
+        if (httpcomm.receiving_data == false){
+            clearInterval(id);
+        }
+    }, 250);
 }
 
 HTTPcomm.prototype.unpack = function(data){
@@ -303,6 +332,13 @@ version = function(){
     this.enabled = false;
     this.unpack = function(data){
         client.eihttp.version(data.version);
+    }
+}
+
+data = function(){
+    this.enabled = false;
+    this.unpack = function(data){
+        client.eihttp.data(data.points);
     }
 }
 

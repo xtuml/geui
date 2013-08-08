@@ -18,16 +18,20 @@ function Client(){
         //interface definition
     }
 
+    this.eihttp.version = function(version){
+        alert('Version: ' + version);
+    }
+
+    this.eihttp.data = function(points){
+        client.gui.panels[client.gui.config.views['DataChart']].view.updateChart(points);
+    }
+
     this.eihttp.update_graph = function(points){
         client.gui.panels[client.gui.config.views['WaveformChart']].view.updateChart(points);
     }
 
     this.eihttp.load_table = function(rows, table_id){
         client.gui.config.loadTable(rows, table_id);
-    }
-
-    this.eihttp.version = function(version){
-        alert('Version: ' + version);
     }
 
     this.eihttp.load_experiments = function(experiments){

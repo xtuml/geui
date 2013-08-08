@@ -8,9 +8,17 @@ import json
 
 #version response from agent
 def version(version):
-    data = {'signal': 'version', 'version': version}
+    data = {
+        'signal': 'version',
+        'version': version
+    }
     t = threading.currentThread()
     t.commands.put(['version', json.dumps(data)])
+
+#data packet from agent
+def data(points):
+    t = threading.currentThread()
+    t.data.put(points)
 
 #chart data response from agent
 def update_graph(points):

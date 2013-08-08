@@ -16,11 +16,15 @@ class HTTPcomm(threading.Thread):
     #holds commands to be sent to the GUI
     commands = None
 
+    #holds data packets to be sent to GUI
+    data = None
+
     def __init__(self, thread_name='httpcomm'):
         threading.Thread.__init__(self, name=thread_name)
         self.q = Queue.Queue()
         self.running = False
         self.commands = Queue.Queue()
+        self.data = Queue.Queue()
         self.server = None
 
     def kill_thread(self):

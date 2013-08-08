@@ -152,6 +152,10 @@ def update_segment(start_value, end_value, rate, duration, position, pattern):
 def version(version):
     pass
 
+#data packet from agent
+def data(points):
+    pass
+
 #chart data response from agent
 def update_graph(points):
     pass
