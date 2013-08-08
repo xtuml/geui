@@ -401,13 +401,7 @@ WaveformChart.prototype.updateBand = function(position){
 
     //set options
     var options = {
-        color: {
-                linearGradient:  [0, 0, 0, 200],
-                stops: [
-                    [0, '#414C8B'],
-                    [1, '#313867']
-                ]
-            },
+        color: 'rgba(135,206,250,0.3)',
         from: start,
         to: stop,
         id: 'band'
@@ -444,13 +438,7 @@ WaveformChart.prototype.addSegmentBand = function(position){
         for (var c = 0; c < num_bands; c++){
             //set options
             var options = {
-                color: {
-                        linearGradient:  [0, 0, 0, 200],
-                        stops: [
-                            [0, '#7E0000'],
-                            [0.75, '#4C0000']
-                        ]
-                    },
+                color: 'rgba(135,206,250,0.2)',
                 from: start + (c * pattern.duration / num_bands),
                 to: stop + (c * pattern.duration / num_bands),
                 id: position + '_' + c
