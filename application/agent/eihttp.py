@@ -153,7 +153,7 @@ def version(version):
     pass
 
 #data packet from agent
-def data(points):
+def data(points, action):
     pass
 
 #chart data response from agent

@@ -48,9 +48,8 @@ RunExperiment.prototype.prepare = function(args){
         this.chart.chart.destroy();
     }
     this.chart.initiateChart();
+    this.pending_points = [];
 
-    //start the data polling
-    httpcomm.receive_data();
 
     //enable signals applying to this config
     //disable all
@@ -102,6 +101,7 @@ function DataChart(panel){
     //-----------------------------//
 
     this.chart = null;
+    this.pending_points = []
 
     this.height = '100%';
     this.width = '100%'
@@ -116,9 +116,7 @@ DataChart.prototype.initiateChart = function(){
     //table options
     var options = {
         chart: {
-            animation: {
-                duration: 200
-            },
+            animation: false,
             renderTo: 'chart_container',
             type: 'line',
             style: {
@@ -145,8 +143,12 @@ DataChart.prototype.initiateChart = function(){
                 }
             },
             showLastLabel: true,
-            max: 0.8,
-            min: 0
+            max: 0.9,
+            min: -0.1
+            /*/
+            max: 50000,
+            min: -50000 
+            /*/
         },
         yAxis: {
             title: {
@@ -160,6 +162,10 @@ DataChart.prototype.initiateChart = function(){
             lineWidth: 2,
             max: 0.0000157839,
             min: -0.0000255252
+            /*/
+            max: 2500000000,
+            min: 0
+            /*/
         },
         legend: {
             enabled: false
@@ -168,9 +174,7 @@ DataChart.prototype.initiateChart = function(){
             enabled: false
         },
         series: [{
-            animation: {
-                duration: 200
-            },
+            animation: false,
             color: '#07F862',
             marker: {
                 enabled: false,
@@ -194,18 +198,71 @@ DataChart.prototype.initiateChart = function(){
 }
 
 //updates chart points
-DataChart.prototype.updateChart = function(points){
+DataChart.prototype.updateChart = function(){
 
-    var rate = 250 / points.length;
-   
-    //add points
-    //
-    if (points != null){
-        for (p in points){
-            this.chart.series[0].addPoint(points[p], false);
+    var points_graphed = 0;
+
+    var poll_rate = 5;              //rate of polling data from server
+    var rate = 25;                  //frames per second refresh time
+
+    var packet = [];                //current packet of points
+    var n = rate / poll_rate;       //number of iterations for each poll
+
+    var num_points = 0;             //number of points to graph in each iteration
+    var counter = n;
+
+    var chart = this.chart;         //reference to chart
+    var pending_points = this.pending_points;   //reference to pending_points
+
+
+    updating = setInterval(function(){
+        
+        if (counter == n){
+            if (packet.length == 0){
+                if (pending_points.length > 0){
+                    //grab new packet
+                    packet = pending_points.shift();
+                    //check stop code
+                    num_points = Math.ceil(packet.length / n);
+                    counter = 0;
+                    if (packet == 'stop'){
+                        console.log(points_graphed);
+                        clearInterval(updating);
+                    }
+                }
+                else{
+                    packet = [];
+                    console.log('no points');
+                }
+            }
+            else{
+                alert('this is a problem');
+            }
         }
-        this.chart.redraw();
-    }
+        else{
+            //calculate points to graph in this iteration
+            if (num_points < packet.length){
+                var to = num_points;
+            }
+            else{
+                var to = packet.length;
+            }
+            var points = packet.slice(0, to);
+
+            //graph the points
+            for (p in points){
+                chart.series[0].addPoint(points[p], false);
+                points_graphed ++;
+            }
+            chart.redraw();
+
+            //update packet
+            packet = packet.slice(to, packet.length);
+
+            //increment counter
+            counter ++;
+        }
+    }, 1000 / rate);
 
 }
 

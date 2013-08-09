@@ -16,9 +16,22 @@ def version(version):
     t.commands.put(['version', json.dumps(data)])
 
 #data packet from agent
-def data(points):
+def data(points, action):
     t = threading.currentThread()
-    t.data.put(points)
+    if action == 'start':
+        data = {
+            'signal': 'data',
+            'points': points,
+            'action': action
+        }
+        t.commands.put(['data', json.dumps(data)])
+    else:
+        data = {
+            'signal': 'data',
+            'points': points,
+            'action': action
+        }
+        t.data.put(data)
 
 #chart data response from agent
 def update_graph(points):

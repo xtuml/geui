@@ -53,7 +53,7 @@ class Agent(threading.Thread):
                 t.q.put([httpcomm.eihttp.version, version])
                 break
 
-    def data(self, data):
+    def data(self, data, action):
         # unmarshall data
         points = data
 
@@ -62,7 +62,7 @@ class Agent(threading.Thread):
         #send data to GUI
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.data, points])
+                t.q.put([httpcomm.eihttp.data, points, action])
                 break
 
     def exit(self):

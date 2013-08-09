@@ -22,8 +22,19 @@ function Client(){
         alert('Version: ' + version);
     }
 
-    this.eihttp.data = function(points){
-        client.gui.panels[client.gui.config.views['DataChart']].view.updateChart(points);
+    this.eihttp.data = function(points, action){
+        if (action == 'start'){
+            //start the data polling
+            httpcomm.receive_data();
+        }
+        else if (action == 'stop'){
+            //stop data polling
+            httpcomm.receiving_data = false;
+            client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(action);
+        }
+        else{
+            client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(points);
+        }
     }
 
     this.eihttp.update_graph = function(points){

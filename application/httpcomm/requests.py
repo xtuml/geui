@@ -23,14 +23,16 @@ class DATA:
             if t.name == 'httpcomm':
                 if not t.data.empty():
                     packet = []
+                    action = ''
                     while not t.data.empty():
-                        print 'building packet...'
-                        points = t.data.get()
-                        packet += points
+                        pkt = t.data.get()
+                        packet += pkt['points']
+                        action = pkt['action']
                     print 'Message sent: "data" to GUI at [' + time.ctime() + ']'
                     data = {
                         'signal': 'data',
-                        'points': packet
+                        'points': packet,
+                        'action': action
                     }
                     return json.dumps(data)
                 else:

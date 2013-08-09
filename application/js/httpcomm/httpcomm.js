@@ -13,6 +13,8 @@ function HTTPcomm(){
     this.running = false;
     this.receiving_data = false;
 
+    this.points_received = 0;
+
     this.signals = {
         'version': new version(),
         'data': new data(),
@@ -271,7 +273,7 @@ HTTPcomm.prototype.run = function(){
     this.running = true;
     id = setInterval(function(){
         //poll server
-        //console.log('polling');
+        console.log('polling');
         var data = null
         $.ajax({
             type: 'GET',
@@ -290,15 +292,19 @@ HTTPcomm.prototype.run = function(){
         if (httpcomm.running == false){
             clearInterval(id);
         }
-    }, 500);
+    }, 250);
 }
 
 //polling for data packets
 HTTPcomm.prototype.receive_data = function(){
     this.receiving_data = true;
+
+    //start the updating
+    client.gui.panels[client.gui.config.views['DataChart']].view.updateChart();
+
     id = setInterval(function(){
         //poll server
-        console.log('getting data...');
+        //console.log('getting data...');
         var data = null
         $.ajax({
             type: 'GET',
@@ -316,7 +322,7 @@ HTTPcomm.prototype.receive_data = function(){
         if (httpcomm.receiving_data == false){
             clearInterval(id);
         }
-    }, 250);
+    }, 200);
 }
 
 HTTPcomm.prototype.unpack = function(data){
@@ -338,7 +344,8 @@ version = function(){
 data = function(){
     this.enabled = false;
     this.unpack = function(data){
-        client.eihttp.data(data.points);
+        httpcomm.points_received += data.points.length;
+        client.eihttp.data(data.points, data.action);
     }
 }
 
