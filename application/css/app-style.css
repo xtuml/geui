@@ -624,6 +624,101 @@ Styling sheet for X8 GUI
     text-indent: 15px;
 }
 
+/* Dialog box styling */
+.dialog-container {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.dialog {
+    position: absolute;
+    top: 15%;
+    left: 25%;
+    height: 50%;
+    width: 50%;
+    border-radius: 10px;
+    border: 1px solid silver;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
+}
+
+.text-background {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 72px);
+    height: -webkit-calc(100% - 72px);
+    width: calc(100% - 10px);
+    width: -webkit-calc(100% - 10px);
+    border-radius: 10px;
+    border: 1px solid silver;
+    background-color: DimGray;
+    text-align: center;
+    overflow: scroll;
+}
+
+.text-background:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -0.25em; /* Adjusts for spacing */
+}
+
+.text-box {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 3px;
+    font-size: 30px;
+    font-family: Arial;
+    color: black;
+    cursor: default;
+    text-align: center;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.ok-btn {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: calc(100% - 17px);
+    width: -webkit-calc(100% - 17px);
+    color: #2E2E2E;
+    padding: 3px;
+    font-size: 30px;
+    font-family: Arial;
+    text-align: center;
+    line-height: 48px;
+    cursor: default;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.ok-btn:hover {
+    color: #182B93;
+}
+
+.yes-btn {
+}
+
+.no-btn {
+}
+
 /* Spinner styling */
 .spinner-background {
     position: absolute;
@@ -631,7 +726,7 @@ Styling sheet for X8 GUI
     left: 0px;
     height: 100%;
     width: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: (0,0,0,0.5);
     transition: all 1s;
     -webkit-transition: all 1s;
 }

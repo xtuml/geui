@@ -61,8 +61,8 @@ function Gui(){
         'BL': new Panel('BL',this),
         'BR': new Panel('BR',this)
     };
-    this.loader = document.getElementById('spinner_container');
-    this.loader.style.display = 'none';
+    this.loader = new Loader(this);
+    this.message = new Message(this);
 }
 
 //update panel positions
@@ -131,6 +131,76 @@ Gui.prototype.popConfig = function(args){
         }, (timeout * 1000));
     }
 
+}
+
+//-----------------------------//
+
+
+
+// Message class --------------//
+
+function Message(gui){
+    this.gui = gui;
+    this.container = document.getElementById('dialog_container');
+    this.container.style.display = 'none';
+
+    this.message = 'This is a test message.';
+    this.button_label = 'OK'
+
+    //add dialog
+    this.dialog = document.createElement('div');
+    this.dialog.className = 'dialog';
+
+    this.text_background = document.createElement('div');
+    this.text_background.className = 'text-background';
+    this.text_box = document.createElement('div');
+    this.text_box.className = 'text-box';
+    this.text_box.innerHTML = this.message;
+    this.text_background.appendChild(this.text_box);
+    this.dialog.appendChild(this.text_background);
+
+    this.okbtn = document.createElement('div');
+    this.okbtn.className = 'btn ok-btn';
+    this.okbtn.innerHTML = this.button_label;
+    this.dialog.appendChild(this.okbtn);
+
+    this.container.appendChild(this.dialog);
+}
+
+Message.prototype.setMessage = function(text){
+    this.message = text;
+    this.text_box.innerHTML = this.message;
+}
+
+Message.prototype.show = function(){
+    var msg = this;
+    this.container.style.display = 'block';
+    this.okbtn.onclick = function(){msg.hide()};
+}
+
+Message.prototype.hide = function(){
+    this.container.style.display = 'none';
+    this.okbtn.onclick = null;
+}
+
+//-----------------------------//
+
+
+
+// Loader class ---------------//
+
+function Loader(gui){
+    this.gui = gui;
+    this.element = document.getElementById('spinner_container');
+    this.element.style.display = 'none';
+}
+
+Loader.prototype.show = function(){
+    this.element.style.display = 'block';
+}
+
+Loader.prototype.hide = function(){
+    this.element.style.display = 'none';
 }
 
 //-----------------------------//

@@ -1374,12 +1374,14 @@ WaveformTableSegments.prototype.validateComplex = function(row_num){
                     value_inputs[3].value = new_value;
                 }
                 else{
-                    alert('Field values must agree');
+                    this.panel.gui.message.setMessage('Field values must agree.');
+                    this.panel.gui.message.show();
                     submit = false;
                 }
             }
             else{
-                alert('Cannot calculate duration');
+                this.panel.gui.message.setMessage('Cannot calculate duration');
+                this.panel.gui.message.show();
                 submit = false;
             }
         }
@@ -1392,7 +1394,8 @@ WaveformTableSegments.prototype.validateComplex = function(row_num){
             submit = true;
         }
         else {
-            alert('Field values must agree');
+            this.panel.gui.message.setMessage('Field values must agree.');
+            this.panel.gui.message.show();
             submit = false;
         }
     }
@@ -1743,7 +1746,8 @@ WaveformButtonsSegments.prototype.delete_segment = function(){
 //posts a save to the server
 WaveformButtonsSegments.prototype.save_experiment = function(){
     httpcomm.eihttp.save_experiment();
-    alert('saved');
+    this.panel.gui.message.setMessage('Experiment saved.');
+    this.panel.gui.message.show();
 }
 
 //go back to the previous screen
