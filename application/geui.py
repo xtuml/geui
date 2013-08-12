@@ -40,7 +40,8 @@ class CommandLine(threading.Thread):
                         break
             elif x == 'test_data':
                 for t in threading.enumerate():
-                    if t.name == 'agent':
+                    if t.name == 'httpcomm':
+                        import httpcomm.eihttp
                         #graph test
                         open_file = open('test.txt','r')
                         lines = open_file.readlines()
@@ -62,7 +63,7 @@ class CommandLine(threading.Thread):
                         time.sleep(2)
 
                         #turn on data listening
-                        t.q.put([t.data, [], 'start'])
+                        t.q.put([httpcomm.eihttp.data, [], 'start'])
 
                         points_sent = 0
 
@@ -76,13 +77,13 @@ class CommandLine(threading.Thread):
                                 data = points[c * pack_size:len(points)]
                             else:
                                 data = points[c * pack_size:(c + 1) * pack_size]
-                            t.q.put([t.data, data, ''])
+                            t.q.put([httpcomm.eihttp.data, data, ''])
                             points_sent += len(data)
                             time.sleep(1 / float(rate))
                             c += 1
 
                         #turn off data listening
-                        t.q.put([t.data, [], 'stop'])
+                        t.q.put([httpcomm.eihttp.data, [], 'stop'])
                         #print points_sent
                         break
 

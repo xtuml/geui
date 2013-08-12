@@ -53,3 +53,16 @@ def tobytes(value, num_bytes=0, little_endian=True):
         byte_array.reverse()
 
     return byte_array
+
+def toint(byte_array, little_endian=True):
+    #adjust endianness
+    if little_endian == False:
+        byte_array.reverse()
+
+    #unpack
+    int_value = 0
+    for n, value in enumerate(byte_array):
+        int_value += 256**n * value
+
+    return int_value
+

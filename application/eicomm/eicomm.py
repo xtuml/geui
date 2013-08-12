@@ -27,7 +27,7 @@ class EIcomm(threading.Thread):
         None,                                   # 0
         {'name': 'get_version'},                # 1
         None,                                   # 2
-        None,                                   # 3
+        {'name': 'run'},                        # 3
         None,                                   # 4
         None,                                   # 5
         None,                                   # 6

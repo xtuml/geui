@@ -23,6 +23,7 @@ function Client(){
     }
 
     this.eihttp.data = function(points, action){
+        client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(points);
         if (action == 'start'){
             //start the data polling
             httpcomm.receive_data();
@@ -33,7 +34,6 @@ function Client(){
             client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(action);
         }
         else{
-            client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(points);
         }
     }
 

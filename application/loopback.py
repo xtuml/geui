@@ -111,7 +111,10 @@ class EIcommLoopback(EIcomm):
                 'method': self.get_version
             },
             None,                               # 2
-            None,                               # 3
+            {                                   # 3
+                'name': 'run',
+                'method': self.run_exp
+            },
             None,                               # 4
             None,                               # 5
             None,                               # 6
@@ -140,6 +143,9 @@ class EIcommLoopback(EIcomm):
     def get_version(self, data):
         self.send(1, 4, bytearray([2,6,1,3]))
     
+    def run_exp(self, data):
+        print 'Running Experiment.'
+
     def wave(self, data):
         print 'Recieved wave:'
         wave = []
