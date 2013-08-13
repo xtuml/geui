@@ -33,6 +33,10 @@ function Client(){
             httpcomm.receiving_data = false;
             client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(action);
         }
+        else if (action == 'onepacket'){
+            client.gui.panels[client.gui.config.views['DataChart']].view.updateChart();
+            client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push('stop');
+        }
         else{
         }
     }

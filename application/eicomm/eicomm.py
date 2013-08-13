@@ -16,7 +16,13 @@ class EIcomm(threading.Thread):
             'method': agent.eibus.version
         },
         None,                                   # 2
-        {                                       # 3
+        None,                                   # 3
+        None,                                   # 4
+        None,                                   # 5
+        None,                                   # 6
+        None,                                   # 7
+        None,                                   # 8
+        {                                       # 9
             'name': 'data',
             'method': agent.eibus.data
         }

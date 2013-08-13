@@ -58,7 +58,7 @@ class Agent(threading.Thread):
                 break
 
     #data received from instrument. sends to GUI for graphing
-    def data(self, data, action):
+    def data(self, data):
 
         # unmarshalling grammar definitions
         # data packet is in form (header) (point)*
@@ -72,26 +72,29 @@ class Agent(threading.Thread):
 
         counter = 0             #current index in data packet
 
-        def header():
-            n = toint([data[counter], data[counter + 1]])
-            N = toint([data[counter + 2], data[counter + 3], data[counter + 4], data[counter + 5]])
-            start = toint([data[counter + 6], data[counter + 7], data[counter + 8], data[counter + 9]])
-            data_type = data[counter + 10]
-            timing = data[counter + 11]
-            counter += 12
+        def header(c):
+            n = toint([data[c], data[c + 1]])
+            N = toint([data[c + 2], data[c + 3], data[c + 4], data[c + 5]])
+            start = toint([data[c + 6], data[c + 7], data[c + 8], data[c + 9]])
+            data_type = data[c + 10]
+            timing = data[c + 11]
+            return c + 12
 
-        def point():
-            E = toint([data[counter], data[counter + 1]])
-            I = toint([data[counter + 2], data[counter + 3]])
-            counter += 4
+        def point(c):
+            E = toint([data[c], data[c + 1]])
+            I = toint([data[c + 2], data[c + 3]])
+            points.append([E,I])
+            return c + 4
 
         # unmarshall data
-        header()                        #unmarshall the header
+        counter = header(counter)                        #unmarshall the header
         while counter < len(data):
-            point()                     #unmarshall points
+            counter = point(counter)                     #unmarshall points
 
         # decide action
-        if start == 0:
+        if start == 0 and n == N:
+            action = 'onepacket'
+        elif start == 0:
             action = 'start'
         elif start + n == N:
             action = 'stop'

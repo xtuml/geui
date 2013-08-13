@@ -143,8 +143,8 @@ DataChart.prototype.initiateChart = function(){
                 }
             },
             showLastLabel: true,
-            max: 0.9,
-            min: -0.1
+            //max: 0.9,
+            //min: -0.1
             /*/
             max: 50000,
             min: -50000 
@@ -160,8 +160,8 @@ DataChart.prototype.initiateChart = function(){
                 }
             },
             lineWidth: 2,
-            max: 0.0000157839,
-            min: -0.0000255252
+            //max: 0.0000157839,
+            //min: -0.0000255252
             /*/
             max: 2500000000,
             min: 0

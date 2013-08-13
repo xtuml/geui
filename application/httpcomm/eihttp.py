@@ -18,7 +18,7 @@ def version(version):
 #data packet from agent
 def data(points, action):
     t = threading.currentThread()
-    if action == 'start':
+    if action == 'start' or action == 'onepacket':
         data = {
             'signal': 'data',
             'points': points,
