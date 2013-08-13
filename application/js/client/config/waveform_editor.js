@@ -503,6 +503,10 @@ function WaveformTablePatterns(panel){
     this.current_row;           //row number of the row that's being edited
     this.selected_row = -1;     //keep track of row that is selected
 
+    //track changes
+    this.unsaved_changes = false;
+    this.unupdated_changes = false;
+
     //drag attributes
     this.y_offset = 0;
     this.table_offset = 0;
@@ -753,6 +757,9 @@ WaveformTablePatterns.prototype.update = function(row_num){
             //send update signal
             httpcomm.eihttp.update_pattern(repeat_value, position);
 
+            //track changes
+            this.unsaved_changes = true;
+
         }
     }
 }
@@ -908,8 +915,16 @@ WaveformTablePatterns.prototype.endDrag = function(ev){
     this.drag_row.style.top = new_y + 'px';
     this.drag_row.className = 'table-row row-ease table-row-hover';
 
+    //put rows to the back
+    for (var c = 0;c < this.rows.length;c++){
+        this.rows[c].style.zIndex = 0;
+    }
+
     //send move signal to the server
     httpcomm.eihttp.move_pattern(this.drag_initial_index, this.drag_row_index)
+
+    //track changes
+    this.unsaved_changes = true;
 
     //update each row's start_time
     for (var c = 0; c < this.rows.length; c++){
@@ -971,6 +986,10 @@ function WaveformTableSegments(panel){
     this.rows = [];             //container for table rows
     this.row_count = 0;         //number of rows in the table
     this.current_row;           //row number of the row that's being edited
+
+    //track changes
+    this.unsaved_changes = false;
+    this.unupdated_changes = false;
 
     //drag attributes
     this.y_offset = 0;
@@ -1428,6 +1447,9 @@ WaveformTableSegments.prototype.update = function(row_num){
             var pattern = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.selected_row;
             httpcomm.eihttp.update_segment(start_value, end_value, rate, duration, position, pattern);
 
+            //track changes
+            this.unsaved_changes = true;
+
             //add segment plot band
             this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view.addSegmentBand(position);
 
@@ -1531,9 +1553,17 @@ WaveformTableSegments.prototype.endDrag = function(ev){
     this.drag_row.style.top = new_y + 'px';
     this.drag_row.className = 'table-row row-ease table-row-hover';
 
+    //put rows to the back
+    for (var c = 0;c < this.rows.length;c++){
+        this.rows[c].style.zIndex = 0;
+    }
+
     //send move signal to the server
     var pattern = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.selected_row;
     httpcomm.eihttp.move_segment(this.drag_initial_index, this.drag_row_index, pattern)
+
+    //track changes
+    this.unsaved_changes = true;
 
     //update highlighted segment
     var chart = this.panel.gui.panels[this.panel.gui.config.views['WaveformChart']].view;
@@ -1604,6 +1634,9 @@ WaveformButtonsPatterns.prototype.add_pattern = function(){
     //send add signal
     httpcomm.eihttp.add_pattern(add_defaults[0], add_defaults[1], add_defaults[2], add_defaults[3], add_defaults[4]);
 
+    //track changes
+    table_patterns.unsaved_changes = true;
+
     //update select dots
     table_patterns.labels.childNodes[0].childNodes[0].className = 'select-dot';
 
@@ -1623,6 +1656,9 @@ WaveformButtonsPatterns.prototype.delete_pattern = function(){
 
     //send delete signal
     httpcomm.eihttp.delete_pattern(positions);
+
+    //track changes
+    table.unsaved_changes = true;
 
 }
 
@@ -1707,6 +1743,9 @@ WaveformButtonsSegments.prototype.add_segment = function(){
     //send add signal
     httpcomm.eihttp.add_segment(add_defaults[0], add_defaults[1], add_defaults[2], add_defaults[3], pattern);
 
+    //track changes
+    this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.unsaved_changes = true;
+
     //add new table row
     this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.addRow(position, add_defaults);
 
@@ -1731,6 +1770,9 @@ WaveformButtonsSegments.prototype.delete_segment = function(){
     var pattern = this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.selected_row;
     httpcomm.eihttp.delete_segment(positions, pattern);
 
+    //track changes
+    this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.unsaved_changes = true;
+
     //delete rows
     for (var n = 0; n < positions.length; n++){
         table.input_table.removeChild(table.rows[positions[n]]);    //remove the element
@@ -1746,13 +1788,25 @@ WaveformButtonsSegments.prototype.delete_segment = function(){
 //posts a save to the server
 WaveformButtonsSegments.prototype.save_experiment = function(){
     httpcomm.eihttp.save_experiment();
+    this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.unsaved_changes = false;
+    this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.unsaved_changes = false;
     this.panel.gui.message.setMessage('Experiment saved.');
     this.panel.gui.message.show();
 }
 
 //go back to the previous screen
 WaveformButtonsSegments.prototype.go_back = function(){
-    client.gui.popConfig([]);
+    if (this.panel.gui.panels[this.panel.gui.config.views['WaveformTablePatterns']].view.unsaved_changes == false && this.panel.gui.panels[this.panel.gui.config.views['WaveformTableSegments']].view.unsaved_changes == false){
+        client.gui.popConfig([]);
+    }
+    else{
+        this.panel.gui.confirmation.setMessage('You have unsaved changes. Go back?');
+        this.panel.gui.confirmation.show(function(confirmed){
+            if (confirmed){
+                client.gui.popConfig([]);
+            }
+        });
+    }
 }
 
 //-----------------------------//

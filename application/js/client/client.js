@@ -27,7 +27,8 @@ function Client(){
     }
 
     this.eihttp.version = function(version){
-        alert('Version: ' + version);
+        client.gui.message.setMessage('Version: ' + version);
+        client.gui.message.show();
     }
 
     this.eihttp.load_experiments = function(experiments){
@@ -63,6 +64,7 @@ function Gui(){
     };
     this.loader = new Loader(this);
     this.message = new Message(this);
+    this.confirmation = new Confirmation(this);
 }
 
 //update panel positions
@@ -145,12 +147,14 @@ function Message(gui){
     this.container.style.display = 'none';
 
     this.message = 'This is a test message.';
-    this.button_label = 'OK'
+    this.button_label = 'OK';
 
     //add dialog
     this.dialog = document.createElement('div');
     this.dialog.className = 'dialog';
+    this.dialog.style.display = 'none';
 
+    //add text
     this.text_background = document.createElement('div');
     this.text_background.className = 'text-background';
     this.text_box = document.createElement('div');
@@ -159,9 +163,11 @@ function Message(gui){
     this.text_background.appendChild(this.text_box);
     this.dialog.appendChild(this.text_background);
 
+    //add ok button
     this.okbtn = document.createElement('div');
     this.okbtn.className = 'btn ok-btn';
     this.okbtn.innerHTML = this.button_label;
+    this.okbtn.tabIndex = 0;
     this.dialog.appendChild(this.okbtn);
 
     this.container.appendChild(this.dialog);
@@ -175,12 +181,101 @@ Message.prototype.setMessage = function(text){
 Message.prototype.show = function(){
     var msg = this;
     this.container.style.display = 'block';
+    this.dialog.style.display = 'block';
     this.okbtn.onclick = function(){msg.hide()};
+    this.okbtn.onkeypress = function(e){if(e.keyCode == 13){msg.hide()}};
+    this.okbtn.focus();
 }
 
 Message.prototype.hide = function(){
     this.container.style.display = 'none';
+    this.dialog.style.display = 'none';
     this.okbtn.onclick = null;
+}
+
+//-----------------------------//
+
+
+
+// Confirmation class ---------//
+
+function Confirmation(gui){
+    this.gui = gui;
+    this.container = document.getElementById('dialog_container');
+    this.container.style.display = 'none';
+
+    this.message = 'This is a test message.';
+    this.yes_label = 'YES';
+    this.no_label = 'NO';
+
+    //add dialog
+    this.dialog = document.createElement('div');
+    this.dialog.className = 'dialog';
+    this.dialog.style.display = 'none';
+
+    //add text
+    this.text_background = document.createElement('div');
+    this.text_background.className = 'text-background';
+    this.text_box = document.createElement('div');
+    this.text_box.className = 'text-box';
+    this.text_box.innerHTML = this.message;
+    this.text_background.appendChild(this.text_box);
+    this.dialog.appendChild(this.text_background);
+
+    //add yes button
+    this.yesbtn = document.createElement('div');
+    this.yesbtn.className = 'btn yes-btn';
+    this.yesbtn.innerHTML = this.yes_label;
+    this.yesbtn.tabIndex = 0;
+    this.dialog.appendChild(this.yesbtn);
+
+    //add no button
+    this.nobtn = document.createElement('div');
+    this.nobtn.className = 'btn no-btn';
+    this.nobtn.innerHTML = this.no_label;
+    this.nobtn.tabIndex = 0;
+    this.dialog.appendChild(this.nobtn);
+
+    this.container.appendChild(this.dialog);
+}
+
+Confirmation.prototype.setMessage = function(text){
+    this.message = text;
+    this.text_box.innerHTML = this.message;
+}
+
+Confirmation.prototype.show = function(callback){
+    var msg = this;
+    this.container.style.display = 'block';
+    this.dialog.style.display = 'block';
+    this.yesbtn.onclick = function(){
+        callback(true);
+        msg.hide();
+    };
+    this.yesbtn.onkeypress = function(e){
+        if(e.keyCode == 13){
+            callback(true);
+            msg.hide()
+        }
+    };
+    this.nobtn.onclick = function(){
+        callback(false);
+        msg.hide();
+    };
+    this.nobtn.onkeypress = function(e){
+        if(e.keyCode == 13){
+            callback(false);
+            msg.hide()
+        }
+    };
+    this.nobtn.focus();
+}
+
+Confirmation.prototype.hide = function(){
+    this.container.style.display = 'none';
+    this.dialog.style.display = 'none';
+    this.yesbtn.onclick = null;
+    this.nobtn.onclick = null;
 }
 
 //-----------------------------//
