@@ -291,17 +291,23 @@ OpenExperiment.prototype.openFile = function(name){
 //delete a file
 OpenExperiment.prototype.deleteFile = function(){
     if (this.selected_row != -1){
-        //send delete request
-        httpcomm.eihttp.delete_experiment(this.rows[this.selected_row].innerHTML);
+        this.panel.gui.confirmation.setMessage('Are you sure you want to delete "' + this.rows[this.selected_row].innerHTML + '"?');
+        var open_exp = this;
+        this.panel.gui.confirmation.show(function(confirmed){
+            if (confirmed){
+                //send delete request
+                httpcomm.eihttp.delete_experiment(open_exp.rows[open_exp.selected_row].innerHTML);
 
-        //remove table row
-        this.open_table.removeChild(this.rows[this.selected_row]);          //remove the element
-        this.rows.splice(this.selected_row, 1);
-        for (var row = this.selected_row; row < this.rows.length; row++){
-            this.rows[row].style.top = (row * 34 + 4) + 'px';
-            this.rows[row].row_num = row;
-        }
-        this.selected_row = -1;
+                //remove table row
+                open_exp.open_table.removeChild(open_exp.rows[open_exp.selected_row]);          //remove the element
+                open_exp.rows.splice(open_exp.selected_row, 1);
+                for (var row = open_exp.selected_row; row < open_exp.rows.length; row++){
+                    open_exp.rows[row].style.top = (row * 34 + 4) + 'px';
+                    open_exp.rows[row].row_num = row;
+                }
+                open_exp.selected_row = -1;
+            }
+        });
     }
 }
 
@@ -314,13 +320,15 @@ OpenExperiment.prototype.uploadFile = function(files){
         console.log(file.name);
         name = file.name.substring(0, file.name.length - 4);
         var r = new FileReader();
+        var open_exp = this;
         r.onload = function(evt){
             contents = evt.target.result;
             if (file.type == 'text/xml'){
                 httpcomm.eihttp.upload_file(name, contents);
             }
             else{
-                alert('Filetype must be .xml');
+                open_exp.panel.gui.message.setMessage('Filetype must be .xml');
+                open_exp.panel.gui.message.show();
             }
         }
         r.readAsText(file);
@@ -441,7 +449,8 @@ CreateExperiment.prototype.createFile = function(name){
         for (row in rows){
             if (rows[row].innerHTML == name){
                 duplicate = true;
-                alert('Duplicate name.');
+                this.panel.gui.message.setMessage('Duplicate name.');
+                this.panel.gui.message.show();
                 break;
             }
         }

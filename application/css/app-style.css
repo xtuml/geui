@@ -654,8 +654,8 @@ Styling sheet for X8 GUI
     position: absolute;
     top: 4px;
     left: 4px;
-    height: calc(100% - 72px);
-    height: -webkit-calc(100% - 72px);
+    height: calc(100% - 65px);
+    height: -webkit-calc(100% - 65px);
     width: calc(100% - 10px);
     width: -webkit-calc(100% - 10px);
     border-radius: 10px;
@@ -676,7 +676,6 @@ Styling sheet for X8 GUI
 .text-box {
     display: inline-block;
     vertical-align: middle;
-    padding: 3px;
     font-size: 30px;
     font-family: Arial;
     color: black;
@@ -693,10 +692,9 @@ Styling sheet for X8 GUI
     position: absolute;
     left: 5px;
     bottom: 5px;
-    width: calc(100% - 17px);
-    width: -webkit-calc(100% - 17px);
+    width: calc(100% - 10px);
+    width: -webkit-calc(100% - 10px);
     color: #2E2E2E;
-    padding: 3px;
     font-size: 30px;
     font-family: Arial;
     text-align: center;
@@ -714,9 +712,50 @@ Styling sheet for X8 GUI
 }
 
 .yes-btn {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: calc((100% - 15px) / 2);
+    width: -webkit-calc((100% - 15px) / 2);
+    color: #2E2E2E;
+    font-size: 30px;
+    font-family: Arial;
+    text-align: center;
+    line-height: 48px;
+    cursor: default;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.yes-btn:hover {
+    color: #182B93;
 }
 
 .no-btn {
+    position: absolute;
+    left: calc(((100% - 15px) / 2) + 10px);
+    left: -webkit-calc(((100% - 15px) / 2) + 10px);
+    bottom: 5px;
+    width: calc((100% - 15px) / 2);
+    width: -webkit-calc((100% - 15px) / 2);
+    color: #2E2E2E;
+    font-size: 30px;
+    font-family: Arial;
+    text-align: center;
+    line-height: 48px;
+    cursor: default;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.no-btn:hover {
+    color: #B70000;
 }
 
 /* Spinner styling */
