@@ -1,8 +1,11 @@
 import threading
 import Queue
 from util import call
+from util import toint
+from util import tobytes
 import time
 import os
+import session
 
 import eicomm.eibus
 import httpcomm.eihttp
@@ -20,6 +23,9 @@ class Agent(threading.Thread):
     #current experiment
     current_experiment = None
 
+    #session attribute
+    session = None
+
     #list of experiment names
     experiment_list = None
     
@@ -28,6 +34,7 @@ class Agent(threading.Thread):
         self.q = Queue.Queue()
         self.running = False
         self.current_experiment = None
+        self.session = session.Session('None')
         exp_file = open('experiments.xml','r')
         xml_string = exp_file.read()
         exp_file.close()
@@ -37,6 +44,7 @@ class Agent(threading.Thread):
         for t in threading.enumerate():
             if t.name == 'httpcomm':
                 t.q.put([httpcomm.eihttp.load_experiments, self.experiment_list.names])
+                break
 
     def get_version(self):
         for t in threading.enumerate():
@@ -44,6 +52,25 @@ class Agent(threading.Thread):
                 t.q.put([eicomm.eibus.get_version])
                 break
 
+    #start new session
+    def start_session(self, name, key):
+        self.session = session.Session(name)
+        for t in threading.enumerate():
+            if t.name == 'eicomm':
+                t.q.put([eicomm.eibus.start_session, bytearray(tobytes(key))])
+                break
+
+    #receive the session increment and start a session
+    def session_increment(self, data):
+        #unmarshall data
+        self.session.increment = toint(data)
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.session_increment, self.session.increment])
+                break
+
+
+    #version recevied from instrument. sends version to GUI
     def version(self, data):
         # unmarshall version data
         version = str(data[0]) + '.' + str(data[1]) + str(data[2]) + '-' + str(data[3])

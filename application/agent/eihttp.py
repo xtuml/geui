@@ -5,6 +5,11 @@ import eicomm.eibus
 
 #----- SIGNALS TO AGENT -----#
 
+#start new secure session
+def start_session(name, hashed_key):
+    t = threading.currentThread()
+    t.start_session(name, hashed_key)
+
 #exit
 def exit():
     t = threading.currentThread()
@@ -166,4 +171,8 @@ def load_experiments(names):
 
 #send GUI indication that the upload was a success
 def upload_success(name):
+    pass
+
+#send GUI the session increment
+def session_increment(increment):
     pass

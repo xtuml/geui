@@ -12,6 +12,7 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     editor = new WaveformEditor(client.gui);
 
     //login
+    httpcomm.signals['session_increment'].enabled = true;
     login_protocol = function(){
         client.gui.login.show(function(){
             if (client.key == 9999){

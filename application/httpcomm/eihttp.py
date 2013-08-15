@@ -49,7 +49,20 @@ def upload_success(name):
     t = threading.currentThread()
     t.commands.put(['upload_success', json.dumps(data)])
 
+#send GUI the session increment
+def session_increment(increment):
+    data = {
+        'signal': 'session_increment',
+        'increment': increment
+    }
+    t = threading.currentThread()
+    t.commands.put(['session_increment', json.dumps(data)])
+
 #----- SIGNALS TO AGENT -----#
+
+#start new secure session
+def start_session(name, hashed_key):
+    pass
 
 #exit
 def exit():

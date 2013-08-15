@@ -11,9 +11,26 @@ class EIcomm(threading.Thread):
     #incoming codes and information (static attribute)
     incoming = [
         None,
-        {
+        {                                       # 1
             'name': 'version',
             'method': agent.eibus.version
+        },
+        None,                                   # 2
+        None,                                   # 3
+        None,                                   # 4
+        None,                                   # 5
+        None,                                   # 6
+        None,                                   # 7
+        None,                                   # 8
+        None,                                   # 9
+        None,                                   # 10
+        None,                                   # 11
+        None,                                   # 12
+        None,                                   # 13
+        None,                                   # 14
+        {                                       # 15
+            'name': 'session_increment',
+            'method': agent.eibus.session_increment
         }
     ]
 
@@ -29,7 +46,12 @@ class EIcomm(threading.Thread):
         None,                                   # 7
         None,                                   # 8
         None,                                   # 9
-        {'name': 'wave'}                        # 10
+        {'name': 'wave'},                       # 10
+        None,                                   # 11
+        None,                                   # 12
+        None,                                   # 13
+        None,                                   # 14
+        {'name': 'start_session'}               # 15
     ]
 
     #threading attributes

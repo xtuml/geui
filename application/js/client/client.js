@@ -46,6 +46,10 @@ function Client(){
         client.gui.panels[client.gui.config.views['OpenExperiment']].view.openFile(name);
     }
 
+    this.eihttp.session_increment = function(increment){
+        alert(increment);
+    }
+
     //-------------------------//
 
 }

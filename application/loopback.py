@@ -121,6 +121,14 @@ class EIcommLoopback(EIcomm):
             {                                   # 10
                 'name': 'wave',
                 'method': self.wave
+            },
+            None,                               # 11
+            None,                               # 12
+            None,                               # 13
+            None,                               # 14
+            {                                   # 15
+                'name': 'start_session',
+                'method': self.start_session
             }
         ]
 
@@ -128,6 +136,20 @@ class EIcommLoopback(EIcomm):
         self.outgoing = [
             None,                                   # 0
             {'name': 'version'},                    # 1
+            None,                                   # 2
+            None,                                   # 3
+            None,                                   # 4
+            None,                                   # 5
+            None,                                   # 6
+            None,                                   # 7
+            None,                                   # 8
+            None,                                   # 9
+            None,                                   # 10
+            None,                                   # 11
+            None,                                   # 12
+            None,                                   # 13
+            None,                                   # 14
+            {'name': 'session_increment'}           # 15
         ]
 
     def receive(self):
@@ -146,6 +168,21 @@ class EIcommLoopback(EIcomm):
         for byte in data:
             wave.append(byte)
         print wave
+
+    def start_session(self, data):
+        import random
+        import math
+        from agent.util import tobytes
+        from agent.util import toint
+
+        key = 9999
+
+        #hashing code
+        hashed_key = key + 1
+
+        if toint(data) == hashed_key:
+            increment = math.floor(random.random() * 65536)     #16 bit random integer
+            self.send(15, 2, bytearray(tobytes(increment)))
 
 if __name__ == '__main__':
 

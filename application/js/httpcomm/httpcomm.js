@@ -17,7 +17,8 @@ function HTTPcomm(){
         'update_graph': new update_graph(),
         'load_table': new load_table(),
         'load_experiments': new load_experiments(),
-        'upload_success': new upload_success()
+        'upload_success': new upload_success(),
+        'session_increment': new session_increment()
     }
 
     // eihttp class -----------//
@@ -27,12 +28,27 @@ function HTTPcomm(){
         //interface definition
     }
 
+    this.eihttp.start_session = function(name, hashed_key){
+        obj = {
+            name: name,
+            hashed_key: hashed_key
+        }
+        data = JSON.stringify(obj);
+        $.ajax({
+            type: 'POST',
+            url: 'start_session',
+            data: data,
+            success: null,
+            async: true
+        });
+    }
+
     this.eihttp.exit = function(){
         $.ajax({
             type: 'GET',
             url: 'exit',
             data: null,
-            success: function(){},
+            success: null,
             async:true
         });
         httpcomm.running = false;
@@ -338,6 +354,15 @@ upload_success = function(){
     this.unpack = function(data){
         if (this.enabled == true){
             client.eihttp.upload_success(data.name);
+        }
+    }
+}
+
+session_increment = function(){
+    this.enabled = false;
+    this.unpack = function(data){
+        if (this.enabled == true){
+            client.eihttp.session_increment(data.increment);
         }
     }
 }

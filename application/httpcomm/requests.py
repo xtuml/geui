@@ -16,6 +16,20 @@ class COMMAND:
                 else:
                     return 'NoLog'              #tells the webpy server not to log
 
+#Session Commands
+#==========================#
+
+class START_SESSION:
+    def POST(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                data = json.loads(web.data())
+                t.q.put([agent.eihttp.start_session, data['name'], data['hashed_key']])
+                break
+
+#==========================#
+
+
 #I/O Commands
 #==========================#
 
@@ -24,12 +38,14 @@ class SAVE_EXPERIMENT:
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.save_experiment])
+                break
 
 class GET_EXPERIMENT_LIST:
     def GET(self):
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.get_experiments])
+                break
 
 class REQUEST_TABLE:
     def POST(self):
@@ -37,6 +53,7 @@ class REQUEST_TABLE:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.request_table, data['table_id'], data['position']])
+                break
 
 class OPEN_EXPERIMENT:
     def POST(self):
@@ -44,6 +61,7 @@ class OPEN_EXPERIMENT:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.open_experiment, data['name']])
+                break
 
 class CREATE_EXPERIMENT:
     def POST(self):
@@ -51,6 +69,7 @@ class CREATE_EXPERIMENT:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.create_experiment, data['name']])
+                break
 
 class DELETE_EXPERIMENT:
     def POST(self):
@@ -58,6 +77,7 @@ class DELETE_EXPERIMENT:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.delete_experiment, data['name']])
+                break
 
 class UPLOAD_FILE:
     def POST(self):
@@ -65,6 +85,7 @@ class UPLOAD_FILE:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.upload_file, data['name'], data['contents']])
+                break
 
 #==========================#
 
@@ -78,6 +99,7 @@ class ADD_PATTERN:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.add_pattern, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['repeat_value'])])
+                break
 
 class DELETE_PATTERN:
     def POST(self):
@@ -85,6 +107,7 @@ class DELETE_PATTERN:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.delete_pattern, data['positions']])
+                break
 
 class MOVE_PATTERN:
     def POST(self):
@@ -92,6 +115,7 @@ class MOVE_PATTERN:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.move_pattern, int(data['position']), int(data['destination'])])
+                break
 
 class UPDATE_PATTERN:
     def POST(self):
@@ -99,6 +123,7 @@ class UPDATE_PATTERN:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.update_pattern, float(data['repeat_value']), int(data['position'])])
+                break
 
 class ADD_SEGMENT:
     def POST(self):
@@ -106,6 +131,7 @@ class ADD_SEGMENT:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.add_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['pattern'])])
+                break
 
 class DELETE_SEGMENT:
     def POST(self):
@@ -113,6 +139,7 @@ class DELETE_SEGMENT:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.delete_segment, data['positions'], int(data['pattern'])])
+                break
 
 class MOVE_SEGMENT:
     def POST(self):
@@ -120,6 +147,7 @@ class MOVE_SEGMENT:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.move_segment, int(data['position']), int(data['destination']), int(data['pattern'])])
+                break
 
 class UPDATE_SEGMENT:
     def POST(self):
@@ -127,6 +155,7 @@ class UPDATE_SEGMENT:
             if t.name == 'agent':
                 data = json.loads(web.data())
                 t.q.put([agent.eihttp.update_segment, float(data['start_value']), float(data['end_value']), float(data['rate']), float(data['duration']), int(data['position']), int(data['pattern'])])
+                break
 
 #==========================#
 
@@ -140,6 +169,7 @@ class VERSION:
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.get_version])
+                break
 
 #exit command
 class EXIT:
@@ -147,6 +177,7 @@ class EXIT:
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.exit])
+                break
 
 #download waveform command
 class DOWNLOAD:
@@ -154,6 +185,7 @@ class DOWNLOAD:
         for t in threading.enumerate():
             if t.name == 'agent':
                 t.q.put([agent.eihttp.download])
+                break
 
 #==========================#
 
