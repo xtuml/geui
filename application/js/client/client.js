@@ -9,6 +9,11 @@ Gui and Panel have methods for adding deleting and moving views.
 // Client class ---------------//
 
 function Client(){
+
+    //client information
+    this.name = '';
+    this.key = null;
+
     this.gui = new Gui();
 
     // eihttp class -----------//
@@ -45,6 +50,10 @@ function Client(){
 
 }
 
+Client.prototype.get_hash = function(value){
+    return value + 1;
+}
+
 //-----------------------------//
 
 
@@ -65,6 +74,7 @@ function Gui(){
     this.loader = new Loader(this);
     this.message = new Message(this);
     this.confirmation = new Confirmation(this);
+    this.login = new Login(this);
 }
 
 //update panel positions
@@ -178,12 +188,20 @@ Message.prototype.setMessage = function(text){
     this.text_box.innerHTML = this.message;
 }
 
-Message.prototype.show = function(){
+Message.prototype.show = function(callback){
     var msg = this;
     this.container.style.display = 'block';
     this.dialog.style.display = 'block';
-    this.okbtn.onclick = function(){msg.hide()};
-    this.okbtn.onkeypress = function(e){if(e.keyCode == 13){msg.hide()}};
+    this.okbtn.onclick = function(){
+        msg.hide();
+        callback();
+    }
+    this.okbtn.onkeypress = function(e){
+        if(e.keyCode == 13){
+            msg.hide();
+            callback();
+        }
+    }
     this.okbtn.focus();
 }
 
@@ -249,23 +267,23 @@ Confirmation.prototype.show = function(callback){
     this.container.style.display = 'block';
     this.dialog.style.display = 'block';
     this.yesbtn.onclick = function(){
-        callback(true);
         msg.hide();
+        callback(true);
     };
     this.yesbtn.onkeypress = function(e){
         if(e.keyCode == 13){
-            callback(true);
             msg.hide()
+            callback(true);
         }
     };
     this.nobtn.onclick = function(){
-        callback(false);
         msg.hide();
+        callback(false);
     };
     this.nobtn.onkeypress = function(e){
         if(e.keyCode == 13){
-            callback(false);
             msg.hide()
+            callback(false);
         }
     };
     this.nobtn.focus();
@@ -276,6 +294,92 @@ Confirmation.prototype.hide = function(){
     this.dialog.style.display = 'none';
     this.yesbtn.onclick = null;
     this.nobtn.onclick = null;
+}
+
+//-----------------------------//
+
+
+
+// Login class --------------//
+
+function Login(gui){
+    this.gui = gui;
+    this.container = document.getElementById('dialog_container');
+    this.container.style.display = 'none';
+
+    this.header = 'LOG IN:';
+    this.button_label = 'Log In';
+    this.name_placeholder = 'Name';
+    this.key_placeholder = 'Key';
+
+    //add dialog
+    this.dialog = document.createElement('div');
+    this.dialog.className = 'dialog';
+    this.dialog.style.display = 'none';
+
+    //add input container
+    this.box = document.createElement('div');
+    this.box.className = 'input-box';
+    this.dialog.appendChild(this.box);
+
+    //add label text
+    this.label = document.createElement('div');
+    this.label.className = 'login-label';
+    this.label.innerHTML = this.header;
+    this.box.appendChild(this.label);
+
+    //add inputs
+    this.name = document.createElement('input');
+    this.name.className = 'login-input';
+    this.name.placeholder = this.name_placeholder;
+    this.name.style.top = 'calc((100% - 82px) / 2)';
+    this.name.style.top = '-webkit-calc((100% - 82px) / 2)';
+
+    this.key = document.createElement('input');
+    this.key.className = 'login-input';
+    this.key.placeholder = this.key_placeholder;
+    this.key.style.top = 'calc(((100% - 82px) / 2) + 46px)';
+    this.key.style.top = '-webkit-calc(((100% - 82px) / 2) + 46px)';
+    
+    this.box.appendChild(this.name);
+    this.box.appendChild(this.key);
+
+    //add login button
+    this.loginbtn = document.createElement('div');
+    this.loginbtn.className = 'btn ok-btn';
+    this.loginbtn.innerHTML = this.button_label;
+    this.loginbtn.tabIndex = 0;
+    this.dialog.appendChild(this.loginbtn);
+
+    this.container.appendChild(this.dialog);
+}
+
+Login.prototype.login = function(callback){
+    if (this.name.value != '' && this.key.value != ''){
+        client.name = this.name.value;
+        client.key = parseInt(this.key.value);
+        this.hide();
+        callback();
+    }
+}
+
+Login.prototype.show = function(callback){
+    var l = this;
+    this.container.style.display = 'block';
+    this.dialog.style.display = 'block';
+    this.loginbtn.onclick = function(){l.login(callback)};
+    this.loginbtn.onkeypress = function(e){if(e.keyCode == 13){l.login(callback)}};
+    this.name.onkeypress = function(e){if(e.keyCode == 13){l.login(callback)}};
+    this.key.onkeypress = function(e){if(e.keyCode == 13){l.login(callback)}};
+    this.name.focus();
+}
+
+Login.prototype.hide = function(){
+    this.name.value = '';
+    this.key.value = '';
+    this.container.style.display = 'none';
+    this.dialog.style.display = 'none';
+    this.loginbtn.onclick = null;
 }
 
 //-----------------------------//

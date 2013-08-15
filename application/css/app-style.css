@@ -688,6 +688,51 @@ Styling sheet for X8 GUI
     user-select: none;
 }
 
+.input-box {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 65px);
+    height: -webkit-calc(100% - 65px);
+    width: calc(100% - 10px);
+    width: -webkit-calc(100% - 10px);
+    border-radius: 10px;
+    border: 1px solid silver;
+    background-color: DimGray;
+    text-align: center;
+    overflow: scroll;
+}
+
+.login-label {
+    position: absolute;
+    top: 5%;
+    height: 30px;
+    width: 100%;
+    font-size: 30px;
+    color: black;
+    text-align: center;
+    line-height: 30px;
+    cursor: default;
+    font-family: Arial;
+}
+
+.login-input {
+    position: absolute;
+    left: 20px;
+    height: 30px;
+    width: calc(100% - 40px);
+    width: -webkit-calc(100% - 40px);
+    border: 1px solid #505050;
+    border-radius: 5px;
+    padding: 3px;
+    font-size: 20px;
+    font-family: Arial;
+    color: black;
+    cursor: default;
+    line-height: 30px;
+    text-indent: 15px;
+}
+
 .ok-btn {
     position: absolute;
     left: 5px;

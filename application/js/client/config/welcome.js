@@ -328,7 +328,7 @@ OpenExperiment.prototype.uploadFile = function(files){
             }
             else{
                 open_exp.panel.gui.message.setMessage('Filetype must be .xml');
-                open_exp.panel.gui.message.show();
+                open_exp.panel.gui.message.show(null);
             }
         }
         r.readAsText(file);
@@ -449,8 +449,11 @@ CreateExperiment.prototype.createFile = function(name){
         for (row in rows){
             if (rows[row].innerHTML == name){
                 duplicate = true;
+                var create = this;
                 this.panel.gui.message.setMessage('Duplicate name.');
-                this.panel.gui.message.show();
+                this.panel.gui.message.show(function(){
+                    create.create_input.value = '';
+                });
                 break;
             }
         }
