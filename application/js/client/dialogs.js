@@ -169,6 +169,8 @@ Confirmation.prototype.show = function(callback){
 Confirmation.prototype.hide = function(){
     this.container.style.display = 'none';
     this.dialog.style.display = 'none';
+    this.yesbtn.innerHTML = this.yes_label;
+    this.nobtn.innerHTML = this.no_label;
     this.yesbtn.onclick = null;
     this.nobtn.onclick = null;
 }
