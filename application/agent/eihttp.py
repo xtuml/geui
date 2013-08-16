@@ -1,7 +1,6 @@
 #eihttp interface for communicating with the GUI
 
 import threading
-import eicomm.eibus
 
 #----- SIGNALS TO AGENT -----#
 
@@ -9,6 +8,11 @@ import eicomm.eibus
 def start_session(name, hashed_key):
     t = threading.currentThread()
     t.start_session(name, hashed_key)
+
+#get session information from agent
+def get_session():
+    t = threading.currentThread()
+    t.get_session()
 
 #exit
 def exit():
@@ -174,5 +178,9 @@ def upload_success(name):
     pass
 
 #send GUI the session increment
-def session_increment(increment):
+def session_increment(name, start_time, increment):
+    pass
+
+#send GUI session information
+def session(name, start_time, increment):
     pass

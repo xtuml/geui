@@ -9,3 +9,4 @@ class Session:
     def __init__(self, name): 
         self.name = name
         self.start_time = time.time()
+        self.increment = 0

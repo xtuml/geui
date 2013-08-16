@@ -25,6 +25,7 @@ class Agent(threading.Thread):
 
     #session attribute
     session = None
+    temp_session = None         #place to put session information while waiting to be authenticated
 
     #list of experiment names
     experiment_list = None
@@ -40,21 +41,30 @@ class Agent(threading.Thread):
         exp_file.close()
         self.experiment_list = gnosis.xml.pickle.loads(xml_string)
 
+    #return list of saved experiments to GUI
     def get_experiments(self):
         for t in threading.enumerate():
             if t.name == 'httpcomm':
                 t.q.put([httpcomm.eihttp.load_experiments, self.experiment_list.names])
                 break
 
+    #get hardware version
     def get_version(self):
         for t in threading.enumerate():
             if t.name == 'eicomm':
                 t.q.put([eicomm.eibus.get_version])
                 break
 
+    #return session information to GUI
+    def get_session(self):
+        for t in threading.enumerate():
+            if t.name == 'httpcomm':
+                t.q.put([httpcomm.eihttp.session, self.session.name, time.ctime(self.session.start_time), self.session.increment])
+                break
+
     #start new session
     def start_session(self, name, key):
-        self.session = session.Session(name)
+        self.temp_session = session.Session(name)
         for t in threading.enumerate():
             if t.name == 'eicomm':
                 t.q.put([eicomm.eibus.start_session, bytearray(tobytes(key))])
@@ -63,10 +73,11 @@ class Agent(threading.Thread):
     #receive the session increment and start a session
     def session_increment(self, data):
         #unmarshall data
+        self.session = self.temp_session
         self.session.increment = toint(data)
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.session_increment, self.session.increment])
+                t.q.put([httpcomm.eihttp.session_increment, self.session.name, time.ctime(self.session.start_time), self.session.increment])
                 break
 
 

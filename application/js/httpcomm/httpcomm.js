@@ -18,7 +18,8 @@ function HTTPcomm(){
         'load_table': new load_table(),
         'load_experiments': new load_experiments(),
         'upload_success': new upload_success(),
-        'session_increment': new session_increment()
+        'session_increment': new session_increment(),
+        'session': new session()
     }
 
     // eihttp class -----------//
@@ -38,6 +39,16 @@ function HTTPcomm(){
             type: 'POST',
             url: 'start_session',
             data: data,
+            success: null,
+            async: true
+        });
+    }
+
+    this.eihttp.get_session = function(){
+        $.ajax({
+            type: 'GET',
+            url: 'get_session',
+            data: null,
             success: null,
             async: true
         });
@@ -362,7 +373,16 @@ session_increment = function(){
     this.enabled = false;
     this.unpack = function(data){
         if (this.enabled == true){
-            client.eihttp.session_increment(data.increment);
+            client.eihttp.session_increment(data.name, data.start_time, data.increment);
+        }
+    }
+}
+
+session = function(){
+    this.enabled = false;
+    this.unpack = function(data){
+        if (this.enabled == true){
+            client.eihttp.session(data.name, data.start_time, data.increment);
         }
     }
 }

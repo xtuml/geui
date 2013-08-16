@@ -10,6 +10,7 @@ class Server(threading.Thread):
     urls = (
         '/command','COMMAND',
         '/start_session','START_SESSION',
+        '/get_session','GET_SESSION',
         '/save','SAVE_EXPERIMENT',
         '/get_experiments','GET_EXPERIMENT_LIST',
         '/table','REQUEST_TABLE',

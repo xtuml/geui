@@ -27,6 +27,13 @@ class START_SESSION:
                 t.q.put([agent.eihttp.start_session, data['name'], data['hashed_key']])
                 break
 
+class GET_SESSION:
+    def GET(self):
+        for t in threading.enumerate():
+            if t.name == 'agent':
+                t.q.put([agent.eihttp.get_session])
+                break
+
 #==========================#
 
 
