@@ -171,6 +171,8 @@ function OpenExperiment(panel){
     this.label_text = 'Open Experiment';
 
     //add components
+    var open = this;    // reference variable for inside event callback functions
+    
     //label
     this.label = document.createElement('div');
     this.label.className = 'label';
@@ -187,13 +189,11 @@ function OpenExperiment(panel){
     this.del.className = 'btn';
     this.del.style.right = '52px';
     this.del.style.bottom = '0px';
-    this.del.parent_view = this;
     this.del_symbol = document.createElement('div');
     this.del_symbol.className = 'delete-btn';
-    this.del_symbol.parent_view = this;
-    this.del_symbol.onclick = function(e){e.target.parent_view.deleteFile()};
+    this.del_symbol.onclick = function(){open.deleteFile()};
     this.del_symbol.tabIndex = 0;
-    this.del_symbol.onkeypress = function(e){if(e.keyCode == 13){e.target.parent_view.deleteFile()}};
+    this.del_symbol.onkeypress = function(e){if(e.keyCode == 13){open.deleteFile()}};
     this.del.appendChild(this.del_symbol);
     this.content_pane.appendChild(this.del);
 
@@ -201,13 +201,11 @@ function OpenExperiment(panel){
     this.open.className = 'btn';
     this.open.style.right = '0px';
     this.open.style.bottom = '0px';
-    this.open.parent_view = this;
     this.open_symbol = document.createElement('div');
     this.open_symbol.className = 'open-btn';
-    this.open_symbol.parent_view = this;
-    this.open_symbol.onclick = function(e){e.target.parent_view.openFile()};
+    this.open_symbol.onclick = function(){open.openFile()};
     this.open_symbol.tabIndex = 0;
-    this.open_symbol.onkeypress = function(e){if(e.keyCode == 13){e.target.parent_view.openFile()}};
+    this.open_symbol.onkeypress = function(e){if(e.keyCode == 13){open.openFile()}};
     this.open.appendChild(this.open_symbol);
     this.content_pane.appendChild(this.open);
 
@@ -215,15 +213,14 @@ function OpenExperiment(panel){
     this.dots.className = 'btn';
     this.dots.style.left = '0px';
     this.dots.style.bottom = '0px';
-    this.dots.parent_view = this;
     this.dots_symbol = document.createElement('div');
     this.dots_symbol.className = 'dots-btn';
     this.dots_upload = document.createElement('input');
+    var dots_ref = this.dots_upload;        //reference variable for inside event callback
     this.dots_upload.type = 'file';
     this.dots_upload.className = 'upload';
-    this.dots_upload.parent_view = this;
     this.dots_upload.tabIndex = 0;
-    this.dots_upload.onchange = function(e){e.target.parent_view.uploadFile(e.target.files)};
+    this.dots_upload.onchange = function(){open.uploadFile(dots_ref.files)};
     this.dots_symbol.appendChild(this.dots_upload);
     this.dots.appendChild(this.dots_symbol);
     this.content_pane.appendChild(this.dots);
@@ -237,16 +234,17 @@ function OpenExperiment(panel){
 
 OpenExperiment.prototype.addRow = function(text){
 
+    var open = this;    // reference variable for inside event callback functions
+
     var row = document.createElement('div');
     row.className = 'open-row row-ease open-row-hover';
     row.style.top = (this.row_count * 34 + 4) + 'px';
     row.innerHTML = text;
-    row.parent_view = this;
     row.row_num = this.row_count;
     row.selected = false;
     row.tabIndex = 0;
-    row.onclick = function(e){e.target.parent_view.select(e.target.row_num)}
-    row.onkeypress = function(e){if(e.keyCode == 13){e.target.parent_view.select(e.target.row_num)}}
+    row.onclick = function(){open.select(row.row_num)}
+    row.onkeypress = function(e){if(e.keyCode == 13){open.select(row.row_num)}}
 
     this.open_table.appendChild(row);
     this.row_count ++;
@@ -362,6 +360,9 @@ function CreateExperiment(panel){
     this.input_placeholder = 'Experiment name';
 
     //add components
+
+    var create = this;          // reference variable for inside event callback functions
+
     //label
     this.label = document.createElement('div');
     this.label.className = 'label';
@@ -375,10 +376,10 @@ function CreateExperiment(panel){
 
     //input
     this.create_input = document.createElement('input');
+    var create_ref = this.create_input;             //reference variable for inside event callback
     this.create_input.className = 'create-input';
     this.create_input.placeholder = this.input_placeholder;
-    this.create_input.parent_view = this;
-    this.create_input.onkeypress = function(e){if(e.keyCode == 13){e.target.parent_view.createFile(e.target.value)}};
+    this.create_input.onkeypress = function(e){if(e.keyCode == 13){create.createFile(create_ref.value)}};
     this.content_pane.appendChild(this.create_input);
 
     //buttons
@@ -386,13 +387,11 @@ function CreateExperiment(panel){
     this.create.className = 'btn';
     this.create.style.right = '0px';
     this.create.style.bottom = '0px';
-    this.create.parent_view = this;
     this.create_symbol = document.createElement('div');
     this.create_symbol.className = 'new-btn';
-    this.create_symbol.parent_view = this;
-    this.create_symbol.onclick = function(e){e.target.parent_view.createFile(e.target.parent_view.create_input.value)};
+    this.create_symbol.onclick = function(){create.createFile(create.create_input.value)};
     this.create_symbol.tabIndex = 0;
-    this.create_symbol.onkeypress = function(e){if(e.keyCode == 13){e.target.parent_view.createFile(e.target.parent_view.create_input.value)}};
+    this.create_symbol.onkeypress = function(e){if(e.keyCode == 13){create.createFile(create.create_input.value)}};
     this.create.appendChild(this.create_symbol);
     this.content_pane.appendChild(this.create);
 
@@ -405,16 +404,17 @@ function CreateExperiment(panel){
 
 CreateExperiment.prototype.addRow = function(text){
 
+    var create = this;          // reference variable for inside event callback functions
+
     var row = document.createElement('div');
     row.className = 'open-row open-row-hover';
     row.style.top = (this.row_count * 34 + 4) + 'px';
     row.innerHTML = text;
-    row.parent_view = this;
     row.row_num = this.row_count;
     row.selected = false;
     row.tabIndex = 0;
-    row.onclick = function(e){e.target.parent_view.select(e.target.row_num)}
-    row.onkeypress = function(e){if(e.keyCode == 13){e.target.parent_view.select(e.target.row_num)}}
+    row.onclick = function(){create.select(row.row_num)}
+    row.onkeypress = function(e){if(e.keyCode == 13){create.select(row.row_num)}}
 
     this.create_table.appendChild(row);
     this.row_count ++;
