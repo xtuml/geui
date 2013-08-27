@@ -4,6 +4,7 @@ from agent.util import call
 from agent.util import tobytes
 import time
 import socket
+import logging
 import agent.eibus
 
 class EIcomm(threading.Thread):
@@ -55,15 +56,18 @@ class EIcomm(threading.Thread):
         if self.transport.s != None:
             self.transport.outbox.put(msg)
             target = self.transport.s.getpeername()
-            print 'Message sent: "' + self.outgoing[code]['name'] + '" to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']'
+            logger = logging.getLogger('agent_log')
+            logger.info('Message sent: "' + self.outgoing[code]['name'] + '" to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']')
         else:
-            print 'Message not sent: No EC connected. [' + time.ctime() + ']'
+            logger = logging.getLogger('agent_log')
+            logger.info('Message not sent: No EC connected. [' + time.ctime() + ']')
 
     def receive(self):
         if not self.transport.inbox.empty():
             msg = self.transport.inbox.get()
             sender = self.transport.s.getpeername()
-            print 'Message received: "' + self.incoming[msg[0]]['name'] + '" from ' + sender[0] + ':' + str(sender[1]) + ' at [' + time.ctime() + ']'
+            logger = logging.getLogger('agent_log')
+            logger.info('Message received: "' + self.incoming[msg[0]]['name'] + '" from ' + sender[0] + ':' + str(sender[1]) + ' at [' + time.ctime() + ']')
             for t in threading.enumerate():
                 if t.name == 'agent':
                     t.q.put([self.incoming[msg[0]]['method'], bytearray(msg[3:])])
@@ -86,7 +90,8 @@ class EIcomm(threading.Thread):
             #sleep for 10 milliseconds
             time.sleep(0.010)
 
-        print 'Exited EIcomm at [' + time.ctime() + ']'
+        logger = logging.getLogger('agent_log')
+        logger.info('Exited EIcomm at [' + time.ctime() + ']')
 
 class Transport(threading.Thread):
 
@@ -132,7 +137,8 @@ class Transport(threading.Thread):
                 if len(data) == 0:                      #socket has closed
                     receiving = False
                     target = self.s.getpeername()
-                    print 'Connection to ' + target[0] + ':' + str(target[1]) + ' broken at [' + time.ctime() + ']'
+                    logger = logging.getLogger('agent_log')
+                    logger.info('Connection to ' + target[0] + ':' + str(target[1]) + ' broken at [' + time.ctime() + ']')
                     self.s = None
                 else:                                   #socket has data
                     self.msg += data
@@ -158,7 +164,8 @@ class Transport(threading.Thread):
             self.s = s
             self.s.setblocking(0)
             target = self.s.getpeername()
-            print 'Connected to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']'
+            logger = logging.getLogger('agent_log')
+            logger.info('Connected to ' + target[0] + ':' + str(target[1]) + ' at [' + time.ctime() + ']')
 
     def run(self):
         self.running = True

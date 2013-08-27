@@ -2,6 +2,7 @@ import threading
 import Queue
 from util import call
 import time
+import logging
 import eicomm.eibus
 
 class TestBench(threading.Thread):
@@ -57,4 +58,5 @@ class TestBench(threading.Thread):
             #run command
             call(cmd) 
 
-        print 'Exited TestBench at ' + time.ctime()
+        logger = logging.getLogger('agent_log')
+        logger.info('Exited TestBench at ' + time.ctime())

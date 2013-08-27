@@ -62,6 +62,27 @@ class CommandLine(threading.Thread):
 
 #main method. initializes agent, server, and usblistener
 if __name__ == "__main__":
+
+    #setup logging
+    import logging
+
+    # create logger with 'spam_application'
+    logger = logging.getLogger('agent_log')
+    logger.setLevel(logging.INFO)
+    # create file handler which logs info messages
+    fh = logging.FileHandler('log/agent' + str(int(time.time())) + '.log')
+    fh.setLevel(logging.DEBUG)
+    # create console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
     #define threads
     agent = Agent()
     eicomm = EIcomm()

@@ -3,6 +3,7 @@ import Queue
 from util import call
 import time
 import os
+import logging
 
 import eicomm.eibus
 import httpcomm.eihttp
@@ -78,7 +79,8 @@ class Agent(threading.Thread):
         try:
             test_exp = gnosis.xml.pickle.loads(contents)
         except:
-            print 'Uploaded file wrong format. [' + time.ctime() + ']'
+            logger = logging.getLogger('agent_log')
+            logger.info('Uploaded file wrong format. [' + time.ctime() + ']')
             #send error to GUI here
         else:
             #check for duplicate name
@@ -128,7 +130,8 @@ class Agent(threading.Thread):
         save_file.close()
 
         #log exit
-        print 'Exited Agent at [' + time.ctime() + ']'
+        logger = logging.getLogger('agent_log')
+        logger.info('Exited Agent at [' + time.ctime() + ']')
 
 #object for keeping names of experiments
 class ExperimentList:
