@@ -3,6 +3,7 @@ import Queue
 from agent.util import call
 import server
 import time
+import logging
 
 class HTTPcomm(threading.Thread):
 
@@ -39,5 +40,7 @@ class HTTPcomm(threading.Thread):
 
             #run command
             call(cmd)
-        print 'Exited HTTPcomm at [' + time.ctime() + ']'
+
+        logger = logging.getLogger('agent_log')
+        logger.info('Exited HTTPcomm at [' + time.ctime() + ']')
 
