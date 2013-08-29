@@ -65,12 +65,13 @@ if __name__ == "__main__":
 
     #setup logging
     import logging
+    import logging.handlers
 
     # create logger with 'spam_application'
     logger = logging.getLogger('agent_log')
     logger.setLevel(logging.INFO)
     # create file handler which logs info messages
-    fh = logging.FileHandler('log/agent' + str(int(time.time())) + '.log')
+    fh = logging.handlers.RotatingFileHandler('log/agent.log', maxBytes=1048576, backupCount=10) # 10 backup files max 1MB each
     fh.setLevel(logging.DEBUG)
     # create console handler
     ch = logging.StreamHandler()
