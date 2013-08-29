@@ -317,4 +317,10 @@ class LogMiddleware:
         time = self.log_date_time_string()
 
         msg = self.format % (host, time, protocol, method, req, status)
-        print >> outfile, utils.safestr(msg)
+        
+        #logger for agent <-- my code -- Levi Starrett
+        import logging
+        logger = logging.getLogger('agent_log')
+        logger.info(msg)
+
+        #print >> outfile, utils.safestr(msg)
