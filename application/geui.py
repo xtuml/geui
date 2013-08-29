@@ -2,11 +2,34 @@ from httpcomm.httpcomm import HTTPcomm
 from agent.agent import Agent
 from eicomm.eicomm import EIcomm
 from agent.test_bench import TestBench
-from command import CommandLine
+from agent.command import CommandLine
 
+import time
 
 #main method. initializes agent, server, and usblistener
 if __name__ == "__main__":
+
+    #setup logging
+    import logging
+    import logging.handlers
+
+    # create logger with 'spam_application'
+    logger = logging.getLogger('agent_log')
+    logger.setLevel(logging.INFO)
+    # create file handler which logs info messages
+    fh = logging.handlers.RotatingFileHandler('log/agent.log', maxBytes=1048576, backupCount=10) # 10 backup files max 1MB each
+    fh.setLevel(logging.DEBUG)
+    # create console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
     #define threads
     agent = Agent()
     eicomm = EIcomm()
@@ -21,3 +44,5 @@ if __name__ == "__main__":
     httpcomm.start()
     test.start()
     command.start()
+
+    logger.info('Agent intiated at [' + time.ctime() + ']')
