@@ -1,4 +1,4 @@
-import agent.eihttp as eihttp
+import eihttp as eihttp
 import threading
 import time
 import math
