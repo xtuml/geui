@@ -45,4 +45,4 @@ if __name__ == "__main__":
     test.start()
     command.start()
 
-    logger.info('Agent intiated at [' + time.ctime() + ']')
+    logger.info('Agent initiated at [' + time.ctime() + ']')
