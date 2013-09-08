@@ -13,7 +13,10 @@ def version(data):
 #data packet from EC
 def data(data):
     t = threading.currentThread()
-    t.data(data)
+    if t.current_experiment.data_file == None:
+        import data_file
+        t.current_experiment.data_file = data_file.DataFile(t.current_experiment)
+    t.current_experiment.data_file.data_packet(data)
 
 #----- SIGNALS TO EC -----#
 

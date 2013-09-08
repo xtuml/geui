@@ -10,6 +10,8 @@ class Experiment:
 
     name = ''
     graph = None
+    wave = None
+    data_file = None
 
     def __init__(self, graph=None, name=''):
         self.graph = graph
@@ -80,13 +82,15 @@ class Graph:
                 start_value = float(segment.start_value)
                 end_value = float(segment.end_value)
                 rate = float(segment.rate)
-                interval = float(segment.duration) / p      #time interval (seconds) between points
-                point_num = 0                               #point counter
+                interval = float(segment.duration) / p      # time interval (seconds) between points
+                point_num = 0                               # point counter
 
-                points = []                                 #container for voltage points
+                points = []                                 # container for voltage points
 
                 while point_num < p: 
-                    points.append(start_value + rate * interval * point_num)
+                    new_point = start_value + rate * interval * point_num
+                    points.append(new_point)
+                    waveform.points.append(new_point)
                     point_num += 1
 
                 #add points to segment

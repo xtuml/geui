@@ -58,58 +58,6 @@ class Agent(threading.Thread):
                 t.q.put([httpcomm.eihttp.version, version])
                 break
 
-    #data received from instrument. sends to GUI for graphing
-    def data(self, data):
-
-        # unmarshalling grammar definitions
-        # data packet is in form (header) (point)*
-
-        n = 0                   #number of points in the packet
-        N = 0                   #number of points in the experiment
-        start = 0               #starting index of this packet
-        data_type = 0           #16 bit or summed data
-        timing = 0              #ticks in between points
-        points = []             #data points in (E, I) pairs
-
-        counter = 0             #current index in data packet
-
-        def header(c):
-            n = toint([data[c], data[c + 1]])
-            N = toint([data[c + 2], data[c + 3], data[c + 4], data[c + 5]])
-            start = toint([data[c + 6], data[c + 7], data[c + 8], data[c + 9]])
-            data_type = data[c + 10]
-            timing = data[c + 11]
-            return c + 12
-
-        def point(c):
-            E = toint([data[c], data[c + 1]])
-            I = toint([data[c + 2], data[c + 3]])
-            points.append([E,I])
-            return c + 4
-
-        # unmarshall data
-        counter = header(counter)                        #unmarshall the header
-        while counter < len(data):
-            counter = point(counter)                     #unmarshall points
-
-        # decide action
-        if start == 0 and n == N:
-            action = 'onepacket'
-        elif start == 0:
-            action = 'start'
-        elif start + n == N:
-            action = 'stop'
-        else:
-            action = ''
-
-        #persist data
-
-        #send data to GUI
-        for t in threading.enumerate():
-            if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.data, points, action])
-                break
-
     #exits the program
     def exit(self):
         print 'Exiting...'
@@ -122,6 +70,8 @@ class Agent(threading.Thread):
     def download(self):
         wave = self.current_experiment.graph.translate()
         data = wave.marshall()
+        if self.current_experiment != None:
+            self.current_experiment.wave = wave
         for t in threading.enumerate():
             if t.name == 'eicomm':
                 t.q.put([eicomm.eibus.wave, data])

@@ -15,6 +15,7 @@ class CommandLine(threading.Thread):
         '"run" ---> Run current experiment.',
         '"test_data" ---> Send test data to GUI.',
         '"send_wave" ---> Send test wave from test bench to EC.',
+        '"download" ---> Send current wave to EC.',
         '"get_version" ---> Send get_version request to EC.',
         '"exit" ---> Quit program.',
         '"help" ---> Show command help.'
@@ -87,6 +88,11 @@ class CommandLine(threading.Thread):
                 for t in threading.enumerate():
                     if t.name == 'test':
                         t.q.put([t.send_wave])
+                        break
+            elif x == 'download':
+                for t in threading.enumerate():
+                    if t.name == 'agent':
+                        t.q.put([t.download])
                         break
             elif x == 'get_version':
                 for t in threading.enumerate():
