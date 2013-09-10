@@ -18,7 +18,6 @@ Styling sheet for X8 GUI
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .app-header {
@@ -165,7 +164,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
     background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
     background-position: center;
     background-repeat: no-repeat;
     border: 1px solid #666666;
@@ -179,7 +177,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
     background-image:      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #A5A5A5, #E5E5E5);
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -320,7 +317,6 @@ Styling sheet for X8 GUI
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .main-row {
@@ -332,12 +328,10 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
     background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .table-row {
@@ -349,12 +343,10 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
     background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .table-row-hover:hover {
@@ -363,7 +355,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #DCEEE3, #86C49D); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #DCEEE3, #86C49D); /* IE10 */
     background-image:      -o-linear-gradient(top, #DCEEE3, #86C49D); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #DCEEE3, #86C49D);
 }
 
 .row-ease {
@@ -391,7 +382,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #4C4C4C, #8C8C8C); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #4C4C4C, #8C8C8C); /* IE10 */
     background-image:      -o-linear-gradient(top, #4C4C4C, #8C8C8C); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #4C4C4C, #8C8C8C);
     border: 1px solid silver;
 }
 
@@ -401,7 +391,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #64B482, #3A7851); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #64B482, #3A7851); /* IE10 */
     background-image:      -o-linear-gradient(top, #64B482, #3A7851); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #64B482, #3A7851);
 }
 
 .number-cell {
@@ -437,7 +426,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #DC0000, #860000); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #DC0000, #860000); /* IE10 */
     background-image:      -o-linear-gradient(top, #DC0000, #860000); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #DC0000, #860000);
 }
 
 .label-cell {
@@ -506,7 +494,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #8C8C8C, #CCCCCC); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #8C8C8C, #CCCCCC); /* IE10 */
     background-image:      -o-linear-gradient(top, #8C8C8C, #CCCCCC); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #8C8C8C, #CCCCCC);
     border: 1px solid silver;
     -webkit-border-top-right-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
@@ -550,7 +537,6 @@ Styling sheet for X8 GUI
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
     border: 1px solid silver;
     border-radius: 10px;
 }
@@ -566,12 +552,10 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
     background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
     font-size: 16px;
     font-family: Arial;
     color: black;
@@ -587,7 +571,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #DCEEE3, #86C49D); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #DCEEE3, #86C49D); /* IE10 */
     background-image:      -o-linear-gradient(top, #DCEEE3, #86C49D); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #DCEEE3, #86C49D);
 }
 
 .selected-row {
@@ -596,7 +579,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #D5E8F5, #6EAFDC); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #D5E8F5, #6EAFDC); /* IE10 */
     background-image:      -o-linear-gradient(top, #D5E8F5, #6EAFDC); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #D5E8F5, #6EAFDC);
 }
 
 
@@ -647,7 +629,6 @@ Styling sheet for X8 GUI
     background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
     background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
-    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
 }
 
 .text-background {
@@ -685,7 +666,6 @@ Styling sheet for X8 GUI
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .input-box {
@@ -749,7 +729,6 @@ Styling sheet for X8 GUI
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .ok-btn:hover {
@@ -772,7 +751,6 @@ Styling sheet for X8 GUI
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .yes-btn:hover {
@@ -796,7 +774,6 @@ Styling sheet for X8 GUI
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-    user-select: none;
 }
 
 .no-btn:hover {
@@ -810,7 +787,7 @@ Styling sheet for X8 GUI
     left: 0px;
     height: 100%;
     width: 100%;
-    background-color: (0,0,0,0.5);
+    background-color: (0, 0, 0, 0.5);
     transition: all 1s;
     -webkit-transition: all 1s;
 }
