@@ -68,10 +68,10 @@ class Pattern:
 
 class Segment:
 
-    ticks = None        #number of ticks between points
-    n = None            #number of points in this segment
+    ticks = None        # number of ticks between points
+    n = None            # number of points in this segment
 
-    points = []         #container for voltage values
+    points = []         # container for voltage values
 
     def __init__(self, ticks=None, n=None, points=[]):
         self.ticks = ticks

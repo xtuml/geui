@@ -1,6 +1,7 @@
 import threading
 import httpcomm.eihttp
 import wave
+import device
 import gnosis.xml.pickle
 from gnosis.xml.pickle.util import setParanoia
 setParanoia(0)
@@ -12,10 +13,13 @@ class Experiment:
     graph = None
     wave = None
     data_file = None
+    device = None
 
     def __init__(self, graph=None, name=''):
         self.graph = graph
         self.name = name
+
+        self.device = device.Device(1000000, 100)       # 1 MHz fastest tick and 100uV min step (eventually will come from version command)
 
     #public static method to create an experiment
     @staticmethod
@@ -24,6 +28,7 @@ class Experiment:
         t = threading.currentThread()
         t.experiment_list.add_experiment(name)
         new_experiment = Experiment(new_graph, name)
+        new_experiment.graph.experiment = new_experiment
         new_experiment.graph.add_pattern([0.0, 0.0, 0.0, 10.0, 1])
         new_experiment.save()
         return new_experiment
@@ -65,6 +70,8 @@ class Experiment:
 #Graph as a whole as defined by the user
 class Graph:
     
+    experiment = None
+
     contents = []
 
     def __init__(self):
@@ -72,11 +79,21 @@ class Graph:
 
     def translate(self):
         waveform = wave.Wave(1, 0, 1, len(self.contents))
+
+        # determine tick
+        wave_rate = self.contents[0].contents[0].rate           # scan rate of the experiment in mV/s
+        data_rate = self.contents[0].contents[0].data_rate      # data rate of the experiment in samples/s
+        wave_tick = self.experiment.device.min_tick / (wave_rate * 1000 / self.experiment.device.min_step)
+        data_tick = self.experiment.device.min_tick / data_rate
+        from fractions import gcd
+        tick = gcd(wave_tick, data_tick)                        # defined in counts of base system tick
+
         for pattern in self.contents:
             wave_pattern = wave.Pattern(pattern.repeat_value, len(pattern.contents))
             for segment in pattern.contents:
-                p = 5                                        #number of points per segment based on system tick, step size, and duration
-                wave_segment = wave.Segment(1, p, [])
+                p = abs(segment.start_value - segment.end_value) * 1000 / self.experiment.device.min_step      # number of points per segment 
+                                                                                                                    # based on step size voltage range
+                wave_segment = wave.Segment(tick, p, [])
 
                 #calculate points (based on linear model)
                 start_value = float(segment.start_value)
@@ -88,7 +105,7 @@ class Graph:
                 points = []                                 # container for voltage points
 
                 while point_num < p: 
-                    new_point = start_value + rate * interval * point_num
+                    new_point = start_value + rate * interval * point_num * 10      # measured in multiples of 100uV
                     points.append(new_point)
                     waveform.points.append(new_point)
                     point_num += 1
@@ -261,10 +278,12 @@ class Segment:
 
     vertices = []
 
-    start_value = 0
-    end_value = 0
-    rate = 0
-    duration = 0
+    start_value = 0             # start voltage value in mV
+    end_value = 0               # end voltage value in mV
+    rate = 0                    # scan rate in mV/s
+    duration = 0                # duration of segment in seconds
+
+    data_rate = 0               # data sampling rate in points per second
 
     def __init__(self, values, parent):
         self.parent = parent
@@ -273,6 +292,8 @@ class Segment:
         self.rate = values[2]
         self.duration = values[3]
         self.vertices = [Vertex(self, 1), Vertex(self, 2)]
+
+        self.data_rate = 1      # 1 sample per second (for testing)
 
     #updates a segment's values
     def update(self, values):

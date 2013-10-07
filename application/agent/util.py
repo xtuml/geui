@@ -33,36 +33,39 @@ def call(args):
     else:
         pass
 
-#function to convert an integer to an array of bytes (in integer form 0 <= num < 256)
-def tobytes(value, num_bytes=0, little_endian=True):
-    import math
-    byte_array = []
-    num_need = int(math.ceil(float(math.log(value + 1, 256))))  #find number of bytes needed
-    while num_need > 0:
-        num_need -= 1                                           #num_need becomes multiplying factor to separate bytes
-        byte_array.append(int(math.floor(float(value / (256 ** num_need)))))
-        value = value % (256 ** num_need)
+# function to convert an integer to an array of bytes (in integer form 0 <= num < 256)
+def tobytes(value, num_bytes, signed=False, little_endian=True):
+    # num_bytes has a max value of 4 bytes. After that, I'm not sure what Python does with "long" values
+    if (value < 0):                 # convert value into a positive integer and set signed to True
+        value *= -1
+        value = ~(value) + 1        # perform two's complement
+        signed = True
 
-    #add empty bytes to fill requirements
-    #if no num_bytes is specified, no extra zeroes will be added
-    while len(byte_array) < num_bytes:
-        byte_array.insert(0, 0)
+    # check to make sure number fits in num_bytes
+    if (value >= 256 ** num_bytes - 1):
+        return None
 
-    #adjust endianness
-    if little_endian == True:
-        byte_array.reverse()
+    else:
+        byte_array = []
+        mask = 255
+        i = 0
+        while (i < num_bytes):
+            byte_array.append((value & mask) >> (8 * i))        # use 8 bit 1's mask to pull out one byte at a time
+            mask = mask << 8
+            i += 1
 
-    return byte_array
+        return byte_array
 
-def toint(byte_array, little_endian=True):
-    #adjust endianness
-    if little_endian == False:
-        byte_array.reverse()
+# function to convert an array of bytes into an integer
+def toint(byte_array, signed=False, little_endian=True):
+    value = 0
+    for n, byte in enumerate(byte_array):
+        value += byte << (8 * n)
 
-    #unpack
-    int_value = 0
-    for n, value in enumerate(byte_array):
-        int_value += 256**n * value
+    if (signed and value > (2 ** ((len(byte_array) * 8) - 1) - 1)):
+        value = ~(value - 1)        # perform backwards two's complement
+        mask = 2 ** (len(byte_array) * 8) - 1       # mask out extra one's left over
+        value = value & mask
+        value *= -1
 
-    return int_value
-
+    return value
