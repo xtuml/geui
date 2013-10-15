@@ -14,6 +14,7 @@ class Experiment:
     wave = None
     data_file = None
     device = None
+    tick = 0
 
     def __init__(self, graph=None, name=''):
         self.graph = graph
@@ -67,7 +68,7 @@ class Experiment:
             if t.name == 'httpcomm':
                 t.q.put([httpcomm.eihttp.update_graph, points])
 
-#Graph as a whole as defined by the user
+# Graph as a whole as defined by the user
 class Graph:
     
     experiment = None
@@ -77,7 +78,7 @@ class Graph:
     def __init__(self):
         self.contents = []
 
-    def translate(self):
+    def translate(self, wave_type=0):                           # defaults to linear segment model
         waveform = wave.Wave(1, 0, 1, len(self.contents))
 
         # determine tick
@@ -86,35 +87,45 @@ class Graph:
         wave_tick = self.experiment.device.min_tick / (wave_rate * 1000 / self.experiment.device.min_step)
         data_tick = self.experiment.device.min_tick / data_rate
         from fractions import gcd
-        tick = gcd(wave_tick, data_tick)                        # defined in counts of base system tick
+        self.experiment.tick = gcd(wave_tick, data_tick)        # defined in counts of base system tick
 
         for pattern in self.contents:
             wave_pattern = wave.Pattern(pattern.repeat_value, len(pattern.contents))
             for segment in pattern.contents:
-                p = abs(segment.start_value - segment.end_value) * 1000 / self.experiment.device.min_step      # number of points per segment 
-                                                                                                                    # based on step size voltage range
-                wave_segment = wave.Segment(tick, p, [])
+                if (wave_type == 0):
+                    ticks = int(self.experiment.tick * segment.duration)
+                    s = int(segment.start_value * 10)
+                    e = int(segment.end_value * 10)
+                    wave_segment = wave.LinearSegment(ticks, s, e)
 
-                #calculate points (based on linear model)
-                start_value = float(segment.start_value)
-                end_value = float(segment.end_value)
-                rate = float(segment.rate)
-                interval = float(segment.duration) / p      # time interval (seconds) between points
-                point_num = 0                               # point counter
+                    #add segment to pattern
+                    wave_pattern.add_segment(wave_segment)
 
-                points = []                                 # container for voltage points
+                else:
+                    p = abs(segment.start_value - segment.end_value) * 1000 / self.experiment.device.min_step      # number of points per segment 
+                                                                                                                        # based on step size voltage range
+                    wave_segment = wave.Segment(self.experiment.tick, p, [])
 
-                while point_num < p: 
-                    new_point = start_value + rate * interval * point_num * 10      # measured in multiples of 100uV
-                    points.append(new_point)
-                    waveform.points.append(new_point)
-                    point_num += 1
+                    #calculate points (based on linear model)
+                    start_value = float(segment.start_value)
+                    end_value = float(segment.end_value)
+                    rate = float(segment.rate)
+                    interval = float(segment.duration) / p      # time interval (seconds) between points
+                    point_num = 0                               # point counter
 
-                #add points to segment
-                wave_segment.add_points(points)
+                    points = []                                 # container for voltage points
 
-                #add segment to pattern
-                wave_pattern.add_segment(wave_segment)
+                    while point_num < p: 
+                        new_point = start_value + rate * interval * point_num * 10      # measured in multiples of 100uV
+                        points.append(new_point)
+                        waveform.points.append(new_point)
+                        point_num += 1
+
+                    #add points to segment
+                    wave_segment.add_points(points)
+
+                    #add segment to pattern
+                    wave_pattern.add_segment(wave_segment)
 
             #add pattern to waveform
             waveform.add_pattern(wave_pattern)
