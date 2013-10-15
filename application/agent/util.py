@@ -1,5 +1,5 @@
-#function for coverting an array of arguments into separate arguments
-#the first item in the array is a function call, all others are arguments
+# function for coverting an array of arguments into separate arguments
+# the first item in the array is a function call, all others are arguments
 def call(args):
 
     #call a function with no arguments
@@ -36,6 +36,9 @@ def call(args):
 # function to convert an integer to an array of bytes (in integer form 0 <= num < 256)
 def tobytes(value, num_bytes, signed=False, little_endian=True):
     # num_bytes has a max value of 4 bytes. After that, I'm not sure what Python does with "long" values
+    if (num_bytes > 4):
+        return None
+
     if (value < 0):                 # convert value into a positive integer and set signed to True
         value *= -1
         value = ~(value) + 1        # perform two's complement
@@ -50,7 +53,10 @@ def tobytes(value, num_bytes, signed=False, little_endian=True):
         mask = 255
         i = 0
         while (i < num_bytes):
-            byte_array.append((value & mask) >> (8 * i))        # use 8 bit 1's mask to pull out one byte at a time
+            if (little_endian):
+                byte_array.append((value & mask) >> (8 * i))        # use 8 bit 1's mask to pull out one byte at a time
+            else:
+                byte_array.insert(0, (value & mask) >> (8 * i))     # use 8 bit 1's mask to pull out one byte at a time
             mask = mask << 8
             i += 1
 
@@ -59,8 +65,13 @@ def tobytes(value, num_bytes, signed=False, little_endian=True):
 # function to convert an array of bytes into an integer
 def toint(byte_array, signed=False, little_endian=True):
     value = 0
-    for n, byte in enumerate(byte_array):
-        value += byte << (8 * n)
+    n = 0
+    while n < len(byte_array):
+        if (little_endian):
+            value += byte_array[n] << (8 * n)
+        else:
+            value += byte_array[len(byte_array) - n - 1] << (8 * n)
+        n += 1
 
     if (signed and value > (2 ** ((len(byte_array) * 8) - 1) - 1)):
         value = ~(value - 1)        # perform backwards two's complement
