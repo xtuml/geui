@@ -1,6 +1,7 @@
 import threading
 import httpcomm.eihttp
 import wave
+import data_acquisition
 import device
 import gnosis.xml.pickle
 from gnosis.xml.pickle.util import setParanoia
@@ -12,6 +13,7 @@ class Experiment:
     name = ''
     graph = None
     wave = None
+    data_acquisition = None
     data_file = None
     device = None
     tick = 0
