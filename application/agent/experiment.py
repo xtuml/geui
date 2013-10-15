@@ -3,6 +3,7 @@ import httpcomm.eihttp
 import wave
 import data_acquisition
 import device
+import conditions
 import gnosis.xml.pickle
 from gnosis.xml.pickle.util import setParanoia
 setParanoia(0)
@@ -10,8 +11,9 @@ setParanoia(0)
 #data model for an experiment
 class Experiment:
 
-    name = ''
+    name = ""
     graph = None
+    conditions = None
     wave = None
     data_acquisition = None
     data_file = None
