@@ -36,6 +36,7 @@ class Wave:
         #pack up header
         data += tobytes(self.waveID, 2)
         data += tobytes(self.E_final, 2)
+        data += tobytes(self.wave_type, 1)
         data += tobytes(self.N, 2)
         data += tobytes(self.n, 1)
 

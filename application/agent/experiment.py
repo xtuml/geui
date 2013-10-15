@@ -83,7 +83,7 @@ class Graph:
         self.contents = []
 
     def translate(self, wave_type=0):                           # defaults to linear segment model
-        waveform = wave.Wave(1, 0, 1, len(self.contents))
+        waveform = wave.Wave(1, 0, wave_type, 1, len(self.contents))
 
         # determine tick
         wave_rate = self.contents[0].contents[0].rate           # scan rate of the experiment in mV/s

@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE PyObject SYSTEM "PyObjects.dtd">
+<PyObject module="agent.experiment" class="Experiment" id="139792865446656">
+<attr name="device" type="PyObject" id="139792865447016" module="agent.device" class="Device">
+  <attr name="min_tick" type="numeric" value="1000000" />
+  <attr name="min_step" type="numeric" value="100" />
+</attr>
+<attr name="graph" type="PyObject" id="139792865446224" module="agent.experiment" class="Graph">
+  <attr name="experiment" type="PyObject" refid="139792865446656" />
+  <attr name="contents" type="list" id="139792865568888" >
+    <item type="PyObject" id="139792865446512" module="agent.experiment" class="Pattern">
+      <attr name="parent" type="PyObject" refid="139792865446224" />
+      <attr name="contents" type="list" id="139792865446080" >
+        <item type="PyObject" id="139792865446728" module="agent.experiment" class="Segment">
+          <attr name="data_rate" type="numeric" value="1" />
+          <attr name="parent" type="PyObject" refid="139792865446512" />
+          <attr name="end_value" type="numeric" value="1500." />
+          <attr name="vertices" type="list" id="139792865446584" >
+            <item type="PyObject" id="139792865444208" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="0." />
+              <attr name="x" type="numeric" value="0" />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="139792865446728" />
+            </item>
+            <item type="PyObject" id="139792865444928" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="1500." />
+              <attr name="x" type="numeric" value="15." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="139792865446728" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="100." />
+          <attr name="duration" type="numeric" value="15." />
+          <attr name="start_value" type="numeric" value="0." />
+        </item>
+        <item type="PyObject" id="139792865569176" module="agent.experiment" class="Segment">
+          <attr name="data_rate" type="numeric" value="1" />
+          <attr name="parent" type="PyObject" refid="139792865446512" />
+          <attr name="end_value" type="numeric" value="-2000." />
+          <attr name="vertices" type="list" id="139792865423160" >
+            <item type="PyObject" id="139792865569680" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="1500." />
+              <attr name="x" type="numeric" value="15." />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="139792865569176" />
+            </item>
+            <item type="PyObject" id="139792865569608" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="-2000." />
+              <attr name="x" type="numeric" value="50." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="139792865569176" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="-100." />
+          <attr name="duration" type="numeric" value="35." />
+          <attr name="start_value" type="numeric" value="1500." />
+        </item>
+        <item type="PyObject" id="139792865573848" module="agent.experiment" class="Segment">
+          <attr name="data_rate" type="numeric" value="1" />
+          <attr name="parent" type="PyObject" refid="139792865446512" />
+          <attr name="end_value" type="numeric" value="1000." />
+          <attr name="vertices" type="list" id="139792865428400" >
+            <item type="PyObject" id="139792865573920" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="-2000." />
+              <attr name="x" type="numeric" value="50." />
+              <attr name="v_num" type="numeric" value="1" />
+              <attr name="segment" type="PyObject" refid="139792865573848" />
+            </item>
+            <item type="PyObject" id="139792865573992" module="agent.experiment" class="Vertex">
+              <attr name="y" type="numeric" value="1000." />
+              <attr name="x" type="numeric" value="80." />
+              <attr name="v_num" type="numeric" value="2" />
+              <attr name="segment" type="PyObject" refid="139792865573848" />
+            </item>
+          </attr>
+          <attr name="rate" type="numeric" value="100." />
+          <attr name="duration" type="numeric" value="30." />
+          <attr name="start_value" type="numeric" value="-2000." />
+        </item>
+      </attr>
+      <attr name="repeat_value" type="numeric" value="1" />
+    </item>
+  </attr>
+</attr>
+<attr name="name" type="string">levitest</attr>
+</PyObject>
