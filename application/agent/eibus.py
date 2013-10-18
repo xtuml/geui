@@ -1,16 +1,16 @@
-#eibus interface for communicating to the embedded code on the device
+# eibus interface for communicating to the embedded code on the device
 
 import httpcomm.eihttp
 import threading
 
 #----- SIGNALS TO AGENT -----#
 
-#version response from EC
+# version response from EC
 def version(data):
     t = threading.currentThread()
     t.version(data)
 
-#data packet from EC
+# data packet from EC
 def data(data):
     t = threading.currentThread()
     if t.current_experiment.data_file == None:
@@ -20,14 +20,14 @@ def data(data):
 
 #----- SIGNALS TO EC -----#
 
-#get version command sent from agent
+# get version command sent from agent
 def get_version():
     pass
 
-#wave download
+# wave download
 def wave(wave_args):
     pass
 
-#run current experiment
+# run current experiment
 def run():
     pass

@@ -1,4 +1,4 @@
-#mathematical representation of waveform
+# mathematical representation of waveform
 from util import tobytes
 
 class Wave:
@@ -33,14 +33,14 @@ class Wave:
 
         data = []
 
-        #pack up header
+        # pack up header
         data += tobytes(self.waveID, 2)
         data += tobytes(self.E_final, 2)
         data += tobytes(self.wave_type, 1)
         data += tobytes(self.N, 2)
         data += tobytes(self.n, 1)
 
-        #pack up patterns
+        # pack up patterns
         for pattern in self.patterns:
             data += pattern.marshall()
 
@@ -48,10 +48,10 @@ class Wave:
 
 class Pattern:
     
-    N = None            #number of times to repeat this pattern
-    n = None            #number of segments in this pattern
+    N = None            # number of times to repeat this pattern
+    n = None            # number of segments in this pattern
 
-    segments = []       #container for segments
+    segments = []       # container for segments
 
     def __init__(self, N=None, n=None):
         self.N = N

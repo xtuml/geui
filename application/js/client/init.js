@@ -13,8 +13,8 @@ $(document).ready(function(){ //function is called when the page is loaded and r
     run_exp = new RunExperiment(client.gui);
 
     //add the first config
-    //client.gui.newConfig(welcome, []);
-    client.gui.newConfig(run_exp, []);
+    client.gui.newConfig(welcome, []);
+    //client.gui.newConfig(run_exp, []);
 
     //run the polling
     httpcomm.run();

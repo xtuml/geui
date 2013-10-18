@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE PyObject SYSTEM "PyObjects.dtd">
+<PyObject module="agent.agent" class="ExperimentList" id="4559997768">
+<attr name="names" type="list" id="4559850168" >
+  <item type="string">levitest</item>
+</attr>
+</PyObject>

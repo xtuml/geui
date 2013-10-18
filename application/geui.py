@@ -6,31 +6,31 @@ from agent.command import CommandLine
 
 import time
 
-#main method. initializes agent, server, and usblistener
+# main method. initializes agent, server, and usb listener
 if __name__ == "__main__":
 
-    #setup logging
+    # setup logging
     import logging
     import logging.handlers
 
-    # create logger with 'spam_application'
-    logger = logging.getLogger('agent_log')
+    # create logger with "spam_application"
+    logger = logging.getLogger("agent_log")
     logger.setLevel(logging.INFO)
     # create file handler which logs info messages
-    fh = logging.handlers.RotatingFileHandler('log/agent.log', maxBytes=1048576, backupCount=10) # 10 backup files max 1MB each
+    fh = logging.handlers.RotatingFileHandler("log/agent.log", maxBytes=1048576, backupCount=10) # 10 backup files max 1MB each
     fh.setLevel(logging.DEBUG)
     # create console handler
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
     # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(message)s')
+    formatter = logging.Formatter("%(message)s")
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
     # add the handlers to the logger
     logger.addHandler(fh)
     logger.addHandler(ch)
 
-    #define threads
+    # define threads
     agent = Agent()
     eicomm = EIcomm()
     httpcomm = HTTPcomm()
@@ -38,11 +38,11 @@ if __name__ == "__main__":
     command = CommandLine()
     test = TestBench()
 
-    #start threads
+    # start threads
     agent.start()
     eicomm.start()
     httpcomm.start()
     test.start()
     command.start()
 
-    logger.info('Agent initiated at [' + time.ctime() + ']')
+    logger.info("Agent initiated at [" + time.ctime() + "]")
