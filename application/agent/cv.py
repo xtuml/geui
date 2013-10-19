@@ -1,6 +1,7 @@
 import httpcomm.eihttp
 import threading
 import experiment
+import wave
 
 # data model for Cyclic Voltammetry
 class CV(experiment.Experiment):
