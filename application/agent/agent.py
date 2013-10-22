@@ -13,7 +13,7 @@ import gnosis.xml.pickle
 import thread
 import threading
 
-class Agent(thread.Thread):
+class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
     # current experiment
     current_experiment = None
@@ -31,18 +31,24 @@ class Agent(thread.Thread):
         except IOError:
             self.experiment_list = ExperimentList()
 
-    # sends a list of saved experiments to the GUI
-    def get_experiments(self):
-        for t in threading.enumerate():
-            if t.name == "httpcomm":
-                t.q.put([httpcomm.eihttp.load_experiments, self.experiment_list.names])
+    # called when thread is terminated
+    def finalize(self):
+        # persist experiment list
+        save_file = open("experiments/experiments.xml","w")
+        save_file.write(gnosis.xml.pickle.dumps(self.experiment_list))
+        save_file.close()
 
-    # requests version from instrument
-    def get_version(self):
+
+    #------- Interface Methods -------#
+
+
+    # EIBUS
+    #---------------------------------#
+    # sends the run command to the instrument
+    def run_experiment(self):
         for t in threading.enumerate():
             if t.name == "eicomm":
-                t.q.put([eicomm.eibus.get_version])
-                break
+                t.q.put([t.run_experiment])
 
     # version recevied from instrument. sends version to GUI
     def version(self, data):
@@ -51,10 +57,34 @@ class Agent(thread.Thread):
         print "Version: " + version
         for t in threading.enumerate():
             if t.name == "httpcomm":
-                t.q.put([httpcomm.eihttp.version, version])
+                t.q.put([t.version, version])
                 break
 
-    #sends waveform to the instrument
+    # data packet from EC
+    def data(self, data):
+        if self.current_experiment.data_file == None:
+            import data_file
+            self.current_experiment.data_file = data_file.DataFile(self.current_experiment)
+        self.current_experiment.data_file.data_packet(data)
+
+    # get version command sent from agent
+    def get_version(self):
+        pass
+
+    # wave download
+    def wave(self, data):
+        pass
+    #---------------------------------#
+
+    # EIHTTP
+    #---------------------------------#
+    # exit
+    def exit(self):
+        for t in threading.enumerate():
+            if t.name == "command":
+                t.q.put([t.exit])
+
+    # download waveform to device
     def download(self):
         wave = self.current_experiment.graph.translate()
         data = wave.marshall()
@@ -62,14 +92,57 @@ class Agent(thread.Thread):
             self.current_experiment.wave = wave
         for t in threading.enumerate():
             if t.name == "eicomm":
-                t.q.put([eicomm.eibus.wave, data])
+                t.q.put([t.wave, data])
 
-    # sends the run command to the instrument
-    def run_experiment(self):
+    # get version command sent from GUI 
+    def get_version(self):
         for t in threading.enumerate():
             if t.name == "eicomm":
-                t.q.put([eicomm.eibus.run])
+                t.q.put([t.get_version])
+                break
 
+    # save experiment command sent from GUI 
+    def save_experiment(self):
+        if self.current_experiment != None:
+            self.current_experiment.save()
+
+    # get experiments command sent from GUI 
+    def get_experiments(self):
+        for t in threading.enumerate():
+            if t.name == "httpcomm":
+                t.q.put([t.load_experiments, self.experiment_list.names])
+
+    # request table command sent from GUI 
+    def request_table(self, table_id, position):
+        if self.current_experiment != None:
+            if table_id == "pattern":
+                self.current_experiment.graph.calculate_pattern_params()
+            elif table_id == "segment":
+                self.current_experiment.graph.contents[position].calculate_segment_params()
+
+    # open experiment command sent from GUI 
+    def open_experiment(self, name):
+        # import techniques
+        import cv
+
+        from experiment import Experiment
+        current_experiment = Experiment.open(name)
+        # return data to GUI
+        if current_experiment != None:
+            self.current_experiment = current_experiment
+            current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
+            current_experiment.graph.calculate_pattern_params()
+
+    # create experiment command sent from GUI 
+    def create_experiment(self, name):
+        from experiment import Experiment
+        from cv import CV
+        current_experiment = Experiment.create(name, CV)
+        self.current_experiment = current_experiment
+        current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
+        current_experiment.graph.calculate_pattern_params()
+
+    # delete experiment command sent from GUI 
     def delete_experiment(self, name):
         # remove name from list
         self.experiment_list.names.pop(self.experiment_list.names.index(name))
@@ -77,7 +150,8 @@ class Agent(thread.Thread):
         # remove file
         os.remove("experiments/"+name+".xml")
 
-    def check_upload(self, name, contents):
+    # allows user to upload their own experiment files
+    def upload_file(self, name, contents):
         try:
             test_exp = gnosis.xml.pickle.loads(contents)
         except:
@@ -111,14 +185,101 @@ class Agent(thread.Thread):
             # send successfull upload message
             for t in threading.enumerate():
                 if t.name == "httpcomm":
-                    t.q.put([httpcomm.eihttp.upload_success, name])
+                    t.q.put([t.upload_success, name])
 
-    # called when thread is terminated
-    def finalize(self):
-        # persist experiment list
-        save_file = open("experiments/experiments.xml","w")
-        save_file.write(gnosis.xml.pickle.dumps(self.experiment_list))
-        save_file.close()
+
+
+    # add pattern command sent from GUI 
+    def add_pattern(self, start_value, end_value, rate, duration, repeat_value):
+        if self.current_experiment != None:
+            E = self.current_experiment 
+            old_vertices = list(E.graph.get_vertices())
+            E.graph.add_pattern([start_value, end_value, rate, duration, repeat_value])
+            E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.calculate_pattern_params()
+
+    # delete pattern command sent from GUI 
+    def delete_pattern(self, positions):
+        if self.current_experiment != None:
+                E = self.current_experiment 
+                old_vertices = list(E.graph.get_vertices())
+                for position in positions:
+                    E.graph.delete_pattern(position)
+                E.calculate_reply(old_vertices, E.graph.get_vertices())
+                E.graph.calculate_pattern_params()
+
+    # move pattern command sent from GUI 
+    def move_pattern(self, position, destination):
+        if self.current_experiment != None:
+            E = self.current_experiment 
+            old_vertices = list(E.graph.get_vertices())
+            E.graph.move_pattern(position, destination)
+            E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+    # update pattern command sent from GUI 
+    def update_pattern(self, repeat_value, position):
+        if self.current_experiment != None:
+            E = self.current_experiment 
+            old_vertices = list(E.graph.get_vertices())
+            E.graph.update_pattern(repeat_value, position)
+            E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+    # add segment command sent from GUI 
+    def add_segment(self, start_value, end_value, rate, duration, pattern):
+        if self.current_experiment != None:
+            E = self.current_experiment 
+            old_vertices = list(E.graph.get_vertices())
+            E.graph.contents[pattern].add_segment([start_value, end_value, rate, duration])
+            E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+    # delete segment command sent from GUI 
+    def delete_segment(self, positions, pattern):
+        if self.current_experiment != None:
+                E = self.current_experiment 
+                old_vertices = list(E.graph.get_vertices())
+                for position in positions:
+                    E.graph.contents[pattern].delete_segment(position)
+                E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+    # move segment command sent from GUI 
+    def move_segment(self, position, destination, pattern):
+        if self.current_experiment != None:
+            E = self.current_experiment 
+            old_vertices = list(E.graph.get_vertices())
+            E.graph.contents[pattern].move_segment(position, destination)
+            E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+    # update segment command sent from GUI 
+    def update_segment(self, start_value, end_value, rate, duration, position, pattern):
+        if self.current_experiment != None:
+            E = self.current_experiment 
+            old_vertices = list(E.graph.get_vertices())
+            E.graph.contents[pattern].contents[position].update([start_value, end_value, rate, duration])
+            E.calculate_reply(old_vertices, E.graph.get_vertices())
+
+    # version response from agent
+    def version(self, version):
+        pass
+
+    # data packet from agent
+    def data(self, points, action):
+        pass
+
+    # chart data response from agent
+    def update_graph(self, points):
+        pass
+
+    # table data response from agent
+    def load_table(self, rows, table_id):
+        pass
+
+    # send GUI list of saved experiment
+    def load_experiments(self, names):
+        pass
+
+    # send GUI indication that the upload was a success
+    def upload_success(self, name):
+        pass
 
 # object for keeping names of experiments
 class ExperimentList:

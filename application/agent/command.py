@@ -55,5 +55,7 @@ class CommandLine(thread.Thread):
         elif x == "help":
             for command in self.commands:
                 print command
+            for t in threading.enumerate():
+                print t.name
         else:
             print "No command '" + x + "'"

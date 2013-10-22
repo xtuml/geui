@@ -6,16 +6,17 @@ from agent.util import tobytes
 import time
 import socket
 import logging
-import agent.eibus
 
-class EIcomm(agent.thread.Thread):
+import eibus
+
+class EIcomm(agent.thread.Thread, eibus.EIbus):
 
     # incoming codes and information (static attribute)
     incoming = [
         None,                                   # 0
         {                                       # 1
             "name": "version",
-            "method": agent.eibus.version
+            "method": None
         },
         None,                                   # 2
         None,                                   # 3
@@ -26,7 +27,7 @@ class EIcomm(agent.thread.Thread):
         None,                                   # 8
         {                                       # 9
             "name": "data",
-            "method": agent.eibus.data
+            "method": None
         }
     ]
 
@@ -73,6 +74,7 @@ class EIcomm(agent.thread.Thread):
             logger.info("Message received: '" + self.incoming[msg[0]]["name"] + "' from " + sender[0] + ":" + str(sender[1]) + " at [" + time.ctime() + "]")
             for t in threading.enumerate():
                 if t.name == "agent":
+                    self.agent = t
                     t.q.put([self.incoming[msg[0]]["method"], bytearray(msg[3:])])
                     break
 
@@ -87,6 +89,33 @@ class EIcomm(agent.thread.Thread):
     # function to be called before termination
     def finalize(self):
         self.transport.kill_thread()
+
+    #------- Interface Methods -------#
+    #----- SIGNALS TO EC -----#
+
+    # get version command sent from agent
+    def get_version(self):
+        self.q.put([self.send, 1, 0, bytearray()])
+
+    # wave download
+    def wave(self, data):
+        self.q.put([self.send, 10, len(data), data])
+
+    # run current experiment
+    def run_experiment(self):
+        self.q.put([self.send, 3, 0, bytearray()])
+
+
+    #----- SIGNALS TO AGENT -----#
+
+    # version response from EC
+    def version(self, data):
+        pass
+
+    # data packet from EC
+    def data(self, data):
+        pass
+
 
 class Transport(threading.Thread):
 

@@ -1,4 +1,3 @@
-import httpcomm.eihttp
 import threading
 import experiment
 import wave
@@ -26,7 +25,7 @@ class CV(experiment.Experiment):
         # return reply
         for t in threading.enumerate():
             if t.name == "httpcomm":
-                t.q.put([httpcomm.eihttp.update_graph, points])
+                t.q.put([t.update_graph, points])
 
 
 # Graph as a whole as defined by the user
@@ -150,7 +149,7 @@ class Graph:
 
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.load_table, param_list, 'pattern'])
+                t.q.put([t.load_table, param_list, 'pattern'])
 
 #Patterns that make up the graph
 class Pattern:
@@ -241,7 +240,7 @@ class Pattern:
 
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.load_table, param_list, 'segment'])
+                t.q.put([t.load_table, param_list, 'segment'])
 
 #segments that make up patterns
 class Segment:

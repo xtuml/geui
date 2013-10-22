@@ -1,6 +1,5 @@
 import web
 import threading
-import agent.eihttp
 import json
 import time
 import logging
@@ -47,48 +46,48 @@ class SAVE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
-                t.q.put([agent.eihttp.save_experiment])
+                t.q.put([t.save_experiment])
 
 class GET_EXPERIMENT_LIST:
     def GET(self):
         for t in threading.enumerate():
             if t.name == "agent":
-                t.q.put([agent.eihttp.get_experiments])
+                t.q.put([t.get_experiments])
 
 class REQUEST_TABLE:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.request_table, data["table_id"], data["position"]])
+                t.q.put([t.request_table, data["table_id"], data["position"]])
 
 class OPEN_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.open_experiment, data["name"]])
+                t.q.put([t.open_experiment, data["name"]])
 
 class CREATE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.create_experiment, data["name"]])
+                t.q.put([t.create_experiment, data["name"]])
 
 class DELETE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.delete_experiment, data["name"]])
+                t.q.put([t.delete_experiment, data["name"]])
 
 class UPLOAD_FILE:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.upload_file, data["name"], data["contents"]])
+                t.q.put([t.upload_file, data["name"], data["contents"]])
 
 #==========================#
 
@@ -101,56 +100,56 @@ class ADD_PATTERN:
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.add_pattern, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["repeat_value"])])
+                t.q.put([t.add_pattern, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["repeat_value"])])
 
 class DELETE_PATTERN:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.delete_pattern, data["positions"]])
+                t.q.put([t.delete_pattern, data["positions"]])
 
 class MOVE_PATTERN:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.move_pattern, int(data["position"]), int(data["destination"])])
+                t.q.put([t.move_pattern, int(data["position"]), int(data["destination"])])
 
 class UPDATE_PATTERN:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.update_pattern, float(data["repeat_value"]), int(data["position"])])
+                t.q.put([t.update_pattern, float(data["repeat_value"]), int(data["position"])])
 
 class ADD_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.add_segment, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["pattern"])])
+                t.q.put([t.add_segment, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["pattern"])])
 
 class DELETE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.delete_segment, data["positions"], int(data["pattern"])])
+                t.q.put([t.delete_segment, data["positions"], int(data["pattern"])])
 
 class MOVE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.move_segment, int(data["position"]), int(data["destination"]), int(data["pattern"])])
+                t.q.put([t.move_segment, int(data["position"]), int(data["destination"]), int(data["pattern"])])
 
 class UPDATE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
             if t.name == "agent":
                 data = json.loads(web.data())
-                t.q.put([agent.eihttp.update_segment, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["position"]), int(data["pattern"])])
+                t.q.put([t.update_segment, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["position"]), int(data["pattern"])])
 
 #==========================#
 
@@ -163,21 +162,21 @@ class VERSION:
     def GET(self):
         for t in threading.enumerate():
             if t.name == "agent":
-                t.q.put([agent.eihttp.get_version])
+                t.q.put([t.get_version])
 
 # exit command
 class EXIT:
     def GET(self):
         for t in threading.enumerate():
             if t.name == "agent":
-                t.q.put([agent.eihttp.exit])
+                t.q.put([t.exit])
 
 # download waveform command
 class DOWNLOAD:
     def GET(self):
         for t in threading.enumerate():
             if t.name == "agent":
-                t.q.put([agent.eihttp.download])
+                t.q.put([t.download])
 
 #==========================#
 
