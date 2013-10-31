@@ -15,6 +15,9 @@ class DataAcquisition:
         self.N = N
         self.n = n
 
+    def add_pattern(self, pattern):
+        self.patterns.append(pattern)
+
     def marshall(self):
         data = []
 
@@ -40,6 +43,9 @@ class Pattern:
     def __init__(self, N, n):
         self.N = N
         self.n = n
+
+    def add_segment(self, segment):
+        self.segments.append(segment)
 
     def marshall(self):
         data = []

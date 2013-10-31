@@ -74,6 +74,15 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
     # wave download
     def wave(self, data):
         pass
+
+    # data acquisition download
+    def dacq(self, data):
+        pass
+
+    # initial conditions download
+    def conditions(self, data):
+        pass
+
     #---------------------------------#
 
     # EIHTTP
@@ -86,13 +95,15 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
     # download waveform to device
     def download(self):
-        wave = self.current_experiment.graph.translate()
-        data = wave.marshall()
-        if self.current_experiment != None:
-            self.current_experiment.wave = wave
+        self.current_experiment.graph.translate()
+        wave_data = self.current_experiment.wave.marshall()
+        dacq_data = self.current_experiment.dataAcquisition.marshall()
+        con_data = self.current_experiment.conditions.marshall()
         for t in threading.enumerate():
             if t.name == "eicomm":
-                t.q.put([t.wave, data])
+                t.q.put([t.wave, wave_data])
+                t.q.put([t.dacq, dacq_data])
+                t.q.put([t.conditions, con_data])
 
     # get version command sent from GUI 
     def get_version(self):

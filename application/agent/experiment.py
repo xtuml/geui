@@ -10,7 +10,7 @@ import gnosis.xml.pickle
 class Experiment:
 
     name = ""                           # name of the experiment
-    experimentType = ""                 # experiement type, see types variable
+    experimentType = ""                 # experiement type
     tick = 0                            # experiment tick. counts of device tick
 
     graph = None                        # representation of the UI graph

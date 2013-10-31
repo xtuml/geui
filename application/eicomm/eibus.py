@@ -12,6 +12,14 @@ class EIbus:
     def wave(self, data):
         raise NotImplementedError
 
+    # data acquisition download
+    def dacq(self, data):
+        raise NotImplementedError
+
+    # initial conditions download
+    def conditions(self, data):
+        raise NotImplementedError
+
     # run current experiment
     def run_experiment(self):
         raise NotImplementedError

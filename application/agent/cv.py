@@ -1,5 +1,7 @@
 import threading
 import experiment
+import data_acquisition
+import conditions
 import wave
 
 # data model for Cyclic Voltammetry
@@ -38,35 +40,42 @@ class Graph:
     def __init__(self):
         self.contents = []
 
-    def translate(self, wave_type=0):                           # defaults to linear segment model
-        waveform = wave.Wave(1, 0, wave_type, 1, len(self.contents))
+    def translate(self, wave_type=0):                                   # defaults to linear segment model
 
         # determine tick
-        wave_rate = self.contents[0].contents[0].rate           # scan rate of the experiment in mV/s
-        data_rate = self.contents[0].contents[0].data_rate      # data rate of the experiment in samples/s
+        wave_rate = self.contents[0].contents[0].rate                   # scan rate of the experiment in mV/s
+        data_rate = self.contents[0].contents[0].data_rate              # data rate of the experiment in samples/s
         wave_tick = self.experiment.device.min_tick / (wave_rate * 1000 / self.experiment.device.min_step)
         data_tick = self.experiment.device.min_tick / data_rate
         from fractions import gcd
-        self.experiment.tick = gcd(wave_tick, data_tick)        # defined in counts of base system tick
+        self.experiment.tick = gcd(wave_tick, data_tick)                # defined in counts of base system tick
+
+        # create parameter objects
+        waveform = wave.Wave(1, 0, wave_type, 1, len(self.contents))    # wave object
+        dacq = data_acquisition.DataAcquisition(1, 1, len(self.contents))   # data acquisition object
+        con = conditions.InitialConditions(self.experiment.tick, 0, 0, 0)   # initial conditions object
 
         for pattern in self.contents:
             wave_pattern = wave.Pattern(pattern.repeat_value, len(pattern.contents))
+            dacq_pattern = data_acquisition.Pattern(pattern.repeat_value, len(pattern.contents))
             for segment in pattern.contents:
                 if (wave_type == 0):
-                    ticks = int(self.experiment.tick * segment.duration)
+                    # create wave segment
+                    ticks = int(segment.duration * self.experiment.device.min_tick / self.experiment.tick)
                     s = int(segment.start_value * 10)
                     e = int(segment.end_value * 10)
                     wave_segment = wave.LinearSegment(ticks, s, e)
 
-                    #add segment to pattern
+                    # add segment to pattern
                     wave_pattern.add_segment(wave_segment)
+
 
                 else:
                     p = abs(segment.start_value - segment.end_value) * 1000 / self.experiment.device.min_step      # number of points per segment 
                                                                                                                         # based on step size voltage range
-                    wave_segment = wave.Segment(self.experiment.tick, p, [])
+                    wave_segment = wave.Segment(1, p, [])
 
-                    #calculate points (based on linear model)
+                    # calculate points (based on linear model)
                     start_value = float(segment.start_value)
                     end_value = float(segment.end_value)
                     rate = float(segment.rate)
@@ -81,30 +90,44 @@ class Graph:
                         waveform.points.append(new_point)
                         point_num += 1
 
-                    #add points to segment
+                    # add points to segment
                     wave_segment.add_points(points)
 
-                    #add segment to pattern
+                    # add segment to pattern
                     wave_pattern.add_segment(wave_segment)
 
-            #add pattern to waveform
+                # create dacq segment
+                n = int(segment.duration * segment.data_rate)
+                t = int(segment.duration * self.experiment.device.min_tick / self.experiment.tick)
+                sample = data_acquisition.Sample(t, 0)
+                dacq_segment = data_acquisition.Segment(n)
+                dacq_segment.sample = sample
+
+                # add to pattern
+                dacq_pattern.add_segment(dacq_segment)
+
+            # add pattern to waveform
             waveform.add_pattern(wave_pattern)
+            # add dacq pattern
+            dacq.add_pattern(dacq_pattern)
 
-        return waveform
+        self.experiment.wave = waveform             # assign waveform object
+        self.experiment.dataAcquisition = dacq      # assign data acquisition object
+        self.experiment.conditions = con            # assign initital conditions object
 
-    #appends a pattern to the graph's contents
+    # appends a pattern to the graph's contents
     def add_pattern(self, values):
         new_pattern = Pattern(values[4], self)
         self.contents.append(new_pattern)
         new_pattern.add_segment(values)
         
-    #deletes pattern from the graph's contents at the specified position
+    # deletes pattern from the graph's contents at the specified position
     def delete_pattern(self, position):
         self.contents.pop(position)    
         if position < len(self.contents):
             self.update_points(position)
 
-    #moves a pattern from the given position to the given destination
+    # moves a pattern from the given position to the given destination
     def move_pattern(self, position, destination):
         temp_pattern = self.contents.pop(position)
         self.contents.insert(destination, temp_pattern)
@@ -113,29 +136,29 @@ class Graph:
         else:
             self.update_points(destination)
 
-    #updates a pattern's repeat_value
+    # updates a pattern's repeat_value
     def update_pattern(self, repeat_value, position):
         self.contents[position].repeat_value = repeat_value 
         self.update_points(position)
 
-    #returns array of vertices from the graph (some duplicates because each segment has exactly 2 endpoints)
+    # returns array of vertices from the graph (some duplicates because each segment has exactly 2 endpoints)
     def get_vertices(self):
         vertices = []
         for pattern in self.contents:
             vertices += pattern.get_vertices()
         return vertices
 
-    #updates the points that got moved below given position
+    # updates the points that got moved below given position
     def update_points(self, position):
-        #update this pattern
+        # update this pattern
         for segment in self.contents[position].contents:
             for vertex in segment.vertices:
                 vertex.update()
-        #recursively update next pattern
+        # recursively update next pattern
         if position < len(self.contents) - 1:
             self.update_points(position + 1)
 
-    #returns values to populate the clients table
+    # returns values to populate the clients table
     def calculate_pattern_params(self):
         if (len(self.contents) != 0):
             param_list = []
@@ -144,14 +167,14 @@ class Graph:
                     start_time = self.contents[self.contents.index(pattern) - 1].calculate_end_time()
                 else:
                     start_time = 0
-                #return repeat_value, start_time, and duration
+                # return repeat_value, start_time, and duration
                 param_list.append([pattern.repeat_value, start_time, pattern.calculate_duration()])
 
         for t in threading.enumerate():
             if t.name == 'httpcomm':
                 t.q.put([t.load_table, param_list, 'pattern'])
 
-#Patterns that make up the graph
+# Patterns that make up the graph
 class Pattern:
     
     parent = None
@@ -164,26 +187,26 @@ class Pattern:
         self.parent = parent
         self.repeat_value = repeat_value
         
-    #appends a segment to the patterns's contents
+    # appends a segment to the patterns's contents
     def add_segment(self, values):
         new_segment = Segment(values, self)
         self.contents.append(new_segment)
         for vertex in new_segment.vertices:
             vertex.update()
-        #update following patterns
+        # update following patterns
         if self.parent.contents.index(self) + 1 < len(self.parent.contents):
             self.parent.update_points(self.parent.contents.index(self) + 1)
         
-    #deletes segment from the patterns's contents at the specified position
+    # deletes segment from the patterns's contents at the specified position
     def delete_segment(self, position):
         self.contents.pop(position)    
         if position < len(self.contents):
             self.update_points(position)
-        #update following patterns
+        # update following patterns
         if self.parent.contents.index(self) + 1 < len(self.parent.contents):
             self.parent.update_points(self.parent.contents.index(self) + 1)
 
-    #moves a segment from the given position to the given destination
+    # moves a segment from the given position to the given destination
     def move_segment(self, position, destination):
         temp_segment = self.contents.pop(position)
         self.contents.insert(destination, temp_segment)
@@ -192,20 +215,20 @@ class Pattern:
         else:
             self.update_points(destination)
 
-    #updates the points that got moved below given position
+    # updates the points that got moved below given position
     def update_points(self, position):
-        #update this pattern
+        # update this pattern
         for vertex in self.contents[position].vertices:
             vertex.update()
-        #recursively update next segment 
+        # recursively update next segment 
         if position < len(self.contents) - 1:
             self.update_points(position + 1)
 
-    #returns array of vertices from the pattern (some duplicates because each segment has exactly 2 endpoints)
+    # returns array of vertices from the pattern (some duplicates because each segment has exactly 2 endpoints)
     def get_vertices(self):
         vertices = []
-        iteration = 0       #keeps track of what repeat it's on
-        one_repeat = self.calculate_duration() / self.repeat_value  #duration of one iteration of the pattern
+        iteration = 0       # keeps track of what repeat it's on
+        one_repeat = self.calculate_duration() / self.repeat_value  # duration of one iteration of the pattern
         while iteration < self.repeat_value:
             for segment in self.contents:
                 for vertex in segment.vertices:
@@ -213,7 +236,7 @@ class Pattern:
             iteration += 1
         return vertices
 
-    #calculates pattern end time
+    # calculates pattern end time
     def calculate_end_time(self):
         position = self.parent.contents.index(self)
         duration = self.calculate_duration()
@@ -222,16 +245,16 @@ class Pattern:
         else:
             return duration
 
-    #calculate duration of pattern
+    # calculate duration of pattern
     def calculate_duration(self):
         duration = 0
         for segment in self.contents:
             duration += segment.duration
-        #account for repeats
+        # account for repeats
         duration *= self.repeat_value
         return duration
 
-    #returns values to populate the clients table
+    # returns values to populate the clients table
     def calculate_segment_params(self):
         if (len(self.contents) != 0):
             param_list = []
@@ -242,7 +265,7 @@ class Pattern:
             if t.name == 'httpcomm':
                 t.q.put([t.load_table, param_list, 'segment'])
 
-#segments that make up patterns
+# segments that make up patterns
 class Segment:
 
     parent = None
@@ -266,7 +289,7 @@ class Segment:
 
         self.data_rate = 1      # 1 sample per second (for testing)
 
-    #updates a segment's values
+    # updates a segment's values
     def update(self, values):
         self.start_value = values[0]
         self.end_value = values[1]
@@ -277,15 +300,15 @@ class Segment:
         for vertex in self.vertices:
             vertex.update()
 
-    #calculate start time
+    # calculate start time
     def calculate_start_time(self):
-        pat_position = self.parent.parent.contents.index(self.parent)   #position of the containing pattern
-        #calculate baseline time to start
+        pat_position = self.parent.parent.contents.index(self.parent)   # position of the containing pattern
+        # calculate baseline time to start
         if pat_position > 0:
             base = self.parent.parent.contents[pat_position - 1].calculate_end_time()
         else:
             base = 0
-        seg_position = self.parent.contents.index(self)                 #position of the segment
+        seg_position = self.parent.contents.index(self)                 # position of the segment
         if seg_position > 0:
             return self.parent.contents[seg_position - 1].calculate_start_time() + self.parent.contents[seg_position - 1].duration
         else:
@@ -297,7 +320,7 @@ class Vertex:
     y = 0
 
     segment = None
-    v_num = 0       #1 or 2. 1 for first vertex, 2 for second vertex in a segment
+    v_num = 0       # 1 or 2. 1 for first vertex, 2 for second vertex in a segment
 
     def __init__(self, segment, v_num, x=0, y=0):
         self.segment = segment

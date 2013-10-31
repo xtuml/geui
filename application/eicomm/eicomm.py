@@ -43,7 +43,17 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
         None,                                   # 7
         None,                                   # 8
         None,                                   # 9
-        {"name": "wave"}                        # 10
+        {"name": "wave"},                       # 10
+        {"name": "dacq"},                       # 11
+        None,                                   # 12
+        None,                                   # 13
+        None,                                   # 14
+        None,                                   # 15
+        None,                                   # 16
+        None,                                   # 17
+        None,                                   # 18
+        None,                                   # 19
+        {"name": "conditions"}                  # 20
     ]
 
     # transport layer
@@ -100,6 +110,14 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
     # wave download
     def wave(self, data):
         self.q.put([self.send, 10, len(data), data])
+
+    # data acquisition download
+    def dacq(self, data):
+        self.q.put([self.send, 11, len(data), data])
+
+    # initial conditions download
+    def conditions(self, data):
+        self.q.put([self.send, 20, len(data), data])
 
     # run current experiment
     def run_experiment(self):

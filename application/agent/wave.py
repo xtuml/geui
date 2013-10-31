@@ -71,12 +71,12 @@ class Pattern:
 
 class Segment:
 
-    ticks = None        # number of ticks between points
-    n = None            # number of points in this segment
+    ticks = 0           # number of ticks between points
+    n = 0               # number of points in this segment
 
     points = []         # container for voltage values
 
-    def __init__(self, ticks=None, n=None, points=[]):
+    def __init__(self, ticks=0, n=0, points=[]):
         self.ticks = ticks
         self.n = n
         self.points = points
@@ -97,8 +97,6 @@ class LinearSegment:
     ticks = None        # number of ticks between points
     s = None            # starting voltage point
     e = None            # ending voltage point
-
-    points = []         # container for voltage values
 
     def __init__(self, ticks=None, s=None, e=None):
         self.ticks = ticks

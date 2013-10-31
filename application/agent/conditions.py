@@ -11,7 +11,7 @@ class InitialConditions:
     E_offset = 0            # voltage offset in counts * 100uV
 
     def __init__(self, tick, range_index, filter_index, E_offset):
-        self.tick = tick
+        self.tick = int(tick)
         self.range_index = range_index
         self.filter_index = filter_index
         self.E_offset = E_offset
