@@ -74,7 +74,7 @@ class DataFile:
         #send data to GUI
         for t in threading.enumerate():
             if t.name == 'httpcomm':
-                t.q.put([httpcomm.eihttp.data, points, action])
+                t.q.put([t.data, points, action])
                 break
 
 class Point:

@@ -59,6 +59,9 @@ RunExperiment.prototype.prepare = function(args){
     //enable the ones needed
     httpcomm.signals['data'].enabled = true;
 
+    // start data polling
+    httpcomm.eihttp.run_experiment();
+
 }
 
 //fly in animation

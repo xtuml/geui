@@ -178,6 +178,17 @@ class DOWNLOAD:
             if t.name == "agent":
                 t.q.put([t.download])
 
+# run current experiment
+class RUN:
+    def GET(self):
+        for t in threading.enumerate():
+            if t.name == "agent":
+                t.q.put([t.download])
+                t.q.put([t.run_experiment])
+            elif t.name == "test":
+                t.q.put([t.test_data])
+                #pass
+
 #==========================#
 
 

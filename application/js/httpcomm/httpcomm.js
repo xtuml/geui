@@ -41,6 +41,16 @@ function HTTPcomm(){
         });
         httpcomm.running = false;
     }
+    
+    this.eihttp.run_experiment = function(){
+        $.ajax({
+            type: 'GET',
+            url: 'run_experiment',
+            data: null,
+            success: function(){},
+            async:true
+        });
+    }
 
     this.eihttp.save_experiment = function(){
         $.ajax({

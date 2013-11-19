@@ -1668,6 +1668,20 @@ function WaveformButtonsSegments(panel){
     this.remove_symbol.onkeypress = function(e){if(e.keyCode == 13){buttons_segments.delete_segment();}};
     this.remove.appendChild(this.remove_symbol);
     this.content_pane.appendChild(this.remove);
+
+    // temporary run experiment button
+    //----------------------------//
+    this.run = document.createElement('div');
+    this.run.className = 'btn';
+    this.run.style.right = '104px';
+    this.run_symbol = document.createElement('div');
+    this.run_symbol.className = 'run-btn';
+    this.run_symbol.onclick = function(){buttons_segments.run_experiment();};
+    this.run_symbol.tabIndex = 0;
+    this.run_symbol.onkeypress = function(e){if(e.keyCode == 13){buttons_segments.run_experiment();}};
+    this.run.appendChild(this.run_symbol);
+    this.content_pane.appendChild(this.run);
+    //----------------------------//
     
     this.save = document.createElement('div');
     this.save.className = 'btn';
@@ -1738,6 +1752,11 @@ WaveformButtonsSegments.prototype.delete_segment = function(){
     //update the rows in the table
     table.updatePositions();
 
+}
+
+// run the current experiment
+WaveformButtonsSegments.prototype.run_experiment = function() {
+    client.gui.newConfig(run_exp, []);
 }
 
 //posts a save to the server

@@ -229,6 +229,21 @@ Styling sheet for X8 GUI
     background-image: url(../img/save.png);
 }
 
+.run-btn {
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/run_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.run-btn:hover,
+.run-btn:focus {
+    background-image: url(../img/run.png);
+}
+
 .back-btn {
     position: absolute;
     height: 48px;

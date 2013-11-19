@@ -27,6 +27,7 @@ class Server(threading.Thread):
         "/update_segment","UPDATE_SEGMENT",
         "/version","VERSION",
         "/exit","EXIT",
+        "/run_experiment","RUN",
         "/download", "DOWNLOAD",
         "/","INDEX",
         "/js/(.*)","SERVE_JS",

@@ -38,7 +38,6 @@ class TestBench(thread.Thread):
 
                 # turn on data listening
                 t.q.put([t.data, [], "start"])
-                print "here"
 
                 points_sent = 0
 
