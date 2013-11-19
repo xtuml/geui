@@ -37,7 +37,8 @@ class TestBench(thread.Thread):
                 time.sleep(2)
 
                 # turn on data listening
-                t.q.put([httpcomm.eihttp.data, [], "start"])
+                t.q.put([t.data, [], "start"])
+                print "here"
 
                 points_sent = 0
 
@@ -51,12 +52,12 @@ class TestBench(thread.Thread):
                         data = points[c * pack_size:len(points)]
                     else:
                         data = points[c * pack_size:(c + 1) * pack_size]
-                    t.q.put([httpcomm.eihttp.data, data, ""])
+                    t.q.put([t.data, data, ""])
                     points_sent += len(data)
                     time.sleep(1 / float(rate))
                     c += 1
 
                 # turn off data listening
-                t.q.put([httpcomm.eihttp.data, [], "stop"])
+                t.q.put([t.data, [], "stop"])
                 # print points_sent
                 break

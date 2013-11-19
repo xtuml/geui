@@ -22,11 +22,11 @@ class DATA:
     def GET(self):
         for t in threading.enumerate():
             if t.name == "httpcomm":
-                if not t.data.empty():
+                if not t.data_out.empty():
                     packet = []
                     action = ""
-                    while not t.data.empty():
-                        pkt = t.data.get()
+                    while not t.data_out.empty():
+                        pkt = t.data_out.get()
                         packet += pkt["points"]
                         action = pkt["action"]
                     print "Message sent: 'data' to GUI at [" + time.ctime() + "]"

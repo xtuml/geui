@@ -14,12 +14,12 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
     commands = None
 
     # holds data packets to be sent to GUI
-    data = None
+    data_out = None
 
     def __init__(self, name="httpcomm"):
         agent.thread.Thread.__init__(self, name=name)
         self.commands = Queue.Queue()
-        self.data = Queue.Queue()
+        self.data_out = Queue.Queue()
         self.server = None
 
     def initialize(self):
@@ -55,7 +55,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
                 "points": points,
                 "action": action
             }
-            self.data.put(data)
+            self.data_out.put(data)
 
     # chart data response from agent
     def update_graph(self, points):
