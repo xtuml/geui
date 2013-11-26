@@ -4,8 +4,9 @@ import Queue
 from agent.util import call
 from agent.util import tobytes
 import time
-import socket
 import logging
+import usb.core
+import usb.util
 
 import eibus
 
@@ -142,81 +143,96 @@ class Transport(threading.Thread):
     inbox = None
     running = None
 
-    # socket
-    s = None
+    # inbound message
     msg = None
+
+    # device info
+    dev = None
+
+    VENDOR_ID  = 0x0483             # ST's Vendor ID
+    PRODUCT_ID = 0x9999             # pulled out of thin air
+
+    self.EP_IN  = None              # endpoint for receiving messages
+    self.EP_OUT = None              # endpoint for sending messages
     
-    def __init__(self, s=None, name="Transport"):
+    def __init__(self, dev=None, name="Transport"):
         threading.Thread.__init__(self, name=name)
         self.outbox = Queue.Queue()
         self.inbox = Queue.Queue()
         self.running = False
-        self.s = s
+        self.dev = dev 
         self.msg = bytearray()
 
     def kill_thread(self):
-        if self.s != None:
-            self.s.close()
         self.running = False
 
     def push(self):
-        if not self.outbox.empty() and self.s != None:  # check for outgoing messages
+        if not self.outbox.empty() and self.dev != None:  # check for outgoing messages
             message = self.outbox.get()
-            self.s.sendall(message)                     # send message
+            self.EP_OUT.write(message)                  # send message
 
     def pull(self):
         receiving = True
-        while receiving and self.s != None:
-            try:
-                data = self.s.recv(4096)
-            except socket.error, e:                     # socket doesn't have data
-                if e.args[1] == "Resource temporarily unavailable":
-                    receiving = False
-                    continue
-                else:
-                    print e
-            else:
-                if len(data) == 0:                      # socket has closed
-                    receiving = False
-                    target = self.s.getpeername()
-                    logger = logging.getLogger("agent_log")
-                    logger.info("Connection to " + target[0] + ":" + str(target[1]) + " broken at [" + time.ctime() + "]")
-                    self.s = None
-                else:                                   # socket has data
-                    self.msg += data
-                    if len(self.msg) >= 3:              # enough data received to calculate message length
-                        msglen = self.msg[2] * 256 + self.msg[1] + 3
-                        if len(self.msg) == msglen:     # full message received
-                            # add message to inbox
-                            self.inbox.put(self.msg)
+        while receiving and self.dev != None:
+            data = dev.read(self.EP_IN.bEndpointAddress, self.EP_IN.wMaxPacketSize)
+            if len(data) == 0:                      # no data
+                receiving = False
+            else:                                   # usb has data
+                self.msg += data
+                if len(self.msg) >= 3:              # enough data received to calculate message length
+                    msglen = self.msg[2] * 256 + self.msg[1] + 3
+                    if len(self.msg) == msglen:     # full message received
+                        # add message to inbox
+                        self.inbox.put(self.msg)
 
-                            # reset self.msg
-                            self.msg = bytearray()
-                            receiving = False
+                        # reset self.msg
+                        self.msg = bytearray()
+                        receiving = False
 
     def connect(self):
         # try to make a connection
-        s = socket.socket()
-        try:
-            s.connect(("localhost",9000))
-        except socket.error, e:
-            if e.args[1] != "Connection refused":
-                print e
-        else:
-            self.s = s
-            self.s.setblocking(0)
-            target = self.s.getpeername()
-            logger = logging.getLogger("agent_log")
-            logger.info("Connected to " + target[0] + ":" + str(target[1]) + " at [" + time.ctime() + "]")
+        # find our device
+        dev = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID)
+
+        logger = logging.getLogger("agent_log")
+
+        if dev is not None:
+            #=====================================================================
+            # If the built-in kernel module has already loaded the HID driver, we
+            # need to detach it so we can use it.
+            #=====================================================================
+            if dev.is_kernel_driver_active(0):
+                try:
+                    dev.detach_kernel_driver(0)
+                except usb.core.USBError as e:
+                    logger.info("Could not detatch kernel driver: " + str(e) + " at [" + time.ctime() + "]")
+
+            #=====================================================================
+            # set_configuration() will use the first configuration which is fine
+            # because we only have one.  The reset() initializes everything.
+            #=====================================================================
+            try:
+                dev.set_configuration()
+                dev.reset()
+            except usb.core.USBError as e:
+                logger.info("Could not set configuration: " + str(e) + " at [" + time.ctime() + "]")
+
+            #=====================================================================
+            # Set up some shorthand for accessing the endpoints then print some
+            # info to the terminal for debugging.
+            #=====================================================================
+            self.EP_IN  = dev[0][(0,0)][0]
+            self.EP_OUT = dev[0][(0,0)][1]
+
+            self.dev = dev
+            logger.info("Connected to USB device at [" + time.ctime() + "]")
 
     def run(self):
         self.running = True
         # wait for a connection
-        while self.s == None and self.running:
+        while self.dev == None and self.running:
             self.connect()
             time.sleep(0.010)
-        if self.s != None:
-            self.s.setblocking(0)
         while self.running:
 
             # receive messages
