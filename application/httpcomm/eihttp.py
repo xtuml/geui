@@ -95,7 +95,7 @@ class EIhttp:
         raise NotImplementedError
 
     # move segment command sent from GUI 
-    def move_segment(self, position, destination):
+    def move_segment(self, position, destination, pattern):
         raise NotImplementedError
 
     # update segment command sent from GUI 

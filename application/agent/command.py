@@ -13,6 +13,10 @@ class CommandLine(thread.Thread):
         "'help' ---> Show command help."
     ]
 
+    # reference variables for threads
+    agent = None
+    test = None
+
     def __init__(self, name="command"):
         thread.Thread.__init__(self, name=name)
         self.block = False
@@ -31,31 +35,22 @@ class CommandLine(thread.Thread):
     def check(self):
         x = raw_input()
         if x == "run":
-            for t in threading.enumerate():
-                if t.name == "agent":
-                    t.q.put([t.run_experiment])
-                    break
+            if self.agent is not None:
+                self.agent.q.put([self.agent.run_experiment])
         elif x == "test_data":
-            for t in threading.enumerate():
-                if t.name == "test":
-                    t.q.put([t.test_data])
+            if self.test is not None:
+                self.test.q.put([self.text.test_data])
 
         elif x == "download":
-            for t in threading.enumerate():
-                if t.name == "agent":
-                    t.q.put([t.download])
-                    break
+            if self.agent is not None:
+                self.agent.q.put([self.agent.download])
         elif x == "get_version":
-            for t in threading.enumerate():
-                if t.name == "agent":
-                    t.q.put([t.get_version])
-                    break
+            if self.agent is not None:
+                self.agent.q.put([self.agent.get_version])
         elif x == "exit":
             self.exit()
         elif x == "help":
             for command in self.commands:
                 print command
-            for t in threading.enumerate():
-                print t.name
         else:
             print "No command '" + x + "'"

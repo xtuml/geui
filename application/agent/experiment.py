@@ -13,6 +13,8 @@ class Experiment:
     experimentType = ""                 # experiement type
     tick = 0                            # experiment tick. counts of device tick
 
+    agent = None                        # reference to the agent
+
     graph = None                        # representation of the UI graph
     conditions = None                   # initial conditions of the experiment
     wave = None                         # mathematical representation of the waveform

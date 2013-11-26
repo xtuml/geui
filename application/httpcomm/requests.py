@@ -45,49 +45,56 @@ class DATA:
 class SAVE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 t.q.put([t.save_experiment])
+                break
 
 class GET_EXPERIMENT_LIST:
     def GET(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 t.q.put([t.get_experiments])
+                break
 
 class REQUEST_TABLE:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.request_table, data["table_id"], data["position"]])
+                break
 
 class OPEN_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.open_experiment, data["name"]])
+                break
 
 class CREATE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.create_experiment, data["name"]])
+                break
 
 class DELETE_EXPERIMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.delete_experiment, data["name"]])
+                break
 
 class UPLOAD_FILE:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.upload_file, data["name"], data["contents"]])
+                break
 
 #==========================#
 
@@ -98,58 +105,66 @@ class UPLOAD_FILE:
 class ADD_PATTERN:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.add_pattern, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["repeat_value"])])
+                break
 
 class DELETE_PATTERN:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.delete_pattern, data["positions"]])
+                break
 
 class MOVE_PATTERN:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.move_pattern, int(data["position"]), int(data["destination"])])
+                break
 
 class UPDATE_PATTERN:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.update_pattern, float(data["repeat_value"]), int(data["position"])])
+                break
 
 class ADD_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.add_segment, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["pattern"])])
+                break
 
 class DELETE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.delete_segment, data["positions"], int(data["pattern"])])
+                break
 
 class MOVE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.move_segment, int(data["position"]), int(data["destination"]), int(data["pattern"])])
+                break
 
 class UPDATE_SEGMENT:
     def POST(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 data = json.loads(web.data())
                 t.q.put([t.update_segment, float(data["start_value"]), float(data["end_value"]), float(data["rate"]), float(data["duration"]), int(data["position"]), int(data["pattern"])])
+                break
 
 #==========================#
 
@@ -161,33 +176,35 @@ class UPDATE_SEGMENT:
 class VERSION:
     def GET(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 t.q.put([t.get_version])
+                break
 
 # exit command
 class EXIT:
     def GET(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 t.q.put([t.exit])
+                break
 
 # download waveform command
 class DOWNLOAD:
     def GET(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 t.q.put([t.download])
+                break
 
 # run current experiment
 class RUN:
     def GET(self):
         for t in threading.enumerate():
-            if t.name == "agent":
+            if t.name == "httpcomm":
                 t.q.put([t.download])
                 t.q.put([t.run_experiment])
-            elif t.name == "test":
+            elif t.name == "test":              # temporary for easy demo
                 t.q.put([t.test_data])
-                #pass
 
 #==========================#
 

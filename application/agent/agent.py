@@ -15,6 +15,11 @@ import threading
 
 class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
+    # references to other threads
+    eicomm = None
+    httpcomm = None
+    command = None
+
     # current experiment
     current_experiment = None
 
@@ -46,19 +51,16 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
     #---------------------------------#
     # sends the run command to the instrument
     def run_experiment(self):
-        for t in threading.enumerate():
-            if t.name == "eicomm":
-                t.q.put([t.run_experiment])
+        if self.eicomm is not None:
+            self.eicomm.q.put([self.eicomm.run_experiment])
 
     # version recevied from instrument. sends version to GUI
     def version(self, data):
         # unmarshall version data
         version = str(data[0]) + "." + str(data[1]) + str(data[2]) + "-" + str(data[3])
         print "Version: " + version
-        for t in threading.enumerate():
-            if t.name == "httpcomm":
-                t.q.put([t.version, version])
-                break
+        if self.httpcomm is not None:
+            self.httpcomm.q.put([self.httpcomm.version, version])
 
     # data packet from EC
     def data(self, data):
@@ -89,9 +91,8 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
     #---------------------------------#
     # exit
     def exit(self):
-        for t in threading.enumerate():
-            if t.name == "command":
-                t.q.put([t.exit])
+        if self.command is not None:
+            self.command.q.put([self.command.exit])
 
     # download waveform to device
     def download(self):
@@ -99,18 +100,15 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
         wave_data = self.current_experiment.wave.marshall()
         dacq_data = self.current_experiment.dataAcquisition.marshall()
         con_data = self.current_experiment.conditions.marshall()
-        for t in threading.enumerate():
-            if t.name == "eicomm":
-                t.q.put([t.wave, wave_data])
-                t.q.put([t.dacq, dacq_data])
-                t.q.put([t.conditions, con_data])
+        if self.eicomm is not None:
+            self.eicomm.q.put([self.eicomm.wave, wave_data])
+            self.eicomm.q.put([self.eicomm.dacq, dacq_data])
+            self.eicomm.q.put([self.eicomm.conditions, con_data])
 
     # get version command sent from GUI 
     def get_version(self):
-        for t in threading.enumerate():
-            if t.name == "eicomm":
-                t.q.put([t.get_version])
-                break
+        if self.eicomm is not None:
+            self.eicomm.q.put([self.eicomm.get_version])
 
     # save experiment command sent from GUI 
     def save_experiment(self):
@@ -119,9 +117,8 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
     # get experiments command sent from GUI 
     def get_experiments(self):
-        for t in threading.enumerate():
-            if t.name == "httpcomm":
-                t.q.put([t.load_experiments, self.experiment_list.names])
+        if self.httpcomm is not None:
+            self.httpcomm.q.put([self.httpcomm.load_experiments, self.experiment_list.names])
 
     # request table command sent from GUI 
     def request_table(self, table_id, position):
@@ -141,6 +138,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
         # return data to GUI
         if current_experiment != None:
             self.current_experiment = current_experiment
+            self.current_experiment.agent = self
             current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
             current_experiment.graph.calculate_pattern_params()
 
@@ -150,6 +148,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
         from cv import CV
         current_experiment = Experiment.create(name, CV)
         self.current_experiment = current_experiment
+        self.current_experiment.agent = self
         current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
         current_experiment.graph.calculate_pattern_params()
 
@@ -194,9 +193,8 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             self.experiment_list.add_experiment(name)
 
             # send successfull upload message
-            for t in threading.enumerate():
-                if t.name == "httpcomm":
-                    t.q.put([t.upload_success, name])
+            if self.httpcomm is not None:
+                self.httpcomm.q.put([self.httpcomm.upload_success, name])
 
 
 
@@ -267,10 +265,6 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             old_vertices = list(E.graph.get_vertices())
             E.graph.contents[pattern].contents[position].update([start_value, end_value, rate, duration])
             E.calculate_reply(old_vertices, E.graph.get_vertices())
-
-    # version response from agent
-    def version(self, version):
-        pass
 
     # data packet from agent
     def data(self, points, action):

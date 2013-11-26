@@ -25,9 +25,8 @@ class CV(experiment.Experiment):
             points.append([vertex.x, vertex.y])
 
         # return reply
-        for t in threading.enumerate():
-            if t.name == "httpcomm":
-                t.q.put([t.update_graph, points])
+        if self.agent is not None and self.agent.httpcomm is not None:
+            self.agent.httpcomm.q.put([self.agent.httpcomm.update_graph, points])
 
 
 # Graph as a whole as defined by the user
@@ -170,9 +169,8 @@ class Graph:
                 # return repeat_value, start_time, and duration
                 param_list.append([pattern.repeat_value, start_time, pattern.calculate_duration()])
 
-        for t in threading.enumerate():
-            if t.name == 'httpcomm':
-                t.q.put([t.load_table, param_list, 'pattern'])
+        if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
+            self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.load_table, param_list, "pattern"])
 
 # Patterns that make up the graph
 class Pattern:
@@ -261,9 +259,8 @@ class Pattern:
             for segment in self.contents:
                 param_list.append([segment.start_value, segment.end_value, segment.rate, segment.duration])
 
-        for t in threading.enumerate():
-            if t.name == 'httpcomm':
-                t.q.put([t.load_table, param_list, 'segment'])
+        if self.parent is not None and self.parent.experiment is not None and self.parent.experiment.agent is not None and self.parent.experiment.agent.httpcomm is not None:
+            self.parent.experiment.agent.httpcomm.q.put([self.parent.experiment.agent.httpcomm.load_table, param_list, "segment"])
 
 # segments that make up patterns
 class Segment:

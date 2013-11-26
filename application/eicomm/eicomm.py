@@ -11,50 +11,14 @@ import eibus
 
 class EIcomm(agent.thread.Thread, eibus.EIbus):
 
-    # incoming codes and information (static attribute)
-    incoming = [
-        None,                                   # 0
-        {                                       # 1
-            "name": "version",
-            "method": None
-        },
-        None,                                   # 2
-        None,                                   # 3
-        None,                                   # 4
-        None,                                   # 5
-        None,                                   # 6
-        None,                                   # 7
-        None,                                   # 8
-        {                                       # 9
-            "name": "data",
-            "method": None
-        }
-    ]
+    # reference variable for agent
+    agent = None
+
+    # incoming codes and information
+    incoming = None
 
     # outgoing codes and information (static attribute)
-    outgoing = [
-        None,                                   # 0
-        {"name": "get_version"},                # 1
-        None,                                   # 2
-        {"name": "run"},                        # 3
-        None,                                   # 4
-        None,                                   # 5
-        None,                                   # 6
-        None,                                   # 7
-        None,                                   # 8
-        None,                                   # 9
-        {"name": "wave"},                       # 10
-        {"name": "dacq"},                       # 11
-        None,                                   # 12
-        None,                                   # 13
-        None,                                   # 14
-        None,                                   # 15
-        None,                                   # 16
-        None,                                   # 17
-        None,                                   # 18
-        None,                                   # 19
-        {"name": "conditions"}                  # 20
-    ]
+    outgoing = None
 
     # transport layer
     # takes care of all sending and receiving
@@ -64,6 +28,53 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
         agent.thread.Thread.__init__(self, name=name)
         self.block = False
         self.transport = Transport(s)
+
+    def setCodes(self):
+        if self.agent is not None:
+            # incoming codes and information (static attribute)
+            self.incoming = [
+                None,                                   # 0
+                {                                       # 1
+                    "name": "version",
+                    "method": self.agent.version
+                },
+                None,                                   # 2
+                None,                                   # 3
+                None,                                   # 4
+                None,                                   # 5
+                None,                                   # 6
+                None,                                   # 7
+                None,                                   # 8
+                {                                       # 9
+                    "name": "data",
+                    "method": self.agent.data
+                }
+            ]
+
+            # outgoing codes and information (static attribute)
+            self.outgoing = [
+                None,                                   # 0
+                {"name": "get_version"},                # 1
+                None,                                   # 2
+                {"name": "run"},                        # 3
+                None,                                   # 4
+                None,                                   # 5
+                None,                                   # 6
+                None,                                   # 7
+                None,                                   # 8
+                None,                                   # 9
+                {"name": "wave"},                       # 10
+                {"name": "dacq"},                       # 11
+                None,                                   # 12
+                None,                                   # 13
+                None,                                   # 14
+                None,                                   # 15
+                None,                                   # 16
+                None,                                   # 17
+                None,                                   # 18
+                None,                                   # 19
+                {"name": "conditions"}                  # 20
+            ]
 
     def send(self, code, length, data):
         msg = bytearray([code]) + bytearray(tobytes(length, 2)) + data
@@ -82,11 +93,8 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
             sender = self.transport.s.getpeername()
             logger = logging.getLogger("agent_log")
             logger.info("Message received: '" + self.incoming[msg[0]]["name"] + "' from " + sender[0] + ":" + str(sender[1]) + " at [" + time.ctime() + "]")
-            for t in threading.enumerate():
-                if t.name == "agent":
-                    self.agent = t
-                    t.q.put([self.incoming[msg[0]]["method"], bytearray(msg[3:])])
-                    break
+            if self.agent is not None:
+                self.agent.q.put([self.incoming[msg[0]]["method"], bytearray(msg[3:])])
 
     # function to be called before loop starts
     def initialize(self):

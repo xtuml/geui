@@ -7,6 +7,9 @@ import eihttp
 
 class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
 
+    # reference variable for agent
+    agent = None
+
     # server instance
     server = None
 
@@ -92,72 +95,72 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
 
     # exit
     def exit(self):
-        pass
+        self.agent.exit()
 
     # download waveform to device
     def download(self):
-        pass
+        self.agent.download()
 
     # get version command sent from GUI 
     def get_version(self):
-        pass
+        self.agent.get_version()
 
     # save experiment command sent from GUI 
     def save_experiment(self):
-        pass
+        self.agent.save_experiment()
 
     # get experiments command sent from GUI 
     def get_experiments(self):
-        pass
+        self.agent.get_experiments()
 
     # request table command sent from GUI 
     def request_table(self, table_id, position):
-        pass
+        self.agent.request_table(table_id, position)
 
     # open experiment command sent from GUI 
     def open_experiment(self, name):
-        pass
+        self.agent.open_experiment(name)
 
     # create experiment command sent from GUI 
     def create_experiment(self, name):
-        pass
+        self.agent.create_experiment(name)
 
     # delete experiment command sent from GUI 
     def delete_experiment(self, name):
-        pass
+        self.agent.delete_experiment(name)
 
     # allows user to upload their own experiment files
     def upload_file(self, name, contents):
-        pass
+        self.agent.upload_file(name, contents)
 
     # add pattern command sent from GUI 
     def add_pattern(self, start_value, end_value, rate, duration, repeat_value):
-        pass
+        self.agent.add_pattern(start_value, end_value, rate, duration, repeat_value)
 
     # delete pattern command sent from GUI 
     def delete_pattern(self, positions):
-        pass
+        self.agent.delete_pattern(positions)
 
     # move pattern command sent from GUI 
     def move_pattern(self, position, destination):
-        pass
+        self.agent.move_pattern(position, destination)
 
     # update pattern command sent from GUI 
     def update_pattern(self, repeat_value, position):
-        pass
+        self.agent.update_pattern(repeat_value, position)
 
     # add segment command sent from GUI 
     def add_segment(self, start_value, end_value, rate, duration, repeat_value, position):
-        pass
+        self.agent.add_segment(start_value, end_value, rate, duration, repeat_value, position)
 
     # delete segment command sent from GUI 
     def delete_segment(self, positions):
-        pass
+        self.agent.delete_segment(positions)
 
     # move segment command sent from GUI 
-    def move_segment(self, position, destination):
-        pass
+    def move_segment(self, position, destination, pattern):
+        self.agent.move_segment(position, destination, pattern)
 
     # update segment command sent from GUI 
     def update_segment(self, start_value, end_value, rate, duration, repeat_value, position):
-        pass
+        self.agent.update_segment(start_value, end_value, rate, duration, repeat_value, position)

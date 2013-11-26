@@ -38,6 +38,21 @@ if __name__ == "__main__":
     command = CommandLine()
     test = TestBench()
 
+    # assign reference variables
+    agent.eicomm = eicomm
+    agent.httpcomm = httpcomm
+    agent.command = command
+
+    eicomm.agent = agent
+    eicomm.setCodes()
+
+    httpcomm.agent = agent
+
+    command.agent = agent
+    command.test = test
+
+    test.httpcomm = httpcomm
+
     # start threads
     agent.start()
     eicomm.start()
