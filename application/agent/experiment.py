@@ -47,6 +47,7 @@ class Experiment:
 
     # dump to xml file
     def save(self):
+        self.agent = None
         # save the file 
         save_file = open("experiments/"+self.name+".xml","w")
         save_file.write(gnosis.xml.pickle.dumps(self))

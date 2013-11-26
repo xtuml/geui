@@ -38,6 +38,10 @@ class EIhttp:
     def download(self):
         raise NotImplementedError
 
+    # run the experiment
+    def run_experiment(self):
+        raise NotImplementedError
+
     # get version command sent from GUI 
     def get_version(self):
         raise NotImplementedError
