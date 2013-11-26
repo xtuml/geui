@@ -68,11 +68,10 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
 
     def send(self, code, length, data):
         msg = bytearray([code]) + bytearray(tobytes(length, 2)) + data
-        if self.transport.s != None:
+        if self.transport.dev != None:
             self.transport.outbox.put(msg)
-            target = self.transport.s.getpeername()
             logger = logging.getLogger("agent_log")
-            logger.info("Message sent: '" + self.outgoing[code]["name"] + "' to " + target[0] + ":" + str(target[1]) + " at [" + time.ctime() + "]")
+            logger.info("Message sent: '" + self.outgoing[code]["name"] + "' to USB device at [" + time.ctime() + "]")
         else:
             logger = logging.getLogger("agent_log")
             logger.info("Message not sent: No EC connected. [" + time.ctime() + "]")
@@ -80,9 +79,8 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
     def receive(self):
         if not self.transport.inbox.empty():
             msg = self.transport.inbox.get()
-            sender = self.transport.s.getpeername()
             logger = logging.getLogger("agent_log")
-            logger.info("Message received: '" + self.incoming[msg[0]]["name"] + "' from " + sender[0] + ":" + str(sender[1]) + " at [" + time.ctime() + "]")
+            logger.info("Message received: '" + self.incoming[msg[0]]["name"] + "' from USB device at [" + time.ctime() + "]")
             for t in threading.enumerate():
                 if t.name == "agent":
                     self.agent = t
