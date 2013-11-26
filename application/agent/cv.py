@@ -60,7 +60,7 @@ class Graph:
             for segment in pattern.contents:
                 if (wave_type == 0):
                     # create wave segment
-                    ticks = int(segment.duration * self.experiment.device.min_tick / self.experiment.tick)
+                    ticks = 1                                       # assuming the scan rate divides into data rate and is universal
                     s = int(segment.start_value * 10)
                     e = int(segment.end_value * 10)
                     wave_segment = wave.LinearSegment(ticks, s, e)
@@ -111,6 +111,7 @@ class Graph:
             dacq.add_pattern(dacq_pattern)
 
         self.experiment.wave = waveform             # assign waveform object
+        self.experiment.wave.experiment = self.experiment
         self.experiment.dataAcquisition = dacq      # assign data acquisition object
         self.experiment.conditions = con            # assign initital conditions object
 

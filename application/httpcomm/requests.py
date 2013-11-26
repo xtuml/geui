@@ -204,7 +204,8 @@ class RUN:
                 t.q.put([t.download])
                 t.q.put([t.run_experiment])
             elif t.name == "test":              # temporary for easy demo
-                t.q.put([t.test_data])
+                #t.q.put([t.test_data])
+                pass
 
 #==========================#
 

@@ -64,10 +64,10 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
     # data packet from EC
     def data(self, data):
-        if self.current_experiment.data_file == None:
+        if self.current_experiment.dataFile == None:
             import data_file
-            self.current_experiment.data_file = data_file.DataFile(self.current_experiment)
-        self.current_experiment.data_file.data_packet(data)
+            self.current_experiment.dataFile = data_file.DataFile(self.current_experiment)
+        self.current_experiment.dataFile.data_packet(data)
 
     # get version command sent from agent
     def get_version(self):
@@ -265,10 +265,6 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             old_vertices = list(E.graph.get_vertices())
             E.graph.contents[pattern].contents[position].update([start_value, end_value, rate, duration])
             E.calculate_reply(old_vertices, E.graph.get_vertices())
-
-    # data packet from agent
-    def data(self, points, action):
-        pass
 
     # chart data response from agent
     def update_graph(self, points):

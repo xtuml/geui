@@ -72,7 +72,7 @@ class DataFile:
         # persist data
 
         # send data to GUI
-        if self.experiment is not None self.experiment.agent is not None and self.agent.httpcomm is not None:
+        if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
             self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.update_graph, points])
 
 class Point:
