@@ -61,19 +61,19 @@ class DataFile:
 
         # decide action
         if start == 0 and n == N:
-            action = 'onepacket'
+            action = "onepacket"
         elif start == 0:
-            action = 'start'
+            action = "start"
         elif start + n == N:
-            action = 'stop'
+            action = "stop"
         else:
-            action = ''
+            action = ""
 
         # persist data
 
         # send data to GUI
         if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
-            self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.update_graph, points])
+            self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.data, points, action])
 
 class Point:
 

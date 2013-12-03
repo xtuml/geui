@@ -60,7 +60,7 @@ RunExperiment.prototype.prepare = function(args){
     httpcomm.signals['data'].enabled = true;
 
     // start data polling
-    httpcomm.eihttp.run_experiment();
+    // httpcomm.eihttp.run_experiment();
 
 }
 
