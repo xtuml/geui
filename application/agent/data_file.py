@@ -33,31 +33,28 @@ class DataFile:
         timing = 0              # ticks in between points
         points = []             # data points (16 bit values)
 
-        counter = 0             # current index in data packet
+        c = 0                   # current index in data packet
 
-        def header(c):
-            n = toint([packet[c], packet[c + 1]])
-            N = toint([packet[c + 2], packet[c + 3], packet[c + 4], packet[c + 5]])
-            self.N = N                      # update data file
-            start = toint([packet[c + 6], packet[c + 7], packet[c + 8], packet[c + 9]])
-            range_index = packet[c + 10]
-            self.range_index = range_index  # update data file
-            timing = packet[c + 11]
-            self.timing = timing            # update data file
-            return c + 12
+        # unmarshall data
+        # unpack header
+        n = toint([packet[c], packet[c + 1]])
+        N = toint([packet[c + 2], packet[c + 3], packet[c + 4], packet[c + 5]])
+        self.N = N                      # update data file
+        start = toint([packet[c + 6], packet[c + 7], packet[c + 8], packet[c + 9]])
+        range_index = packet[c + 10]
+        self.range_index = range_index  # update data file
+        timing = packet[c + 11]
+        self.timing = timing            # update data file
+        c += 12                         # update the counter
 
-        def point(c, point_start):
-            E = self.experiment.wave.points[(c - point_start) / 2]
+        # unpack points
+        point_start = c                 # reference index where points start (byte index)
+        while c < len(packet):
+            E = self.experiment.wave.points[((c - point_start) / 2) + start]
             I = toint([packet[c], packet[c + 1]])
             points.append([E, I])
             self.points.append(Point(E, I))
-            return c + 2
-
-        # unmarshall data
-        counter = header(counter)                       # unmarshall the header
-        point_start = counter                           # reference index where points start
-        while counter < len(packet):
-            counter = point(counter, point_start)       # unmarshall points
+            c += 2                      # update the counter
 
         # decide action
         if start == 0 and n == N:
@@ -68,6 +65,16 @@ class DataFile:
             action = "stop"
         else:
             action = ""
+
+        # diagnostic printing
+        # print "n: ", n
+        # print "N: ", N
+        # print "start: ", start
+        # print "range_index: ", range_index
+        # print "timing: ", timing
+        # print action
+        # for point in points:
+        #     print point
 
         # persist data
 
