@@ -16,6 +16,7 @@ class CommandLine(thread.Thread):
     # reference variables for threads
     agent = None
     test = None
+    server = None       # for httpcomm errors to emergency stop the server
 
     def __init__(self, name="command"):
         thread.Thread.__init__(self, name=name)
@@ -28,6 +29,7 @@ class CommandLine(thread.Thread):
         for t in threading.enumerate():
             if t.name == "httpcomm" or t.name == "eicomm" or t.name == "test" or t.name == "agent":
                 t.q.put([t.kill_thread])
+            self.server.app.stop()
 
     def initialize(self):
         print "Type 'help' for command list."

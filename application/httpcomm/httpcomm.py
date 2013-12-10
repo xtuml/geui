@@ -10,6 +10,9 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
     # reference variable for agent
     agent = None
 
+    # reference variable for command line
+    command = None
+
     # server instance
     server = None
 
@@ -27,6 +30,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
 
     def initialize(self):
         self.server = server.Server()
+        self.command.server = self.server
         self.server.start()
 
     def finalize(self):
