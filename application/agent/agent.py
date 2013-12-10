@@ -38,10 +38,12 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
     # called when thread is terminated
     def finalize(self):
-        # persist experiment list
-        save_file = open("experiments/experiments.xml","w")
-        save_file.write(gnosis.xml.pickle.dumps(self.experiment_list))
-        save_file.close()
+        if (self.experiment_list.changed):
+            # persist experiment list
+            save_file = open("experiments/experiments.xml","w")
+            self.experiment_list.changed = False
+            save_file.write(gnosis.xml.pickle.dumps(self.experiment_list))
+            save_file.close()
 
 
     #------- Interface Methods -------#
@@ -286,12 +288,16 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 class ExperimentList:
 
     names = []
+    changed = None
 
     def __init__(self, names=[]):
         self.names = names
+        self.changed = True
 
     def add_experiment(self, name):
         self.names.append(name)
+        self.changed = True
 
     def remove_experiment(self, name):
         self.names.pop(self.names.index(name))
+        self.changed = True
