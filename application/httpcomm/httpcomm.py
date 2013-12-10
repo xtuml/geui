@@ -143,7 +143,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
 
     # delete pattern command sent from GUI 
     def delete_pattern(self, positions):
-        self.agent.q.put([self.agent.delete_patterns, positions])
+        self.agent.q.put([self.agent.delete_pattern, positions])
 
     # move pattern command sent from GUI 
     def move_pattern(self, position, destination):
@@ -154,12 +154,12 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
         self.agent.q.put([self.agent.update_pattern, position])
 
     # add segment command sent from GUI 
-    def add_segment(self, start_value, end_value, rate, duration, repeat_value, position):
-        self.agent.q.put([self.agent.add_segment, start_value, end_value, rate, duration, repeat_value, position])
+    def add_segment(self, start_value, end_value, rate, duration, position):
+        self.agent.q.put([self.agent.add_segment, start_value, end_value, rate, duration, position])
 
     # delete segment command sent from GUI 
-    def delete_segment(self, positions):
-        self.agent.q.put([self.agent.delete_segment, positions])
+    def delete_segment(self, positions, pattern):
+        self.agent.q.put([self.agent.delete_segment, positions, pattern])
 
     # move segment command sent from GUI 
     def move_segment(self, position, destination, pattern):

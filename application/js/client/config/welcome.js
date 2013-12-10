@@ -445,7 +445,7 @@ CreateExperiment.prototype.createFile = function(name){
                 break;
             }
         }
-        if (!duplicate){
+        if (!duplicate && name != ""){
             //create technique based on selected row
             this.panel.gui.newConfig(editor, [name, 'create']);
         }

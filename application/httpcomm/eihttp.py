@@ -91,11 +91,11 @@ class EIhttp:
         raise NotImplementedError
 
     # add segment command sent from GUI 
-    def add_segment(self, start_value, end_value, rate, duration, repeat_value, position):
+    def add_segment(self, start_value, end_value, rate, duration, position):
         raise NotImplementedError
 
     # delete segment command sent from GUI 
-    def delete_segment(self, positions):
+    def delete_segment(self, positions, pattern):
         raise NotImplementedError
 
     # move segment command sent from GUI 
