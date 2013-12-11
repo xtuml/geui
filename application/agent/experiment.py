@@ -52,3 +52,12 @@ class Experiment:
         save_file = open("experiments/"+self.name+".xml","w")
         save_file.write(gnosis.xml.pickle.dumps(self))
         save_file.close()
+
+# superclass to define user viewable waveform graph
+class Graph:
+
+    def get_points(self):
+        raise NotImplementedError
+
+    def translate(self, wave_type):
+        raise NotImplementedError

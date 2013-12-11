@@ -16,21 +16,8 @@ class CV(experiment.Experiment):
         t = threading.currentThread()
         t.experiment_list.add_experiment(name)
 
-    # replies to the client points to delete, add, and update
-    def calculate_reply(self, old_vertices, new_vertices):
-
-        points = []
-
-        for vertex in new_vertices:
-            points.append([vertex.x, vertex.y])
-
-        # return reply
-        if self.agent is not None and self.agent.httpcomm is not None:
-            self.agent.httpcomm.q.put([self.agent.httpcomm.update_graph, points])
-
-
 # Graph as a whole as defined by the user
-class Graph:
+class Graph(experiment.Graph):
     
     experiment = None
 
@@ -38,6 +25,17 @@ class Graph:
 
     def __init__(self):
         self.contents = []
+
+    # return points for graphing
+    def get_points(self):
+        points = []
+        vertices = self.get_vertices()
+        for vertex in vertices:
+            points.append([vertex.x, vertex.y])
+
+        # return reply
+        if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
+            self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.update_graph, points])
 
     def translate(self, wave_type=0):                                   # defaults to linear segment model
 

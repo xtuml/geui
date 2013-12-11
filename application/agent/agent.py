@@ -141,7 +141,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
         if current_experiment != None:
             self.current_experiment = current_experiment
             self.current_experiment.agent = self
-            current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
+            current_experiment.graph.get_points()
             current_experiment.graph.calculate_pattern_params()
 
     # create experiment command sent from GUI 
@@ -151,7 +151,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
         current_experiment = Experiment.create(name, CV)
         self.current_experiment = current_experiment
         self.current_experiment.agent = self
-        current_experiment.calculate_reply([], current_experiment.graph.get_vertices())
+        current_experiment.graph.get_points()
         current_experiment.graph.calculate_pattern_params()
 
     # delete experiment command sent from GUI 
@@ -206,7 +206,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             E = self.current_experiment 
             old_vertices = list(E.graph.get_vertices())
             E.graph.add_pattern([start_value, end_value, rate, duration, repeat_value])
-            E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.get_points()
             E.graph.calculate_pattern_params()
 
     # delete pattern command sent from GUI 
@@ -216,7 +216,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
                 old_vertices = list(E.graph.get_vertices())
                 for position in positions:
                     E.graph.delete_pattern(position)
-                E.calculate_reply(old_vertices, E.graph.get_vertices())
+                E.graph.get_points()
                 E.graph.calculate_pattern_params()
 
     # move pattern command sent from GUI 
@@ -225,7 +225,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             E = self.current_experiment 
             old_vertices = list(E.graph.get_vertices())
             E.graph.move_pattern(position, destination)
-            E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.get_points()
 
     # update pattern command sent from GUI 
     def update_pattern(self, repeat_value, position):
@@ -233,7 +233,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             E = self.current_experiment 
             old_vertices = list(E.graph.get_vertices())
             E.graph.update_pattern(repeat_value, position)
-            E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.get_points()
 
     # add segment command sent from GUI 
     def add_segment(self, start_value, end_value, rate, duration, pattern):
@@ -241,7 +241,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             E = self.current_experiment 
             old_vertices = list(E.graph.get_vertices())
             E.graph.contents[pattern].add_segment([start_value, end_value, rate, duration])
-            E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.get_points()
 
     # delete segment command sent from GUI 
     def delete_segment(self, positions, pattern):
@@ -250,7 +250,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
                 old_vertices = list(E.graph.get_vertices())
                 for position in positions:
                     E.graph.contents[pattern].delete_segment(position)
-                E.calculate_reply(old_vertices, E.graph.get_vertices())
+                E.graph.get_points()
 
     # move segment command sent from GUI 
     def move_segment(self, position, destination, pattern):
@@ -258,7 +258,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             E = self.current_experiment 
             old_vertices = list(E.graph.get_vertices())
             E.graph.contents[pattern].move_segment(position, destination)
-            E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.get_points()
 
     # update segment command sent from GUI 
     def update_segment(self, start_value, end_value, rate, duration, position, pattern):
@@ -266,7 +266,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             E = self.current_experiment 
             old_vertices = list(E.graph.get_vertices())
             E.graph.contents[pattern].contents[position].update([start_value, end_value, rate, duration])
-            E.calculate_reply(old_vertices, E.graph.get_vertices())
+            E.graph.get_points()
 
     # chart data response from agent
     def update_graph(self, points):
