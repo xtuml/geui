@@ -17,7 +17,7 @@ if __name__ == "__main__":
     logger = logging.getLogger("agent_log")
     logger.setLevel(logging.INFO)
     # create file handler which logs info messages
-    fh = logging.handlers.RotatingFileHandler("log/agent.log", maxBytes=1048576, backupCount=10) # 10 backup files max 1MB each
+    fh = logging.handlers.RotatingFileHandler("log/agent.log", maxBytes=41920, backupCount=10) # 10 backup files max 40KB each
     fh.setLevel(logging.DEBUG)
     # create console handler
     ch = logging.StreamHandler()

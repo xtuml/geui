@@ -29,7 +29,8 @@ class DATA:
                         pkt = t.data_out.get()
                         packet += pkt["points"]
                         action = pkt["action"]
-                    print "Message sent: 'data' to GUI at [" + time.ctime() + "]"
+                    logger = logging.getLogger("agent_log")
+                    logger.info("Message sent: 'data' to GUI at [" + time.ctime() + "]")
                     data = {
                         "signal": "data",
                         "points": packet,

@@ -41,7 +41,7 @@ class CommandLine(thread.Thread):
                 self.agent.q.put([self.agent.run_experiment])
         elif x == "test_data":
             if self.test is not None:
-                self.test.q.put([self.text.test_data])
+                self.test.q.put([self.test.test_data])
 
         elif x == "download":
             if self.agent is not None:

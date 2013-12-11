@@ -155,7 +155,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
 
     # update pattern command sent from GUI 
     def update_pattern(self, repeat_value, position):
-        self.agent.q.put([self.agent.update_pattern, position])
+        self.agent.q.put([self.agent.update_pattern, repeat_value, position])
 
     # add segment command sent from GUI 
     def add_segment(self, start_value, end_value, rate, duration, position):
