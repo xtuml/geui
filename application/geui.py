@@ -44,7 +44,6 @@ if __name__ == "__main__":
     agent.command = command
 
     eicomm.agent = agent
-    eicomm.setCodes()
 
     httpcomm.agent = agent
     httpcomm.command = command

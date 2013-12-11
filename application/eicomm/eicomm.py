@@ -26,56 +26,56 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
 
     def __init__(self, name="eicomm", s=None):
         agent.thread.Thread.__init__(self, name=name)
+        self.setCodes()
         self.block = False
         self.transport = Transport(s)
 
     def setCodes(self):
-        if self.agent is not None:
-            # incoming codes and information (static attribute)
-            self.incoming = [
-                None,                                   # 0
-                {                                       # 1
-                    "name": "version",
-                    "method": self.agent.version
-                },
-                None,                                   # 2
-                None,                                   # 3
-                None,                                   # 4
-                None,                                   # 5
-                None,                                   # 6
-                None,                                   # 7
-                None,                                   # 8
-                {                                       # 9
-                    "name": "data",
-                    "method": self.agent.data
-                }
-            ]
+        # incoming codes and information (static attribute)
+        self.incoming = [
+            None,                                   # 0
+            {                                       # 1
+                "name": "version",
+                "method": self.version
+            },
+            None,                                   # 2
+            None,                                   # 3
+            None,                                   # 4
+            None,                                   # 5
+            None,                                   # 6
+            None,                                   # 7
+            None,                                   # 8
+            {                                       # 9
+                "name": "data",
+                "method": self.data
+            }
+        ]
 
-            # outgoing codes and information (static attribute)
-            self.outgoing = [
-                None,                                   # 0
-                {"name": "get_version"},                # 1
-                None,                                   # 2
-                {"name": "run"},                        # 3
-                None,                                   # 4
-                None,                                   # 5
-                None,                                   # 6
-                None,                                   # 7
-                None,                                   # 8
-                None,                                   # 9
-                {"name": "wave"},                       # 10
-                {"name": "dacq"},                       # 11
-                None,                                   # 12
-                None,                                   # 13
-                None,                                   # 14
-                None,                                   # 15
-                None,                                   # 16
-                None,                                   # 17
-                None,                                   # 18
-                None,                                   # 19
-                {"name": "conditions"}                  # 20
-            ]
-
+        # outgoing codes and information (static attribute)
+        self.outgoing = [
+            None,                                   # 0
+            {"name": "get_version"},                # 1
+            None,                                   # 2
+            {"name": "run"},                        # 3
+            None,                                   # 4
+            None,                                   # 5
+            None,                                   # 6
+            None,                                   # 7
+            None,                                   # 8
+            None,                                   # 9
+            {"name": "wave"},                       # 10
+            {"name": "dacq"},                       # 11
+            None,                                   # 12
+            None,                                   # 13
+            None,                                   # 14
+            None,                                   # 15
+            None,                                   # 16
+            None,                                   # 17
+            None,                                   # 18
+            None,                                   # 19
+            {"name": "conditions"}                  # 20
+        ]
+            
     def send(self, code, length, data):
         msg = bytearray([code]) + bytearray(tobytes(length, 2)) + data
         if self.transport.s != None:
@@ -136,11 +136,11 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
 
     # version response from EC
     def version(self, data):
-        pass
+        self.agent.q.put([self.agent.version, data])
 
     # data packet from EC
     def data(self, data):
-        pass
+        self.agent.q.put([self.agent.data, data])
 
 
 class Transport(threading.Thread):
