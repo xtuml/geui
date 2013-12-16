@@ -70,6 +70,9 @@ function Client(){
 // Gui class ------------------//
 
 function Gui(){
+    this.header = document.getElementById("header");    // header banner
+    this.header_element = null;
+
     this.config = null;         //current config or perspective
     this.configs = [];          //stack of configs or perspectives
     this.panels = {
@@ -84,8 +87,21 @@ function Gui(){
     this.loader.style.display = 'none';
 }
 
+// add header object
+Gui.prototype.addHeader = function(header){
+    this.header.appendChild(header);
+    this.header_element = header;
+}
+
 //update panel positions
 Gui.prototype.clearPanels = function(){
+    // remove header
+    if (this.header_element != null) {
+        this.header.removeChild(this.header_element);
+        this.header_element = null;
+    }
+
+    // remove views
     for (panel in this.panels){
         this.panels[panel].removeView();
         this.panels[panel].updateSize(0, 0);
