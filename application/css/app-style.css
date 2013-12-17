@@ -188,7 +188,7 @@ Styling sheet for X8 GUI
     position: absolute;
     height: 48px;
     width: 48px;
-    background-image: url(../img/plus_sign_inactive.png);
+    background-image: url(../img/add_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 10px;
@@ -196,14 +196,14 @@ Styling sheet for X8 GUI
 
 .add-btn:hover,
 .add-btn:focus {
-    background-image: url(../img/plus_sign.png);
+    background-image: url(../img/add.png);
 }
 
 .delete-btn {
     position: absolute;
     height: 48px;
     width: 48px;
-    background-image: url(../img/x_inactive.png);
+    background-image: url(../img/delete_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 10px;
@@ -211,7 +211,22 @@ Styling sheet for X8 GUI
 
 .delete-btn:hover,
 .delete-btn:focus {
-    background-image: url(../img/x.png);
+    background-image: url(../img/delete.png);
+}
+
+.trash-btn {
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    background-image: url(../img/trash_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.trash-btn:hover,
+.trash-btn:focus {
+    background-image: url(../img/trash.png);
 }
 
 .save-btn {
@@ -227,16 +242,6 @@ Styling sheet for X8 GUI
 .save-btn:hover,
 .save-btn:focus {
     background-image: url(../img/save.png);
-}
-
-.run-btn {
-    position: absolute;
-    height: 48px;
-    width: 48px;
-    background-image: url(../img/run_inactive.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 10px;
 }
 
 .run-btn:hover,
@@ -289,19 +294,19 @@ Styling sheet for X8 GUI
     background-image: url(../img/open.png);
 }
 
-.dots-btn {
+.upload-btn {
     position: absolute;
     height: 48px;
     width: 48px;
-    background-image: url(../img/dots_inactive.png);
+    background-image: url(../img/upload_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 10px;
 }
 
-.dots-btn:hover,
-.dots-btn:focus {
-    background-image: url(../img/dots.png);
+.upload-btn:hover,
+.upload-btn:focus {
+    background-image: url(../img/upload.png);
 }
 
 .new-btn {
@@ -434,7 +439,7 @@ Styling sheet for X8 GUI
 }
 
 .dots {
-    background: url(../img/dots_inactive.png);
+    background: url(../img/dots.png);
     background-position: center;
     background-repeat: no-repeat;
     cursor: move;
