@@ -281,12 +281,14 @@ OpenExperiment.prototype.select = function(row_num){
 OpenExperiment.prototype.openFile = function(name){
     if (name != undefined){
         //open file based on name argument
-        this.panel.gui.newConfig(editor, [name, "open"]);
+        cv = new CyclicVoltammetry(client.gui);
+        this.panel.gui.newConfig(cv, [name, "open"]);
     }
     else{
         if (this.selected_row != -1){
             //open file based on selected row
-            this.panel.gui.newConfig(editor, [this.rows[this.selected_row].innerHTML, "open"]);
+            cv = new CyclicVoltammetry(client.gui);
+            this.panel.gui.newConfig(cv, [this.rows[this.selected_row].innerHTML, "open"]);
         }
     }
 }
@@ -451,7 +453,8 @@ CreateExperiment.prototype.createFile = function(name){
         }
         if (!duplicate && name != ""){
             //create technique based on selected row
-            this.panel.gui.newConfig(editor, [name, "create"]);
+            cv = new CyclicVoltammetry(client.gui);
+            this.panel.gui.newConfig(cv, [name, "create"]);
         }
     }
 }
