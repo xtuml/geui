@@ -18,15 +18,15 @@ function RunExperiment(gui){
 
     //object holding addresses to each of the views
     this.views = {
-        DataChart: 'TL'
+        DataChart: "TL"
     };
 
     //create the views
-    this.chart = new DataChart(this.gui.panels[this.views['DataChart']]);
+    this.chart = new DataChart(this.gui.panels[this.views["DataChart"]]);
 
     //setup the animation
-    this.chart.element.style.left = 'calc(-100% - 10px)';
-    this.chart.element.style.left = '-webkit-calc(-100% - 10px)';
+    this.chart.element.style.left = "calc(-100% - 10px)";
+    this.chart.element.style.left = "-webkit-calc(-100% - 10px)";
 
 }
 
@@ -36,7 +36,7 @@ RunExperiment.prototype.prepare = function(args){
     this.gui.clearPanels();
     
     //add the elements
-    this.gui.panels[this.views['DataChart']].addView(this.chart);
+    this.gui.panels[this.views["DataChart"]].addView(this.chart);
 
     //update size and position
     this.chart.panel.updateSize(this.chart.height, this.chart.width);
@@ -57,7 +57,7 @@ RunExperiment.prototype.prepare = function(args){
         httpcomm.signals[signal].enabled = false;
     }
     //enable the ones needed
-    httpcomm.signals['data'].enabled = true;
+    httpcomm.signals["data"].enabled = true;
 
     // start data polling
     // httpcomm.eihttp.run_experiment();
@@ -68,10 +68,10 @@ RunExperiment.prototype.prepare = function(args){
 RunExperiment.prototype.enter = function(delay){
 
     //run animation
-    this.chart.element.className = 'app-cubby fly';
-    $(this.chart.element).css('transition-delay', (delay + 0.5) + 's');
-    $(this.chart.element).css('-webkit-transition-delay', (delay + 0.5) + 's');
-    this.chart.element.style.left = '5px';
+    this.chart.element.className = "app-cubby fly";
+    $(this.chart.element).css("transition-delay", (delay + 0.5) + "s");
+    $(this.chart.element).css("-webkit-transition-delay", (delay + 0.5) + "s");
+    this.chart.element.style.left = "5px";
 
 }
 
@@ -79,11 +79,11 @@ RunExperiment.prototype.enter = function(delay){
 RunExperiment.prototype.exit = function(delay){
 
     //run animation
-    this.chart.element.className = 'app-cubby fly';
-    $(this.chart.element).css('transition-delay', delay + 's');
-    $(this.chart.element).css('-webkit-transition-delay', delay + 's');
-    this.chart.element.style.left = 'calc(-100% - 10px)';
-    this.chart.element.style.left = '-webkit-calc(-100% - 10px)';
+    this.chart.element.className = "app-cubby fly";
+    $(this.chart.element).css("transition-delay", delay + "s");
+    $(this.chart.element).css("-webkit-transition-delay", delay + "s");
+    this.chart.element.style.left = "calc(-100% - 10px)";
+    this.chart.element.style.left = "-webkit-calc(-100% - 10px)";
 
 }
 
@@ -96,22 +96,22 @@ RunExperiment.prototype.exit = function(delay){
 function DataChart(panel){
     //attributes that all views have:
     this.panel = panel;
-    this.element = document.createElement('div');
-    this.element.className = 'app-cubby';
-    this.content_pane = document.createElement('div');
-    this.content_pane.className = 'app-content';
+    this.element = document.createElement("div");
+    this.element.className = "app-cubby";
+    this.content_pane = document.createElement("div");
+    this.content_pane.className = "app-content";
     this.element.appendChild(this.content_pane);
     //-----------------------------//
 
     this.chart = null;
     this.pending_points = []
 
-    this.height = '100%';
-    this.width = '100%'
-    this.x = '0px';
-    this.y = '0px';
+    this.height = "100%";
+    this.width = "100%"
+    this.x = "0px";
+    this.y = "0px";
     this.panel.updateSize(this.height, this.width);
-    this.content_pane.id = 'chart_container';           //if want to have multiple waveforms loaded, 
+    this.content_pane.id = "chart_container";           //if want to have multiple waveforms loaded, 
 }
 
 //starts up the chart
@@ -120,10 +120,10 @@ DataChart.prototype.initiateChart = function(){
     var options = {
         chart: {
             animation: false,
-            renderTo: 'chart_container',
-            type: 'line',
+            renderTo: "chart_container",
+            type: "line",
             style: {
-                margin: '0 auto'
+                margin: "0 auto"
             },
             zoomType: "xy"
         },
@@ -142,7 +142,7 @@ DataChart.prototype.initiateChart = function(){
             },
             labels: {
                 formatter: function() {
-                    return this.value +'s';
+                    return this.value +"s";
                 }
             },
             showLastLabel: true,
@@ -178,13 +178,13 @@ DataChart.prototype.initiateChart = function(){
         },
         series: [{
             animation: false,
-            color: '#07F862',
+            color: "#07F862",
             marker: {
                 enabled: false,
-                symbol: 'circle',
+                symbol: "circle",
                 states: {
                     select: {
-                        fillColor: 'red'
+                        fillColor: "red"
                     }
                 }
             },
@@ -228,18 +228,18 @@ DataChart.prototype.updateChart = function(){
                     //check stop code
                     num_points = Math.ceil(packet.length / n);
                     counter = 0;
-                    if (packet == 'stop'){
+                    if (packet == "stop"){
                         console.log(points_graphed);
                         clearInterval(updating);
                     }
                 }
                 else{
                     packet = [];
-                    console.log('no points');
+                    console.log("no points");
                 }
             }
             else{
-                alert('this is a problem');
+                alert("this is a problem");
             }
         }
         else{

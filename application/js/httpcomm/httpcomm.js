@@ -16,12 +16,12 @@ function HTTPcomm(){
     this.points_received = 0;
 
     this.signals = {
-        'version': new version(),
-        'data': new data(),
-        'update_graph': new update_graph(),
-        'load_table': new load_table(),
-        'load_experiments': new load_experiments(),
-        'upload_success': new upload_success()
+        "version": new version(),
+        "data": new data(),
+        "update_graph": new update_graph(),
+        "load_table": new load_table(),
+        "load_experiments": new load_experiments(),
+        "upload_success": new upload_success()
     }
 
     // eihttp class -----------//
@@ -33,8 +33,8 @@ function HTTPcomm(){
 
     this.eihttp.exit = function(){
         $.ajax({
-            type: 'GET',
-            url: 'exit',
+            type: "GET",
+            url: "exit",
             data: null,
             success: function(){},
             async:true
@@ -44,8 +44,8 @@ function HTTPcomm(){
     
     this.eihttp.run_experiment = function(){
         $.ajax({
-            type: 'GET',
-            url: 'run_experiment',
+            type: "GET",
+            url: "run_experiment",
             data: null,
             success: function(){},
             async:true
@@ -54,8 +54,8 @@ function HTTPcomm(){
 
     this.eihttp.save_experiment = function(){
         $.ajax({
-            type: 'POST',
-            url: 'save',
+            type: "POST",
+            url: "save",
             data: name,
             success: null,
             async:true
@@ -64,8 +64,8 @@ function HTTPcomm(){
 
     this.eihttp.get_experiments = function(){
         $.ajax({
-            type: 'GET',
-            url: 'get_experiments',
+            type: "GET",
+            url: "get_experiments",
             data: null,
             success: null,
             async:true
@@ -79,8 +79,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'table',
+            type: "POST",
+            url: "table",
             data: data,
             success: null,
             async:true
@@ -93,8 +93,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'open',
+            type: "POST",
+            url: "open",
             data: data,
             success: null,
             async:true
@@ -107,8 +107,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'create',
+            type: "POST",
+            url: "create",
             data: data,
             success: null,
             async:true
@@ -121,8 +121,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'delete',
+            type: "POST",
+            url: "delete",
             data: data,
             success: null,
             async:true
@@ -136,8 +136,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'upload',
+            type: "POST",
+            url: "upload",
             data: data,
             success: null,
             async: true
@@ -154,8 +154,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'add_pattern',
+            type: "POST",
+            url: "add_pattern",
             data: data,
             success: null,
             async:true
@@ -168,8 +168,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'delete_pattern',
+            type: "POST",
+            url: "delete_pattern",
             data: data,
             success: null,
             async:true
@@ -183,8 +183,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'move_pattern',
+            type: "POST",
+            url: "move_pattern",
             data: data,
             success: null,
             async:true
@@ -198,8 +198,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'update_pattern',
+            type: "POST",
+            url: "update_pattern",
             data: data,
             success: null,
             async:true
@@ -216,8 +216,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'add_segment',
+            type: "POST",
+            url: "add_segment",
             data: data,
             success: null,
             async:true
@@ -231,8 +231,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'delete_segment',
+            type: "POST",
+            url: "delete_segment",
             data: data,
             success: null,
             async:true
@@ -247,8 +247,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'move_segment',
+            type: "POST",
+            url: "move_segment",
             data: data,
             success: null,
             async:true
@@ -266,8 +266,8 @@ function HTTPcomm(){
         }
         data = JSON.stringify(obj);
         $.ajax({
-            type: 'POST',
-            url: 'update_segment',
+            type: "POST",
+            url: "update_segment",
             data: data,
             success: null,
             async:true
@@ -283,18 +283,18 @@ HTTPcomm.prototype.run = function(){
     this.running = true;
     id = setInterval(function(){
         //poll server
-        console.log('polling');
+        console.log("polling");
         var data = null
         $.ajax({
-            type: 'GET',
-            url: 'command',
+            type: "GET",
+            url: "command",
             data: null,
-            dataType: 'json',
+            dataType: "json",
             success: function(d){data = d},
             async:false
         });
         //if we received data, execute the command
-        if (data != 'None' && data != null){
+        if (data != "None" && data != null){
             console.log(data);
             httpcomm.unpack(data);
         }
@@ -310,22 +310,22 @@ HTTPcomm.prototype.receive_data = function(){
     this.receiving_data = true;
 
     //start the updating
-    client.gui.panels[client.gui.config.views['DataChart']].view.updateChart();
+    client.gui.panels[client.gui.config.views["DataChart"]].view.updateChart();
 
     id = setInterval(function(){
         //poll server
-        //console.log('getting data...');
+        //console.log("getting data...");
         var data = null
         $.ajax({
-            type: 'GET',
-            url: 'data',
+            type: "GET",
+            url: "data",
             data: null,
-            dataType: 'json',
+            dataType: "json",
             success: function(d){data = d},
             async: false
         });
         //if we received data, execute the command
-        if (data != 'None' && data != null){
+        if (data != "None" && data != null){
             httpcomm.unpack(data);
         }
         //check if still running

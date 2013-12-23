@@ -19,30 +19,30 @@ function Client(){
     }
 
     this.eihttp.version = function(version){
-        alert('Version: ' + version);
+        alert("Version: " + version);
     }
 
     this.eihttp.data = function(points, action){
-        client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(points);
-        if (action == 'start'){
+        client.gui.panels[client.gui.config.views["DataChart"]].view.pending_points.push(points);
+        if (action == "start"){
             //start the data polling
             httpcomm.receive_data();
         }
-        else if (action == 'stop'){
+        else if (action == "stop"){
             //stop data polling
             httpcomm.receiving_data = false;
-            client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push(action);
+            client.gui.panels[client.gui.config.views["DataChart"]].view.pending_points.push(action);
         }
-        else if (action == 'onepacket'){
-            client.gui.panels[client.gui.config.views['DataChart']].view.updateChart();
-            client.gui.panels[client.gui.config.views['DataChart']].view.pending_points.push('stop');
+        else if (action == "onepacket"){
+            client.gui.panels[client.gui.config.views["DataChart"]].view.updateChart();
+            client.gui.panels[client.gui.config.views["DataChart"]].view.pending_points.push("stop");
         }
         else{
         }
     }
 
     this.eihttp.update_graph = function(points){
-        client.gui.panels[client.gui.config.views['WaveformChart']].view.updateChart(points);
+        client.gui.panels[client.gui.config.views["WaveformChart"]].view.updateChart(points);
     }
 
     this.eihttp.load_table = function(rows, table_id){
@@ -51,12 +51,12 @@ function Client(){
 
     this.eihttp.load_experiments = function(experiments){
         for (exp in experiments){
-            client.gui.panels[client.gui.config.views['OpenExperiment']].view.addRow(experiments[exp]);
+            client.gui.panels[client.gui.config.views["OpenExperiment"]].view.addRow(experiments[exp]);
         }
     }
 
     this.eihttp.upload_success = function(name){
-        client.gui.panels[client.gui.config.views['OpenExperiment']].view.openFile(name);
+        client.gui.panels[client.gui.config.views["OpenExperiment"]].view.openFile(name);
     }
 
     //-------------------------//
@@ -76,15 +76,15 @@ function Gui(){
     this.config = null;         //current config or perspective
     this.configs = [];          //stack of configs or perspectives
     this.panels = {
-        'TL': new Panel('TL',this),
-        'TR': new Panel('TR',this),
-        'ML': new Panel('ML',this),
-        'MR': new Panel('MR',this),
-        'BL': new Panel('BL',this),
-        'BR': new Panel('BR',this)
+        "TL": new Panel("TL",this),
+        "TR": new Panel("TR",this),
+        "ML": new Panel("ML",this),
+        "MR": new Panel("MR",this),
+        "BL": new Panel("BL",this),
+        "BR": new Panel("BR",this)
     };
-    this.loader = document.getElementById('spinner_container');
-    this.loader.style.display = 'none';
+    this.loader = document.getElementById("spinner_container");
+    this.loader.style.display = "none";
 }
 
 // add header object
