@@ -14,9 +14,6 @@ function Welcome(gui){
     //attibutes every config has
     this.gui = gui;
 
-    this.enter_time = 1.3; //time it takes to enter in seconds
-    this.exit_time = 0.8;  //time it takes to exit in seconds
-
     //object holding addresses to each of the views
     this.views = {
         OpenExperiment: "TL",
@@ -25,18 +22,26 @@ function Welcome(gui){
     };
 
     //create the views
+    this.view_objects = [];
+
     this.open = new OpenExperiment(this.gui.panels[this.views["OpenExperiment"]]);
     this.create = new CreateExperiment(this.gui.panels[this.views["CreateExperiment"]]);
     this.inst_status = new InstrumentStatus(this.gui.panels[this.views["InstrumentStatus"]]);
 
-    //setup the animation
-    this.open.element.style.left = "calc(-100% - 10px)";
-    this.open.element.style.left = "-webkit-calc(-100% - 10px)";
-    this.create.element.style.left = "calc(-200% - 10px)";
-    this.create.element.style.left = "-webkit-calc(-200% - 10px)";
-    this.inst_status.element.style.left = "calc(-100% - 10px)";
-    this.inst_status.element.style.left = "-webkit-calc(-100% - 10px)";
+    // add view objects in animation order
+    this.view_objects.push(this.create);
+    this.view_objects.push(this.open);
+    this.view_objects.push(this.inst_status);
 
+}
+
+Welcome.prototype.getDelay = function() {
+    if (this.gui.settings.animations) {
+        return (this.view_objects.length * 0.15) + 0.5;
+    }
+    else {
+        return 0;
+    }
 }
 
 //prepare the config before entry
@@ -49,13 +54,16 @@ Welcome.prototype.prepare = function(args){
     this.gui.panels[this.views["CreateExperiment"]].addView(this.create);
     this.gui.panels[this.views["InstrumentStatus"]].addView(this.inst_status);
 
-    //update size and position
-    this.open.panel.updateSize(this.open.height, this.open.width);
-    this.open.panel.updatePosition(this.open.x, this.open.y);
-    this.create.panel.updateSize(this.create.height, this.create.width);
-    this.create.panel.updatePosition(this.create.x, this.create.y);
-    this.inst_status.panel.updateSize(this.inst_status.height, this.inst_status.width);
-    this.inst_status.panel.updatePosition(this.inst_status.x, this.inst_status.y);
+    for (var i = 0; i < this.view_objects.length; i++) {
+        //update size and position
+        this.view_objects[i].panel.updateSize(this.view_objects[i].height, this.view_objects[i].width);
+        this.view_objects[i].panel.updatePosition(this.view_objects[i].x, this.view_objects[i].y);
+
+        if (this.gui.settings.animations) {
+            //setup the animation
+            this.view_objects[i].element.style.left = "-" + window.innerWidth + "px";
+        }
+    }
 
     //OPEN EXPERIMENT reset//
 
@@ -103,45 +111,30 @@ Welcome.prototype.prepare = function(args){
 //animation of flying in
 Welcome.prototype.enter = function(delay){
 
-    //run animation
-    this.create.element.className = "app-cubby fly";
-    $(this.create.element).css("transition-delay", (delay + 0.5) + "s");
-    $(this.create.element).css("-webkit-transition-delay", (delay + 0.5) + "s");
-    this.create.element.style.left = "5px";
-
-    this.open.element.className = "app-cubby fly";
-    $(this.open.element).css("transition-delay", (delay + 0.65) + "s");
-    $(this.open.element).css("-webkit-transition-delay", (delay + 0.65) + "s");
-    this.open.element.style.left = "5px";
-
-    this.inst_status.element.className = "app-cubby fly";
-    $(this.inst_status.element).css("transition-delay", (delay + 0.8) + "s");
-    $(this.inst_status.element).css("-webkit-transition-delay", (delay + 0.8) + "s");
-    this.inst_status.element.style.left = "5px";
+    if (this.gui.settings.animations) {
+        //run animation
+        for (var i = 0; i < this.view_objects.length; i++) {
+            this.view_objects[i].element.className = "app-cubby fly";
+            $(this.view_objects[i].element).css("transition-delay", (i * 0.15) + "s");
+            $(this.view_objects[i].element).css("-webkit-transition-delay", (i * 0.15) + "s");
+            this.view_objects[i].element.style.left = "5px";
+        }
+    }
 
 }
 
 //animation of flying out
 Welcome.prototype.exit = function(delay){
 
-    //run animation
-    this.open.element.className = "app-cubby fly";
-    $(this.open.element).css("transition-delay", delay + "s");
-    $(this.open.element).css("-webkit-transition-delay", delay + "s");
-    this.open.element.style.left = "calc(-100% - 10px)";
-    this.open.element.style.left = "-webkit-calc(-100% - 10px)";
-
-    this.create.element.className = "app-cubby fly";
-    $(this.create.element).css("transition-delay", (delay + 0.15) + "s");
-    $(this.create.element).css("-webkit-transition-delay", (delay + 0.15) + "s");
-    this.create.element.style.left = "calc(-200% - 10px)";
-    this.create.element.style.left = "-webkit-calc(-200% - 10px)";
-
-    this.inst_status.element.className = "app-cubby fly";
-    $(this.inst_status.element).css("transition-delay", (delay + 0.3) + "s");
-    $(this.inst_status.element).css("-webkit-transition-delay", (delay + 0.3) + "s");
-    this.inst_status.element.style.left = "calc(-100% - 10px)";
-    this.inst_status.element.style.left = "-webkit-calc(-100% - 10px)";
+    if (this.gui.settings.animations) {
+        //run animation
+        for (var i = 0; i < this.view_objects.length; i++) {
+            this.view_objects[this.view_objects.length - i - 1].element.className = "app-cubby fly";
+            $(this.view_objects[this.view_objects.length - i - 1].element).css("transition-delay", (0.15 * i) + "s");
+            $(this.view_objects[this.view_objects.length - i - 1].element).css("-webkit-transition-delay", (0.15 * i) + "s");
+            this.view_objects[this.view_objects.length - i - 1].element.style.left = "-" + window.innerWidth + "px";
+        }
+    }
 
 }
 

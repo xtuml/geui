@@ -15,9 +15,6 @@ function CyclicVoltammetry(gui){
     //attibutes every config has
     this.gui = gui;
 
-    this.enter_time = 1.45; //time it takes to enter in seconds
-    this.exit_time = 0.9;  //time it takes to exit in seconds
-
     //object holding addresses to each of the views
     this.views = {
         WaveformChart: "TL",
@@ -45,12 +42,6 @@ function CyclicVoltammetry(gui){
     this.view_objects.push(this.templates);
     this.view_objects.push(this.exp_parameters);
     this.view_objects.push(this.inst_status);
-    console.log(this.view_objects);
-
-    //setup the animation
-    for (var i = 0; i < this.view_objects.length; i++) {
-        this.view_objects[i].element.style.left = "-" + window.innerWidth + "px";
-    }
 
     // build header
     this.header_content = document.createElement("div");
@@ -76,6 +67,15 @@ function CyclicVoltammetry(gui){
     this.back.appendChild(this.back_symbol);
     this.header_content.appendChild(this.back);
 
+}
+
+CyclicVoltammetry.prototype.getDelay = function() {
+    if (this.gui.settings.animations) {
+        return (this.view_objects.length * 0.15) + 0.5;
+    }
+    else {
+        return 0;
+    }
 }
 
 CyclicVoltammetry.prototype.go_back = function(){
@@ -113,10 +113,15 @@ CyclicVoltammetry.prototype.prepare = function(args){
     this.gui.panels[this.views["SmallStatus"]].addView(this.inst_status);
     this.gui.panels[this.views["ControlButtons"]].addView(this.buttons);
 
-    //update size and position
     for (var i = 0; i < this.view_objects.length; i++) {
+        //update size and position
         this.view_objects[i].panel.updateSize(this.view_objects[i].height, this.view_objects[i].width);
         this.view_objects[i].panel.updatePosition(this.view_objects[i].x, this.view_objects[i].y);
+
+        if (this.gui.settings.animations) {
+            //setup the animation
+            this.view_objects[i].element.style.left = "-" + window.innerWidth + "px";
+        }
     }
 
     // WAVEFORM CHART reset//
@@ -143,27 +148,31 @@ CyclicVoltammetry.prototype.prepare = function(args){
 }
 
 //fly in animation
-CyclicVoltammetry.prototype.enter = function(delay){
+CyclicVoltammetry.prototype.enter = function(){
 
-    //run animation
-    for (var i = 0; i < this.view_objects.length; i++) {
-        this.view_objects[i].element.className = "app-cubby fly";
-        $(this.view_objects[i].element).css("transition-delay", (delay + (i * 0.15) + 0.5) + "s");
-        $(this.view_objects[i].element).css("-webkit-transition-delay", (delay + (i * 0.15) + 0.5) + "s");
-        this.view_objects[i].element.style.left = "5px";
+    if (this.gui.settings.animations) {
+        //run animation
+        for (var i = 0; i < this.view_objects.length; i++) {
+            this.view_objects[i].element.className = "app-cubby fly";
+            $(this.view_objects[i].element).css("transition-delay", (i * 0.15) + "s");
+            $(this.view_objects[i].element).css("-webkit-transition-delay", (i * 0.15) + "s");
+            this.view_objects[i].element.style.left = "5px";
+        }
     }
 
 }
 
 //fly out animation
-CyclicVoltammetry.prototype.exit = function(delay){
+CyclicVoltammetry.prototype.exit = function(){
 
-    //run animation
-    for (var i = 0; i < this.view_objects.length; i++) {
-        this.view_objects[this.view_objects.length - i - 1].element.className = "app-cubby fly";
-        $(this.view_objects[this.view_objects.length - i - 1].element).css("transition-delay", (delay + (0.15 * i)) + "s");
-        $(this.view_objects[this.view_objects.length - i - 1].element).css("-webkit-transition-delay", (delay + (0.15 * i)) + "s");
-        this.view_objects[this.view_objects.length - i - 1].element.style.left = "-" + window.innerWidth + "px";
+    if (this.gui.settings.animations) {
+        //run animation
+        for (var i = 0; i < this.view_objects.length; i++) {
+            this.view_objects[this.view_objects.length - i - 1].element.className = "app-cubby fly";
+            $(this.view_objects[this.view_objects.length - i - 1].element).css("transition-delay", (0.15 * i) + "s");
+            $(this.view_objects[this.view_objects.length - i - 1].element).css("-webkit-transition-delay", (0.15 * i) + "s");
+            this.view_objects[this.view_objects.length - i - 1].element.style.left = "-" + window.innerWidth + "px";
+        }
     }
 
 }
@@ -190,7 +199,6 @@ function WaveformPreview(panel){
     this.width = "60%"
     this.x = "0px";
     this.y = "0px";
-    this.panel.updateSize(this.height, this.width);
     this.content_pane.id = "chart_container";           //if want to have multiple waveforms loaded, 
                                                         //must change to a unique container name
 }

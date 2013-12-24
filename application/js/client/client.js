@@ -83,8 +83,13 @@ function Gui(){
         "BL": new Panel("BL",this),
         "BR": new Panel("BR",this)
     };
+
+    // spinner object
     this.loader = document.getElementById("spinner_container");
     this.loader.style.display = "none";
+
+    // GUI settings
+    this.settings = new Settings();
 }
 
 // add header object
@@ -115,8 +120,8 @@ Gui.prototype.newConfig = function(new_config, args){
     //set timeout
     var timeout = 0;
     if (this.config != null){
-        timeout = this.config.exit_time;        //timeout is in seconds
-        this.config.exit(0);
+        timeout = this.config.getDelay();        //timeout is in seconds
+        this.config.exit();
     }
 
     //adjust stack
@@ -131,7 +136,7 @@ Gui.prototype.newConfig = function(new_config, args){
         setTimeout(function(){
 
             //enter the new config
-            new_config.enter(0);
+            new_config.enter();
 
         }, 10);        //10 milliseconds to allow prepare
 
@@ -142,8 +147,8 @@ Gui.prototype.newConfig = function(new_config, args){
 //pop from config stack
 Gui.prototype.popConfig = function(args){
 
-    var timeout = this.config.exit_time;
-    this.config.exit(0);
+    var timeout = this.config.getDelay();
+    this.config.exit();
 
     var new_config = this.configs.pop();
 
@@ -159,13 +164,23 @@ Gui.prototype.popConfig = function(args){
             setTimeout(function(){
 
                 //enter new config
-                new_config.enter(0);
+                new_config.enter();
 
             }, 10);        //10 milliseconds to allow prepare
 
         }, (timeout * 1000));
     }
 
+}
+
+//-----------------------------//
+
+
+
+// Settings class -------------//
+
+function Settings() {
+    this.animations = false;
 }
 
 //-----------------------------//
