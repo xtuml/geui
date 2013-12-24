@@ -11,12 +11,10 @@ and WaveformButtonsSegments view classes.
 
 // WaveformEditor class -------//
 
+WaveformEditor.prototype = new Config();
+WaveformEditor.prototype.constructor = WaveformEditor;
 function WaveformEditor(gui){
-    //attibutes every config has
-    this.gui = gui;
-
-    this.enter_time = 1.45; //time it takes to enter in seconds
-    this.exit_time = 0.9;  //time it takes to exit in seconds
+    this.initialize(gui);
 
     //object holding addresses to each of the views
     this.views = {
@@ -34,17 +32,13 @@ function WaveformEditor(gui){
     this.buttons_patterns = new WaveformButtonsPatterns(this.gui.panels[this.views["WaveformButtonsPatterns"]]);
     this.buttons_segments = new WaveformButtonsSegments(this.gui.panels[this.views["WaveformButtonsSegments"]]);
 
-    //setup the animation
-    this.chart.element.style.left = "calc(-100% - 10px)";
-    this.chart.element.style.left = "-webkit-calc(-100% - 10px)";
-    this.table_patterns.element.style.left = "calc(-100% - 10px)";
-    this.table_patterns.element.style.left = "-webkit-calc(-100% - 10px)";
-    this.table_segments.element.style.left = "calc(-200% - 10px)";
-    this.table_segments.element.style.left = "-webkit-calc(-200% - 10px)";
-    this.buttons_patterns.element.style.left = "calc(-100% - 10px)";
-    this.buttons_patterns.element.style.left = "-webkit-calc(-100% - 10px)";
-    this.buttons_segments.element.style.left = "calc(-200% - 10px)";
-    this.buttons_segments.element.style.left = "-webkit-calc(-200% - 10px)";
+    // add view objects in animation order
+    this.view_objects.push(this.chart);
+    this.view_objects.push(this.table_segments);
+    this.view_objects.push(this.table_patterns);
+    this.view_objects.push(this.buttons_segments);
+    this.view_objects.push(this.buttons_patterns);
+
 
     // build header
     this.header_content = document.createElement("div");
@@ -70,10 +64,6 @@ function WaveformEditor(gui){
     this.back.appendChild(this.back_symbol);
     this.header_content.appendChild(this.back);
 
-}
-
-WaveformEditor.prototype.go_back = function(){
-    client.gui.popConfig([]);
 }
 
 //load tables
@@ -129,8 +119,7 @@ WaveformEditor.prototype.createWaveform = function(name){
 
 //prepare the config before entry
 WaveformEditor.prototype.prepare = function(args){
-    //remove the old elements
-    this.gui.clearPanels();
+    this.updatePositions();
 
     // add header
     this.title.innerHTML = args[0];
@@ -142,18 +131,6 @@ WaveformEditor.prototype.prepare = function(args){
     this.gui.panels[this.views["WaveformTableSegments"]].addView(this.table_segments);
     this.gui.panels[this.views["WaveformButtonsPatterns"]].addView(this.buttons_patterns);
     this.gui.panels[this.views["WaveformButtonsSegments"]].addView(this.buttons_segments);
-
-    //update size and position
-    this.chart.panel.updateSize(this.chart.height, this.chart.width);
-    this.chart.panel.updatePosition(this.chart.x, this.chart.y);
-    this.table_patterns.panel.updateSize(this.table_patterns.height, this.table_patterns.width);
-    this.table_patterns.panel.updatePosition(this.table_patterns.x, this.table_patterns.y);
-    this.table_segments.panel.updateSize(this.table_segments.height, this.table_segments.width);
-    this.table_segments.panel.updatePosition(this.table_segments.x, this.table_segments.y);
-    this.buttons_patterns.panel.updateSize(this.buttons_patterns.height, this.buttons_patterns.width);
-    this.buttons_patterns.panel.updatePosition(this.buttons_patterns.x, this.buttons_patterns.y);
-    this.buttons_segments.panel.updateSize(this.buttons_segments.height, this.buttons_segments.width);
-    this.buttons_segments.panel.updatePosition(this.buttons_segments.x, this.buttons_segments.y);
 
     // WAVEFORM CHART reset//
     //initate the chart
@@ -180,73 +157,6 @@ WaveformEditor.prototype.prepare = function(args){
     //enable the ones needed
     httpcomm.signals["update_graph"].enabled = true;
     httpcomm.signals["load_table"].enabled = true;
-
-}
-
-//fly in animation
-WaveformEditor.prototype.enter = function(delay){
-
-    //run animation
-    this.chart.element.className = "app-cubby fly";
-    $(this.chart.element).css("transition-delay", (delay + 0.5) + "s");
-    $(this.chart.element).css("-webkit-transition-delay", (delay + 0.5) + "s");
-    this.chart.element.style.left = "5px";
-
-    this.table_segments.element.className = "app-cubby fly";
-    $(this.table_segments.element).css("transition-delay", (delay + 0.65) + "s");
-    $(this.table_segments.element).css("-webkit-transition-delay", (delay + 0.65) + "s");
-    this.table_segments.element.style.left = "5px";
-
-    this.table_patterns.element.className = "app-cubby fly";
-    $(this.table_patterns.element).css("transition-delay", (delay + 0.8) + "s");
-    $(this.table_patterns.element).css("-webkit-transition-delay", (delay + 0.8) + "s");
-    this.table_patterns.element.style.left = "5px";
-
-    this.buttons_segments.element.className = "app-cubby fly";
-    $(this.buttons_segments.element).css("transition-delay", (delay + 0.8) + "s");
-    $(this.buttons_segments.element).css("-webkit-transition-delay", (delay + 0.8) + "s");
-    this.buttons_segments.element.style.left = "5px";
-
-    this.buttons_patterns.element.className = "app-cubby fly";
-    $(this.buttons_patterns.element).css("transition-delay", (delay + 0.95) + "s");
-    $(this.buttons_patterns.element).css("-webkit-transition-delay", (delay + 0.95) + "s");
-    this.buttons_patterns.element.style.left = "5px";
-
-}
-
-//fly out animation
-WaveformEditor.prototype.exit = function(delay){
-
-    //run animation
-    this.chart.element.className = "app-cubby fly";
-    $(this.chart.element).css("transition-delay", delay + "s");
-    $(this.chart.element).css("-webkit-transition-delay", delay + "s");
-    this.chart.element.style.left = "calc(-100% - 10px)";
-    this.chart.element.style.left = "-webkit-calc(-100% - 10px)";
-
-    this.table_patterns.element.className = "app-cubby fly";
-    $(this.table_patterns.element).css("transition-delay", (delay + 0.1) + "s");
-    $(this.table_patterns.element).css("-webkit-transition-delay", (delay + 0.1) + "s");
-    this.table_patterns.element.style.left = "calc(-100% - 10px)";
-    this.table_patterns.element.style.left = "-webkit-calc(-100% - 10px)";
-
-    this.table_segments.element.className = "app-cubby fly";
-    $(this.table_segments.element).css("transition-delay", (delay + 0.25) + "s");
-    $(this.table_segments.element).css("-webkit-transition-delay", (delay + 0.25) + "s");
-    this.table_segments.element.style.left = "calc(-200% - 10px)";
-    this.table_segments.element.style.left = "-webkit-calc(-200% - 10px)";
-
-    this.buttons_patterns.element.className = "app-cubby fly";
-    $(this.buttons_patterns.element).css("transition-delay", (delay + 0.25) + "s");
-    $(this.buttons_patterns.element).css("-webkit-transition-delay", (delay + 0.25) + "s");
-    this.buttons_patterns.element.style.left = "calc(-100% - 10px)";
-    this.buttons_patterns.element.style.left = "-webkit-calc(-100% - 10px)";
-
-    this.buttons_segments.element.className = "app-cubby fly";
-    $(this.buttons_segments.element).css("transition-delay", (delay + 0.4) + "s");
-    $(this.buttons_segments.element).css("-webkit-transition-delay", (delay + 0.4) + "s");
-    this.buttons_segments.element.style.left = "calc(-200% - 10px)";
-    this.buttons_segments.element.style.left = "-webkit-calc(-200% - 10px)";
 
 }
 

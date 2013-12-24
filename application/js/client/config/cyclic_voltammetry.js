@@ -11,9 +11,10 @@ SmallStatus, and ControlButtons view classes.
 
 // CyclicVoltammetry class ----//
 
+CyclicVoltammetry.prototype = new Config();
+CyclicVoltammetry.prototype.constructor = CyclicVoltammetry;
 function CyclicVoltammetry(gui){
-    //attibutes every config has
-    this.gui = gui;
+    this.initialize(gui);
 
     //object holding addresses to each of the views
     this.views = {
@@ -24,9 +25,6 @@ function CyclicVoltammetry(gui){
         SmallStatus: "BL",
         ControlButtons: "BR"
     };
-
-    //create the views
-    this.view_objects = [];
 
     this.chart = new WaveformPreview(this.gui.panels[this.views["WaveformChart"]]);
     this.cv_parameters = new CVParameters(this.gui.panels[this.views["CVParameters"]]);
@@ -69,19 +67,6 @@ function CyclicVoltammetry(gui){
 
 }
 
-CyclicVoltammetry.prototype.getDelay = function() {
-    if (this.gui.settings.animations) {
-        return (this.view_objects.length * 0.15) + 0.5;
-    }
-    else {
-        return 0;
-    }
-}
-
-CyclicVoltammetry.prototype.go_back = function(){
-    client.gui.popConfig([]);
-}
-
 //load parameters
 CyclicVoltammetry.prototype.loadParameters = function(rows, table_id){
 }
@@ -95,11 +80,9 @@ CyclicVoltammetry.prototype.openWaveform = function(name){
 CyclicVoltammetry.prototype.createWaveform = function(name){
     httpcomm.eihttp.create_experiment(name);
 }
-
 //prepare the config before entry
 CyclicVoltammetry.prototype.prepare = function(args){
-    //remove the old elements
-    this.gui.clearPanels();
+    this.updatePositions();
 
     // add header
     this.title.innerHTML = args[0];
@@ -112,17 +95,6 @@ CyclicVoltammetry.prototype.prepare = function(args){
     this.gui.panels[this.views["CVTemplates"]].addView(this.templates);
     this.gui.panels[this.views["SmallStatus"]].addView(this.inst_status);
     this.gui.panels[this.views["ControlButtons"]].addView(this.buttons);
-
-    for (var i = 0; i < this.view_objects.length; i++) {
-        //update size and position
-        this.view_objects[i].panel.updateSize(this.view_objects[i].height, this.view_objects[i].width);
-        this.view_objects[i].panel.updatePosition(this.view_objects[i].x, this.view_objects[i].y);
-
-        if (this.gui.settings.animations) {
-            //setup the animation
-            this.view_objects[i].element.style.left = "-" + window.innerWidth + "px";
-        }
-    }
 
     // WAVEFORM CHART reset//
     //initate the chart
@@ -144,36 +116,6 @@ CyclicVoltammetry.prototype.prepare = function(args){
     }
     //enable the ones needed
     httpcomm.signals["update_graph"].enabled = true;
-
-}
-
-//fly in animation
-CyclicVoltammetry.prototype.enter = function(){
-
-    if (this.gui.settings.animations) {
-        //run animation
-        for (var i = 0; i < this.view_objects.length; i++) {
-            this.view_objects[i].element.className = "app-cubby fly";
-            $(this.view_objects[i].element).css("transition-delay", (i * 0.15) + "s");
-            $(this.view_objects[i].element).css("-webkit-transition-delay", (i * 0.15) + "s");
-            this.view_objects[i].element.style.left = "5px";
-        }
-    }
-
-}
-
-//fly out animation
-CyclicVoltammetry.prototype.exit = function(){
-
-    if (this.gui.settings.animations) {
-        //run animation
-        for (var i = 0; i < this.view_objects.length; i++) {
-            this.view_objects[this.view_objects.length - i - 1].element.className = "app-cubby fly";
-            $(this.view_objects[this.view_objects.length - i - 1].element).css("transition-delay", (0.15 * i) + "s");
-            $(this.view_objects[this.view_objects.length - i - 1].element).css("-webkit-transition-delay", (0.15 * i) + "s");
-            this.view_objects[this.view_objects.length - i - 1].element.style.left = "-" + window.innerWidth + "px";
-        }
-    }
 
 }
 

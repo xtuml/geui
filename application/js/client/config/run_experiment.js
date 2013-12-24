@@ -9,12 +9,10 @@ Defines DataChart view class.
 
 // RunExperiment class -------//
 
+RunExperiment.prototype = new Config();
+RunExperiment.prototype.constructor = RunExperiment;
 function RunExperiment(gui){
-    //attibutes every config has
-    this.gui = gui;
-
-    this.enter_time = 1.45; //time it takes to enter in seconds
-    this.exit_time = 0.9;  //time it takes to exit in seconds
+    this.initialize(gui);
 
     //object holding addresses to each of the views
     this.views = {
@@ -24,23 +22,17 @@ function RunExperiment(gui){
     //create the views
     this.chart = new DataChart(this.gui.panels[this.views["DataChart"]]);
 
-    //setup the animation
-    this.chart.element.style.left = "calc(-100% - 10px)";
-    this.chart.element.style.left = "-webkit-calc(-100% - 10px)";
+    // add view objects in animation order
+    this.view_objects.push(this.chart);
 
 }
 
 //prepare the config before entry
 RunExperiment.prototype.prepare = function(args){
-    //remove the old elements
-    this.gui.clearPanels();
+    this.updatePositions();
     
     //add the elements
     this.gui.panels[this.views["DataChart"]].addView(this.chart);
-
-    //update size and position
-    this.chart.panel.updateSize(this.chart.height, this.chart.width);
-    this.chart.panel.updatePosition(this.chart.x, this.chart.y);
 
     // WAVEFORM CHART reset//
     //initate the chart
@@ -58,32 +50,6 @@ RunExperiment.prototype.prepare = function(args){
     }
     //enable the ones needed
     httpcomm.signals["data"].enabled = true;
-
-    // start data polling
-    // httpcomm.eihttp.run_experiment();
-
-}
-
-//fly in animation
-RunExperiment.prototype.enter = function(delay){
-
-    //run animation
-    this.chart.element.className = "app-cubby fly";
-    $(this.chart.element).css("transition-delay", (delay + 0.5) + "s");
-    $(this.chart.element).css("-webkit-transition-delay", (delay + 0.5) + "s");
-    this.chart.element.style.left = "5px";
-
-}
-
-//fly out animation
-RunExperiment.prototype.exit = function(delay){
-
-    //run animation
-    this.chart.element.className = "app-cubby fly";
-    $(this.chart.element).css("transition-delay", delay + "s");
-    $(this.chart.element).css("-webkit-transition-delay", delay + "s");
-    this.chart.element.style.left = "calc(-100% - 10px)";
-    this.chart.element.style.left = "-webkit-calc(-100% - 10px)";
 
 }
 
