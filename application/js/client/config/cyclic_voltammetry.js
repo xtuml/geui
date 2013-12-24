@@ -51,6 +51,7 @@ function CyclicVoltammetry(gui){
     this.title.className = "label";
     this.title.style.height = "55px";
     this.title.style.left = "75px";
+    this.title.innerHTML = "N/A";
     this.header_content.appendChild(this.title);
 
     this.back = document.createElement("div");
@@ -85,7 +86,6 @@ CyclicVoltammetry.prototype.prepare = function(args){
     this.updatePositions();
 
     // add header
-    this.title.innerHTML = args[0];
     this.gui.addHeader(this.header_content);
     
     //add the elements
@@ -97,17 +97,29 @@ CyclicVoltammetry.prototype.prepare = function(args){
     this.gui.panels[this.views["ControlButtons"]].addView(this.buttons);
 
     // WAVEFORM CHART reset//
-    //initate the chart
+
+    // initiate chart
     this.chart.initiateChart();
 
-    //open waveform
-    if (args[1] == "open"){
-        this.openWaveform(args[0]);
+    // if this is a new load
+    if (args.length > 0) {
+        // update header
+        this.title.innerHTML = args[0];
+        this.name = args[0];
+
+        //open waveform
+        if (args[1] == "open"){
+            this.openWaveform(args[0]);
+        }
+        else if (args[1] == "create"){
+            this.createWaveform(args[0]);
+        }
+        else{}
     }
-    else if (args[1] == "create"){
-        this.createWaveform(args[0]);
+    else {
+        // request update by re-opening the experiment
+        this.openWaveform(this.name);
     }
-    else{}
 
     //enable signals applying to this config
     //disable all

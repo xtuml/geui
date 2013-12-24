@@ -15,6 +15,9 @@ Config.prototype.initialize = function(gui) {
     // gui reference
     this.gui = gui;
 
+    // current experiment name
+    this.name = "";
+
     // create the view container
     this.view_objects = [];
 }
