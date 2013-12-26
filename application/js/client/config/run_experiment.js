@@ -25,12 +25,40 @@ function RunExperiment(gui){
     // add view objects in animation order
     this.view_objects.push(this.chart);
 
+    // build header
+    this.header_content = document.createElement("div");
+    this.header_content.className = "app-content";
+
+    var editor = this;
+
+    this.title = document.createElement("div");
+    this.title.className = "label";
+    this.title.style.height = "55px";
+    this.title.style.left = "75px";
+    this.title.innerHTML = "N/A";
+    this.header_content.appendChild(this.title);
+
+    this.back = document.createElement("div");
+    this.back.className = "btn";
+    this.back.style.left = "0px";
+    this.back_symbol = document.createElement("img");
+    this.back_symbol.title = "Go back";
+    this.back_symbol.className = "back-btn";
+    this.back_symbol.onclick = function(){editor.go_back();};
+    this.back_symbol.tabIndex = 0;
+    this.back_symbol.onkeypress = function(e){if(e.keyCode == 13){editor.go_back();}};
+    this.back.appendChild(this.back_symbol);
+    this.header_content.appendChild(this.back);
+
 }
 
 //prepare the config before entry
 RunExperiment.prototype.prepare = function(args){
     this.updatePositions();
     
+    // add header
+    this.gui.addHeader(this.header_content);
+
     //add the elements
     this.gui.panels[this.views["DataChart"]].addView(this.chart);
 
@@ -41,6 +69,13 @@ RunExperiment.prototype.prepare = function(args){
     }
     this.chart.initiateChart();
     this.pending_points = [];
+
+    // if this is a new load
+    if (args.length > 0) {
+        // update header
+        this.title.innerHTML = args[0];
+        this.name = args[0];
+    }
 
 
     //enable signals applying to this config

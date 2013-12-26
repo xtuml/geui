@@ -16,6 +16,8 @@ CyclicVoltammetry.prototype.constructor = CyclicVoltammetry;
 function CyclicVoltammetry(gui){
     this.initialize(gui);
 
+    this.exp_type = "Cyclic Voltammetry";
+
     //object holding addresses to each of the views
     this.views = {
         WaveformChart: "TL",
@@ -53,6 +55,13 @@ function CyclicVoltammetry(gui){
     this.title.style.left = "75px";
     this.title.innerHTML = "N/A";
     this.header_content.appendChild(this.title);
+
+    this.type = document.createElement("div");
+    this.type.className = "label italic";
+    this.type.style.height = "55px";
+    this.type.style.right = "350px";
+    this.type.innerHTML = this.exp_type;
+    this.header_content.appendChild(this.type);
 
     this.back = document.createElement("div");
     this.back.className = "btn";
@@ -100,6 +109,10 @@ CyclicVoltammetry.prototype.prepare = function(args){
 
     // initiate chart
     this.chart.initiateChart();
+
+    // STATUS reset //
+
+    this.inst_status.box_center.innerHTML = "";
 
     // if this is a new load
     if (args.length > 0) {
@@ -271,10 +284,14 @@ function CVParameters(panel){
     this.element.appendChild(this.content_pane);
     //------------------------------//
 
-    this.height = "70%";
+    this.height = "calc(100% - 64px)";
+    this.height = "-webkit-calc(100% - 64px)";
     this.width = "40%";
     this.x = "60%";
     this.y = "0px";
+
+    // attributes
+    this.label_text = "CV Parameters";
 
     //object for checking input format
     this.validate_methods = {
@@ -295,32 +312,126 @@ function CVParameters(panel){
     }
 
     //object for input placeholders, label names, units, and number format
-    this.value_format = {
-        start_value: {
-            placeholder: "Start potential",
-            label: "Start Potential",
+    this.value_format = [ 
+        {
+            placeholder: "Initial potential",
+            label: "Initial potential",
             units: "mV",
             format: "real"
         },
-        end_value: {
-            placeholder: "End potential",
-            label: "End Potential",
+        {
+            placeholder: "Number of segments",
+            label: "Number of segments",
+            units: "segs",
+            format: "integer"
+        },
+        {
+            placeholder: "Switching potential 1",
+            label: "Switching potential 1",
             units: "mV",
             format: "real"
         },
-        rate: {
-            placeholder: "Sweep rate",
-            label: "Sweep Rate",
+        {
+            placeholder: "Scan rate",
+            label: "Scan rate",
             units: "mV/s",
             format: "real"
         },
-        duration: {
-            placeholder: "Duration",
-            label: "Duration",
+        {
+            placeholder: "Switching potential 2",
+            label: "Switching potential 2",
+            units: "mV",
+            format: "real"
+        },
+        {
+            placeholder: "Quiet time",
+            label: "Quiet time",
+            units: "s",
+            format: "positive_real"
+        },
+        {
+            placeholder: "Final potential",
+            label: "Final potential",
+            units: "mV",
+            format: "real"
+        },
+        {
+            placeholder: "Full scale (+/-)",
+            label: "Full scale (+/-)",
             units: "s",
             format: "positive_real"
         }
+    ]
+
+    // add components
+    // label
+    this.label = document.createElement("div");
+    this.label.className = "small-label";
+    this.label.innerHTML = this.label_text;
+    this.content_pane.appendChild(this.label);
+
+    // parameter table
+    this.table = document.createElement("div");
+    this.table.className = "parameters-table";
+    this.content_pane.appendChild(this.table);
+
+    // parameters
+    this.parameters = []
+    for (var i = 0; i < 8; i++) {
+        var parameter = document.createElement("div");
+        parameter.className = "parameter-cell"
+        parameter.style.left = (i % 2 * 50) + "%"
+        parameter.style.top = (Math.floor(i / 2) * 16.6) + "%"
+
+        var parameter_title = document.createElement("div");
+        parameter_title.className = "parameter-label";
+        parameter_title.style.top = "calc(50% - 27px)";
+        parameter_title.style.top = "-webkit-calc(50% - 27px)";
+        parameter_title.innerHTML = this.value_format[i].label;
+
+        var parameter_input_wrapper = document.createElement("div");
+        parameter_input_wrapper.className = "input-wrapper";
+        parameter_input_wrapper.style.top = "calc(50% + 1px)";
+        parameter_input_wrapper.style.top = "-webkit-calc(50% + 1px)";
+        var parameter_input = document.createElement("input");
+        parameter_input.className = "value-input";
+        parameter_input.placeholder = this.value_format[i].placeholder;
+        parameter_input.onblur = function(){
+            //table_patterns.validateSimple([row.row_num, 2],"parameter_value", table_patterns.value_format["parameter_value"]["format"]);
+        };
+        parameter_input.onkeypress = function(e){
+           if (e.keyCode == 13){        //enter key 
+               //table_patterns.update(row.row_num);
+           }
+        }
+        var parameter_label = document.createElement("div");
+        parameter_label.className = "input-label";
+        parameter_label.innerHTML = this.value_format[i].units;
+        parameter_input_wrapper.appendChild(parameter_input);
+        parameter_input_wrapper.appendChild(parameter_label);
+        parameter.appendChild(parameter_title);
+        parameter.appendChild(parameter_input_wrapper);
+
+        this.parameters.push(parameter);
+        this.table.appendChild(parameter);
     }
+
+
+    // apply button
+    this.apply = document.createElement("div");
+    this.apply.className = "small-btn";
+    this.apply.style.width = "100px";
+    this.apply.style.right = "0px";
+    this.apply.style.bottom = "0px";
+    this.apply_symbol = document.createElement("div");
+    this.apply_symbol.className = "text-btn blue-text";
+    this.apply_symbol.innerHTML = "Apply";
+    this.apply_symbol.onclick = function(){};
+    this.apply_symbol.tabIndex = 0;
+    this.apply_symbol.onkeypress = function(e){if(e.keyCode == 13){}};
+    this.apply.appendChild(this.apply_symbol);
+    this.content_pane.appendChild(this.apply);
+
 
 }
 
@@ -409,6 +520,9 @@ function ExperimentParameters(panel){
     this.x = "0px";
     this.y = "50%";
 
+    // attributes
+    this.label_text = "Experiment Parameters";
+
     //object for checking input format
     this.validate_methods = {
         real: {
@@ -454,6 +568,33 @@ function ExperimentParameters(panel){
             format: "positive_real"
         }
     }
+
+    //add components
+    //label
+    this.label = document.createElement("div");
+    this.label.className = "small-label";
+    this.label.innerHTML = this.label_text;
+    this.content_pane.appendChild(this.label);
+
+    // parameter table
+    this.table = document.createElement("div");
+    this.table.className = "parameters-table";
+    this.content_pane.appendChild(this.table);
+
+    // apply button
+    this.apply = document.createElement("div");
+    this.apply.className = "small-btn";
+    this.apply.style.width = "100px";
+    this.apply.style.right = "0px";
+    this.apply.style.bottom = "0px";
+    this.apply_symbol = document.createElement("div");
+    this.apply_symbol.className = "text-btn blue-text";
+    this.apply_symbol.innerHTML = "Apply";
+    this.apply_symbol.onclick = function(){};
+    this.apply_symbol.tabIndex = 0;
+    this.apply_symbol.onkeypress = function(e){if(e.keyCode == 13){}};
+    this.apply.appendChild(this.apply_symbol);
+    this.content_pane.appendChild(this.apply);
 
 }
 
@@ -528,7 +669,100 @@ function CVTemplates(panel){
     this.x = "30%";
     this.y = "50%";
 
+    // attributes
+    this.label_text = "Templates";
+
+    //add components
+    //label
+    this.label = document.createElement("div");
+    this.label.className = "small-label";
+    this.label.innerHTML = this.label_text;
+    this.content_pane.appendChild(this.label);
+
+    // parameter table
+    this.table = document.createElement("div");
+    this.table.className = "parameters-table";
+    this.content_pane.appendChild(this.table);
+
+    // use button
+    this.use = document.createElement("div");
+    this.use.className = "small-btn";
+    this.use.style.width = "100px";
+    this.use.style.right = "0px";
+    this.use.style.bottom = "0px";
+    this.use_symbol = document.createElement("div");
+    this.use_symbol.className = "text-btn blue-text";
+    this.use_symbol.innerHTML = "Use";
+    this.use_symbol.onclick = function(){};
+    this.use_symbol.tabIndex = 0;
+    this.use_symbol.onkeypress = function(e){if(e.keyCode == 13){}};
+    this.use.appendChild(this.use_symbol);
+    this.content_pane.appendChild(this.use);
+
+    // remove button
+    this.remove = document.createElement("div");
+    this.remove.className = "small-btn";
+    this.remove.style.width = "100px";
+    this.remove.style.right = "104px";
+    this.remove.style.bottom = "0px";
+    this.remove_symbol = document.createElement("div");
+    this.remove_symbol.className = "text-btn red-text";
+    this.remove_symbol.innerHTML = "Delete";
+    this.remove_symbol.onclick = function(){};
+    this.remove_symbol.tabIndex = 0;
+    this.remove_symbol.onkeypress = function(e){if(e.keyCode == 13){}};
+    this.remove.appendChild(this.remove_symbol);
+    this.content_pane.appendChild(this.remove);
+
+    // container for rows
+    this.rows = [];
+    this.row_count = 0;
+    this.selected_row = -1;
+
+    this.addRow("Default");
+    this.addRow("LevisTemplate");
+
 }
+
+CVTemplates.prototype.addRow = function(text){
+
+    var row = document.createElement("div");
+    row.className = "open-row row-ease open-row-hover";
+    row.style.top = (this.row_count * 34 + 4) + "px";
+    row.innerHTML = text;
+    row.parent_view = this;
+    row.row_num = this.row_count;
+    row.selected = false;
+    row.tabIndex = 0;
+    row.onclick = function(e){e.target.parent_view.select(e.target.row_num)}
+    row.onkeypress = function(e){if(e.keyCode == 13){e.target.parent_view.select(e.target.row_num)}}
+
+    this.table.appendChild(row);
+    this.row_count ++;
+    this.rows.push(row);
+
+}
+
+CVTemplates.prototype.select = function(row_num){
+
+    var row = this.rows[row_num];
+    if (row.selected == false){
+        row.className = "open-row row-ease selected-row";                                //highlight as selected
+        row.selected = true;
+        if (this.selected_row != -1){
+            this.rows[this.selected_row].className = "open-row row-ease open-row-hover"  //change selected to normal (only one selected at a time)
+            this.rows[this.selected_row].selected = false;
+        }
+        this.selected_row = row_num;
+    }
+    else{
+        row.className = "open-row row-ease open-row-hover";                              //back to normal
+        row.selected = false;
+        this.selected_row = -1;
+    }
+
+}
+
 //-----------------------------//
 
 
@@ -549,6 +783,17 @@ function SmallStatus(panel){
     this.x = "0";
     this.y = "85%";
 
+    // status box
+    this.box = document.createElement("div");
+    this.box.className = "status-container";
+    this.status_box = document.createElement("div");
+    this.status_box.className = "status-box";
+    this.box_center = document.createElement("div");
+    this.box_center.className = "status-center";
+    this.status_box.appendChild(this.box_center);
+    this.box.appendChild(this.status_box);
+    this.content_pane.appendChild(this.box); 
+
 }
 //-----------------------------//
 
@@ -565,10 +810,101 @@ function ControlButtons(panel){
     this.element.appendChild(this.content_pane);
     //------------------------------//
 
-    this.height = "30%";
+    this.height = "64px";
     this.width = "40%";
     this.x = "60%";
-    this.y = "70%";
+    this.y = "calc(100% - 64px)";
+    this.y = "-webkit-calc(100% - 64px)";
+
+    // create buttons
+    // button labels
+    this.edit_label = "Edit waveform";
+    this.download_label = "Download experiment";
+    this.save_label = "Save experiment";
+    this.run_label = "Enter run mode";
+
+    var buttons = this;
+
+    // edit button
+    this.edit = document.createElement("div");
+    this.edit.className = "btn";
+    this.edit.style.left = "0px";
+    this.edit.style.width = "calc((100% - 12px) / 4)";
+    this.edit_symbol = document.createElement("img");
+    this.edit_symbol.className = "edit-btn";
+    this.edit_symbol.style.width = "100%";
+    this.edit_symbol.onclick = function(){buttons.edit_waveform()};
+    this.edit_symbol.onmouseover = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = buttons.edit_label};
+    this.edit_symbol.onmouseout = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = ""};
+    this.edit_symbol.tabIndex = 0;
+    this.edit_symbol.onkeypress = function(e){if(e.keyCode == 13){buttons.edit_waveform()}};
+    this.edit.appendChild(this.edit_symbol);
+    this.content_pane.appendChild(this.edit);
+
+    // download button
+    this.download = document.createElement("div");
+    this.download.className = "btn";
+    this.download.style.left = "25%";
+    this.download.style.width = "calc((100% - 12px) / 4)";
+    this.download_symbol = document.createElement("img");
+    this.download_symbol.className = "download-btn";
+    this.download_symbol.style.width  = "100%";
+    this.download_symbol.onclick = function(){buttons.download_experiment()};
+    this.download_symbol.onmouseover = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = buttons.download_label};
+    this.download_symbol.onmouseout = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = ""};
+    this.download_symbol.tabIndex = 0;
+    this.download_symbol.onkeypress = function(e){if(e.keyCode == 13){buttons.download_experiment()}};
+    this.download.appendChild(this.download_symbol);
+    this.content_pane.appendChild(this.download);
+
+    // save button
+    this.save = document.createElement("div");
+    this.save.className = "btn";
+    this.save.style.left = "50%";
+    this.save.style.width = "calc((100% - 12px) / 4)";
+    this.save_symbol = document.createElement("img");
+    this.save_symbol.className = "save-btn";
+    this.save_symbol.style.width  = "100%";
+    this.save_symbol.onclick = function(){buttons.save_experiment()};
+    this.save_symbol.onmouseover = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = buttons.save_label};
+    this.save_symbol.onmouseout = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = ""};
+    this.save_symbol.tabIndex = 0;
+    this.save_symbol.onkeypress = function(e){if(e.keyCode == 13){buttons.save_experiment()}};
+    this.save.appendChild(this.save_symbol);
+    this.content_pane.appendChild(this.save);
+
+    // run button
+    this.run = document.createElement("div");
+    this.run.className = "btn";
+    this.run.style.right = "0px";
+    this.run.style.width = "calc((100% - 12px) / 4)";
+    this.run_symbol = document.createElement("img");
+    this.run_symbol.className = "run-btn";
+    this.run_symbol.style.width  = "100%";
+    this.run_symbol.onclick = function(){buttons.run_experiment()};
+    this.run_symbol.onmouseover = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = buttons.run_label};
+    this.run_symbol.onmouseout = function(){buttons.panel.gui.panels[buttons.panel.gui.config.views["SmallStatus"]].view.box_center.innerHTML = ""};
+    this.run_symbol.tabIndex = 0;
+    this.run_symbol.onkeypress = function(e){if(e.keyCode == 13){buttons.run_experiment()}};
+    this.run.appendChild(this.run_symbol);
+    this.content_pane.appendChild(this.run);
 
 }
+
+ControlButtons.prototype.edit_waveform = function() {
+    client.gui.newConfig(editor, [client.gui.config.name, "open"]);
+}
+
+ControlButtons.prototype.download_experiment = function() {
+}
+
+ControlButtons.prototype.save_experiment = function() {
+    httpcomm.eihttp.save_experiment();
+    alert("saved");
+}
+
+ControlButtons.prototype.run_experiment = function() {
+    client.gui.newConfig(run_exp, [client.gui.config.name]);
+}
+
 //-----------------------------//

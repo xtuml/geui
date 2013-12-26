@@ -155,11 +155,42 @@ Styling sheet for X8 GUI
 */
 
 /* button style classes */
+.small-btn {
+    position: absolute;
+    height: 33px;
+    width: 33px;
+    font-size: 20px;
+    line-height: 33px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #E5E5E5, #A5A5A5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #E5E5E5, #A5A5A5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #E5E5E5, #A5A5A5);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #666666;
+    border-radius: 10px;
+}
+
+.small-btn:active {
+    background: #000000;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#A5A5A5), to(#E5E5E5)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #A5A5A5, #E5E5E5); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient(top, #A5A5A5, #E5E5E5); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #A5A5A5, #E5E5E5); /* IE10 */
+    background-image:      -o-linear-gradient(top, #A5A5A5, #E5E5E5); /* Opera 11.10+ */
+    background-image:         linear-gradient(top, #A5A5A5, #E5E5E5);
+    background-position: center;
+    background-repeat: no-repeat;
+}
 
 .btn {
     position: absolute;
     height: 48px;
     width: 48px;
+    font-size: 29px;
+    line-height: 48px;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#E5E5E5), to(#A5A5A5)); /* Saf4+, Chrome */
     background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
     background-image:    -moz-linear-gradient(top, #E5E5E5, #A5A5A5); /* FF3.6+ */
@@ -186,8 +217,8 @@ Styling sheet for X8 GUI
 
 .add-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/add_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -201,8 +232,8 @@ Styling sheet for X8 GUI
 
 .delete-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/delete_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -216,8 +247,8 @@ Styling sheet for X8 GUI
 
 .trash-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/trash_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -231,8 +262,8 @@ Styling sheet for X8 GUI
 
 .save-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/save_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -244,15 +275,10 @@ Styling sheet for X8 GUI
     background-image: url(../img/save.png);
 }
 
-.run-btn:hover,
-.run-btn:focus {
-    background-image: url(../img/run.png);
-}
-
 .back-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/back_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -281,8 +307,8 @@ Styling sheet for X8 GUI
 
 .open-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/open_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -296,8 +322,8 @@ Styling sheet for X8 GUI
 
 .upload-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/upload_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -311,8 +337,8 @@ Styling sheet for X8 GUI
 
 .new-btn {
     position: absolute;
-    height: 48px;
-    width: 48px;
+    height: 100%;
+    width: 100%;
     background-image: url(../img/new_inactive.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -322,6 +348,81 @@ Styling sheet for X8 GUI
 .new-btn:hover,
 .new-btn:focus {
     background-image: url(../img/new.png);
+}
+
+.edit-btn {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: url(../img/graph_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.edit-btn:hover,
+.edit-btn:focus {
+    background-image: url(../img/graph.png);
+}
+
+.download-btn {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: url(../img/download_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.download-btn:hover,
+.download-btn:focus {
+    background-image: url(../img/download.png);
+}
+
+.run-btn {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: url(../img/run_inactive.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+.run-btn:hover,
+.run-btn:focus {
+    background-image: url(../img/run.png);
+}
+
+.text-btn {                  
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: black;        
+    font-size: inherit;       
+    font-family: Arial;    
+    /*font-weight: bold;*/
+    text-align: center;    
+    line-height: inherit;     
+    cursor: default;       
+    -moz-user-select: -moz-none;    
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;     
+}
+
+.blue-text:hover {
+    color: #182B93;
+}
+
+.red-text:hover {
+    color: #B70000;
+}
+
+.half-img {
+    background-size: 50%;
 }
 
 /* Waveform table style classes */
@@ -494,7 +595,8 @@ Styling sheet for X8 GUI
     position: absolute;
     height: 26px;
     width: 90%;
-    top: 9px;
+    top: calc(50% - 13px);
+    top: -webkit-calc(50% - 13px);
     left: 5%;
 }
 
@@ -544,9 +646,39 @@ Styling sheet for X8 GUI
 
 /* Dialog style classes */
 
-.label {
+.small-label {
     position: absolute;
     width: 100%;
+    height: 35px;
+    padding: 4px;
+    font-size: 25px;
+    font-family: Arial;
+    color: white;
+    text-shadow: 0px 0px 5px black;
+    cursor: default;
+}
+
+.parameters-table {
+    position: absolute;
+    top: 35px;
+    left: 0px;
+    height: calc(100% - 74px);
+    height: -webkit-calc(100% - 74px);
+    width: 100%;
+    background: rgba(44,52,93,0.5);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    border: 1px solid silver;
+    border-radius: 10px;
+}
+
+.label {
+    position: absolute;
     height: 50px;
     padding: 4px;
     font-size: 35px;
@@ -554,6 +686,10 @@ Styling sheet for X8 GUI
     color: white;
     text-shadow: 0px 0px 5px black;
     cursor: default;
+}
+
+.italic {
+    font-style: italic;
 }
 
 .open-table {
@@ -642,6 +778,66 @@ Styling sheet for X8 GUI
     cursor: default;
     line-height: 30px;
     text-indent: 15px;
+}
+
+.status-container {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+}
+
+.status-center {
+    position: absolute;
+    top: calc(50% - 15px);
+    top: -webkit-calc(50% - 15px);
+    left: 0px;
+    width: 100%;
+    height: 30px;
+    font-size: 30px;
+    line-height: 30px;
+    color: #7BEC60;        
+    font-family: Courier New;    
+    text-align: center;    
+    cursor: default;       
+    -moz-user-select: -moz-none;    
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;     
+    text-shadow: 0px 0px 30px #7BEC60;
+}
+
+.status-box {                  
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid silver;
+    background: rgba(0,0,0,0.8);
+}
+
+/* CV Parameters styling */
+.parameter-cell {
+    position: absolute;
+    height: 16.6%;
+    width: 50%;
+}
+
+.parameter-label {
+    position: absolute;
+    width: 90%;
+    height: 25px;
+    left: 5%;
+    padding: 4px;
+    font-size: 18px;
+    line-height: 25px;
+    font-family: Arial;
+    color: white;
+    text-shadow: 0px 0px 5px black;
+    cursor: default;
 }
 
 /* Spinner styling */
