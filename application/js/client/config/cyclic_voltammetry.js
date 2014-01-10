@@ -291,7 +291,7 @@ function CVParameters(panel){
     this.y = "0px";
 
     // attributes
-    this.label_text = "CV Parameters";
+    this.label_text = "Cyclic Voltammetry Parameters";
 
     //object for checking input format
     this.validate_methods = {
@@ -320,21 +320,9 @@ function CVParameters(panel){
             format: "real"
         },
         {
-            placeholder: "Number of segments",
-            label: "Number of segments",
-            units: "segs",
-            format: "integer"
-        },
-        {
             placeholder: "Switching potential 1",
             label: "Switching potential 1",
             units: "mV",
-            format: "real"
-        },
-        {
-            placeholder: "Scan rate",
-            label: "Scan rate",
-            units: "mV/s",
             format: "real"
         },
         {
@@ -344,24 +332,73 @@ function CVParameters(panel){
             format: "real"
         },
         {
-            placeholder: "Quiet time",
-            label: "Quiet time",
-            units: "s",
-            format: "positive_real"
-        },
-        {
             placeholder: "Final potential",
             label: "Final potential",
             units: "mV",
             format: "real"
         },
         {
-            placeholder: "Full scale (+/-)",
-            label: "Full scale (+/-)",
+            placeholder: "Number of segments",
+            label: "Number of segments",
+            units: "segs",
+            format: "integer"
+        },
+        {
+            placeholder: "Scan rate",
+            label: "Scan rate",
+            units: "mV/s",
+            format: "real"
+        },
+        {
+            placeholder: "Quiet time",
+            label: "Quiet time",
             units: "s",
             format: "positive_real"
+        },
+        {
+            label: "Full scale (+/-)",
+            def: 2                          // default value (index in dropdown_options)
         }
-    ]
+    ];
+
+    this.dropdown_options = [
+        {
+            value: "10",
+            units: "mA"
+        },
+        {
+            value: "1",
+            units: "mA"
+        },
+        {
+            value: "100",
+            units: "uA"
+        },
+        {
+            value: "10",
+            units: "uA"
+        },
+        {
+            value: "1",
+            units: "uA"
+        },
+        {
+            value: "100",
+            units: "nA"
+        },
+        {
+            value: "10",
+            units: "nA"
+        },
+        {
+            value: "1",
+            units: "nA"
+        },
+    ];
+
+    this.button_labels = ["Filter/F.S.", "MR", "Cell", "IR-COMP"];
+
+    this.checkbox_labels = ["Apply Open Circuit Potential for Initial E", "Run on External Trigger"];
 
     // add components
     // label
@@ -377,11 +414,21 @@ function CVParameters(panel){
 
     // parameters
     this.parameters = []
-    for (var i = 0; i < 8; i++) {
+
+    var cvparameters = this;
+
+    // add fields
+    for (var i = 0; i < 7; i++) {
         var parameter = document.createElement("div");
         parameter.className = "parameter-cell"
-        parameter.style.left = (i % 2 * 50) + "%"
-        parameter.style.top = (Math.floor(i / 2) * 16.6) + "%"
+        if (i < 4) {
+            parameter.style.left = "0%";
+            parameter.style.top = (i * 16.6) + "%";
+        }
+        else {
+            parameter.style.left = "50%";
+            parameter.style.top = ((i - 4) * 16.6) + "%";
+        }
 
         var parameter_title = document.createElement("div");
         parameter_title.className = "parameter-label";
@@ -416,6 +463,135 @@ function CVParameters(panel){
         this.table.appendChild(parameter);
     }
 
+    // add drop down menu
+    this.dropdown = document.createElement("div");
+    this.dropdown.className = "parameter-cell"
+    this.dropdown.style.left = "50%";
+    this.dropdown.style.top = "49.8%";
+    this.dropdown.opened = false;
+
+    var dropdown_title = document.createElement("div");
+    dropdown_title.className = "parameter-label";
+    dropdown_title.style.top = "calc(50% - 27px)";
+    dropdown_title.style.top = "-webkit-calc(50% - 27px)";
+    dropdown_title.innerHTML = this.value_format[7].label;
+
+    // create options
+    for (var k = 0; k < this.dropdown_options.length; k++) {
+        var input_wrapper = document.createElement("div");
+        input_wrapper.className = "input-wrapper";
+        input_wrapper.style.top = "calc(50% + 1px)";
+        input_wrapper.style.top = "-webkit-calc(50% + 1px)";
+        input_wrapper.style.zIndex = 1;
+        var input = document.createElement("div");
+        input.className = "value-input";
+        input.style.cursor = "default";
+        input.innerHTML = this.dropdown_options[k].value;
+        var label = document.createElement("div");
+        label.className = "input-label";
+        label.innerHTML = this.dropdown_options[k].units;
+        input_wrapper.appendChild(input);
+        input_wrapper.appendChild(label);
+        this.dropdown.appendChild(input_wrapper);
+    }
+
+    // create display
+    var dropdown_input_wrapper = document.createElement("div");
+    dropdown_input_wrapper.className = "input-wrapper";
+    dropdown_input_wrapper.style.top = "calc(50% + 1px)";
+    dropdown_input_wrapper.style.top = "-webkit-calc(50% + 1px)";
+    dropdown_input_wrapper.tabIndex = 0;
+    dropdown_input_wrapper.style.zIndex = 1;
+
+    dropdown_input_wrapper.onclick = function(e){cvparameters.drop()};
+    dropdown_input_wrapper.onkeypress = function(e){if(e.keyCode == 13){cvparameters.dropi()}};
+
+    var dropdown_input = document.createElement("div");
+    dropdown_input.className = "value-input";
+    dropdown_input.style.cursor = "default";
+    dropdown_input.innerHTML = this.dropdown_options[this.value_format[7].def].value;
+    var dropdown_label = document.createElement("div");
+    dropdown_label.className = "input-label";
+    dropdown_label.innerHTML = this.dropdown_options[this.value_format[7].def].units;
+    dropdown_input_wrapper.appendChild(dropdown_input);
+    dropdown_input_wrapper.appendChild(dropdown_label);
+    this.dropdown.appendChild(dropdown_title);
+    this.dropdown.appendChild(dropdown_input_wrapper);
+
+    this.parameters.push(this.dropdown);
+    this.table.appendChild(this.dropdown);
+
+
+    // add checkboxes
+    for (var j = 0; j < 2; j++) {
+        var parameter = document.createElement("div");
+        parameter.className = "parameter-cell"
+        parameter.style.left = "0%";
+        parameter.style.top = ((4 + j) * 16.6) + "%";
+
+        var parameter_title = document.createElement("div");
+        if (j < 1) {
+            parameter_title.className = "checkbox-label two-lines";
+        }
+        else {
+            parameter_title.className = "checkbox-label one-line";
+        }
+        parameter_title.innerHTML = this.checkbox_labels[j];
+        parameter.appendChild(parameter_title);
+
+        var checkbox = document.createElement("div");
+        checkbox.className = "checkbox";
+        checkbox.style.right = "5%";
+        checkbox.style.top = "calc(50% - 12px)";
+        checkbox.style.top = "-webkit-calc(50% - 12px)";
+        checkbox.tabIndex = 0;
+        var check = document.createElement("img");
+        check.className = "check";
+        check.style.display = "none";
+        checkbox.onclick = function(e){cvparameters.check(e.target)};
+        checkbox.onkeypress = function(e){if(e.keyCode == 13){cvparameters.check(e.target)}};
+        checkbox.appendChild(check);
+        parameter.appendChild(checkbox);
+
+        this.parameters.push(parameter);
+        this.table.appendChild(parameter);
+    }
+
+    // add buttons
+    var buttons = document.createElement("div");
+    buttons.className = "parameter-cell"
+    buttons.style.left = "50%";
+    buttons.style.top = "66.6%";
+    buttons.style.height = "33.3%";
+
+    for (var b = 0; b < 4; b++) {
+        var parameter_button = document.createElement("div");
+        parameter_button.className = "btn small-text";
+        parameter_button.style.zIndex = 0;
+
+        parameter_button.style.width = "42.5%";
+        parameter_button.style.left = ((b % 2) * 47.5) + 5 + "%";
+        if (b < 2) {
+            parameter_button.style.top = "calc((100% - 96px) / 3)";
+            parameter_button.style.top = "-webkit-calc((100% - 96px) / 3)";
+        }
+        else {
+            parameter_button.style.top = "calc((((100% - 96px) / 3) * 2) + 48px)";
+            parameter_button.style.top = "-webkit-calc((((100% - 96px) / 3) * 2) + 48px)";
+        }
+
+        var parameter_button_symbol = document.createElement("div");
+        parameter_button_symbol.className = "text-btn blue-text";
+        parameter_button_symbol.innerHTML = this.button_labels[b];
+        parameter_button_symbol.onclick = function(){};
+        parameter_button_symbol.tabIndex = 0;
+        parameter_button_symbol.onkeypress = function(e){if(e.keyCode == 13){}};
+        parameter_button.appendChild(parameter_button_symbol);
+        buttons.appendChild(parameter_button);
+    }
+
+    this.parameters.push(buttons);
+    this.table.appendChild(buttons);
 
     // apply button
     this.apply = document.createElement("div");
@@ -433,6 +609,38 @@ function CVParameters(panel){
     this.content_pane.appendChild(this.apply);
 
 
+}
+
+// opens and closes dropdown menu
+CVParameters.prototype.drop = function(){
+    if (this.dropdown.open) {
+        for (var i = 0; i < this.dropdown.childNodes.length - 2; i++) {
+            this.dropdown.childNodes[i].style.top = "calc(50% + 1px)";
+            this.dropdown.childNodes[i].style.top = "-webkit-calc(50% + 1px)";
+            this.dropdown.childNodes[i].style.top = "-webkit-calc(50% + 1px)";
+        }
+        this.dropdown.open = false;
+    }
+    else {
+        for (var i = 0; i < this.dropdown.childNodes.length - 2; i++) {
+            this.dropdown.childNodes[i].style.top = "calc(50% + " + (1 + (i * 26)) + "px)";
+            this.dropdown.childNodes[i].style.top = "-webkit-calc(50% + " + (1 + (i * 26)) + "px)";
+        }
+        this.dropdown.open = true;
+    }
+}
+
+// checks and unchecks checkboxes
+CVParameters.prototype.check = function(check){
+    if (check.className == "checkbox") {
+        check = check.childNodes[0];
+    }
+    if (check.style.display == "none") {
+        check.style.display = "block";
+    }
+    else {
+        check.style.display = "none";
+    }
 }
 
 //validates the format of the numbers only
