@@ -7,14 +7,33 @@ import wave
 # data model for Cyclic Voltammetry
 class CV(experiment.Experiment):
 
+    # ===================================== CV PARAMETERS ===================================== #
+    # Initial Potential         -->     name: init,         value: int,         unit: minstep
+    # Switching Potential 1     -->     name: switch1,      value: int,         unit: minstep
+    # Switching Potential 2     -->     name: switch2,      value: int,         unit: minstep
+    # Final Potential           -->     name: final,        value: int,         unit: minstep
+    # Number of Segments        -->     name: segs,         value: int,         unit:
+    # Scan Rate                 -->     name: rate,         value: int,         unit: minstep/s
+    # Quiet Time                -->     name: quiet,        value: int,         unit: s
+    # ========================================================================================= #
+
     def __init__(self, name=""):
         experiment.Experiment.__init__(self, name)
         self.graph = Graph()
         self.graph.experiment = self
-        self.graph.add_pattern([0.0, 0.0, 0.0, 10.0, 1])
+        self.graph.add_pattern([0.0, 0.0, 0.0, 10.0, 1])        # initialize CV with one segment 10s long, from 0mV to 0mV
         self.save()
         t = threading.currentThread()
         t.experiment_list.add_experiment(name)
+
+    # takes a dictionary of name/value pairs of the parameters
+    def set_parameters(self, parameters):
+        raise NotImplementedError
+
+    # returns a dictionary of name/value pairs of the parameters
+    def get_parameters(self):
+        raise NotImplementedError
+
 
 # Graph as a whole as defined by the user
 class Graph(experiment.Graph):

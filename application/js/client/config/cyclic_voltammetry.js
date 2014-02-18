@@ -454,8 +454,8 @@ function CVParameters(panel){
         var parameter_label = document.createElement("div");
         parameter_label.className = "input-label";
         parameter_label.innerHTML = this.value_format[i].units;
-        parameter_input_wrapper.appendChild(parameter_input);
         parameter_input_wrapper.appendChild(parameter_label);
+        parameter_input_wrapper.appendChild(parameter_input);
         parameter.appendChild(parameter_title);
         parameter.appendChild(parameter_input_wrapper);
 
@@ -625,6 +625,9 @@ CVParameters.prototype.drop = function(){
         for (var i = 0; i < this.dropdown.childNodes.length - 2; i++) {
             this.dropdown.childNodes[i].style.top = "calc(50% + " + (1 + (i * 26)) + "px)";
             this.dropdown.childNodes[i].style.top = "-webkit-calc(50% + " + (1 + (i * 26)) + "px)";
+            for (var j = 0; j < this.dropdown.childNodes[i].childNodes.length; j++) {
+                this.dropdown.childNodes[i].childNodes[j].style.borderRadius = "0px";
+            }
         }
         this.dropdown.open = true;
     }

@@ -630,6 +630,9 @@ Styling sheet for X8 GUI
     top: -webkit-calc(50% - 13px);
     left: 5%;
     line-height: 26px;
+    /*border: 1px solid silver;
+    border-radius: 5px;
+    overflow: hidden;*/
 }
 
 .value-input {
@@ -638,7 +641,7 @@ Styling sheet for X8 GUI
     height: -webkit-calc(100% - 4px);
     width: calc(100% - 56px);
     width: -webkit-calc(100% - 56px);
-    left: 3px;
+    left: 0px;
     border: 1px solid silver;
     -webkit-border-top-left-radius: 5px;
     -webkit-border-bottom-left-radius: 5px;
@@ -701,8 +704,8 @@ Styling sheet for X8 GUI
     height: -webkit-calc(100% - 74px);
     width: 100%;
     background: rgba(44,52,93,0.5);
-    overflow-y: scroll;
-    overflow-x: hidden;
+    /*overflow-y: scroll;
+    overflow-x: hidden;*/
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
