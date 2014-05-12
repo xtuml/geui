@@ -1,4 +1,9 @@
-# base class for threads in geui
+# --------------------------------------------------------------------------------------------- #
+#   thread.py                                                                                   #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * Thread                                                                                #
+# --------------------------------------------------------------------------------------------- #
 
 import threading
 import Queue
@@ -6,6 +11,19 @@ from util import call
 import time
 import logging
 
+# --------------------------------------------------------------------------------------------- #
+#   Thread class                                                                                #
+#       * Subclass of Thread (Python built in version)                                          #
+#                                                                                               #
+#   The Thread class provides a template for how multithreading is used in this application.    #
+#   Each thread has a thread safe queue in which other threads can place function calls.        #
+#   The thread initailizes, then begins a loop until it is marked for termination. In the loop  #
+#   It checks the queue for commands, then runs the check() method to allow for other loop      #
+#   functionality. When it is marked for termination, it finalizes and then terminates.         #
+#   Threads can be either blocking or non-blocking. Blocking threads will check the command     #
+#   queue and wait if there is no command. Non-blocking threads will check the queue, but if    #
+#   there is no command, they will continue the loop after sleeping for 10 milliseconds.        #
+# --------------------------------------------------------------------------------------------- #
 class Thread(threading.Thread):
 
     # threading attributes
@@ -65,3 +83,4 @@ class Thread(threading.Thread):
     # function to be called before termination
     def finalize(self):
         pass
+# --------------------------------------------------------------------------------------------- #

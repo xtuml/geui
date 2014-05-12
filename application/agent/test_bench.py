@@ -1,7 +1,20 @@
-import thread
+# --------------------------------------------------------------------------------------------- #
+#   test_bench.py                                                                               #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * TestBench                                                                             #
+# --------------------------------------------------------------------------------------------- #
 
+import thread
 import threading
 
+# --------------------------------------------------------------------------------------------- #
+#   TestBench class                                                                             #
+#       * Subclass of Thread                                                                    #
+#                                                                                               #
+#   The TestBench class is designed to run routines to test certain parts of the application.   #
+#   It is accessed through the CommandLine class.                                               #
+# --------------------------------------------------------------------------------------------- #
 class TestBench(thread.Thread):
 
     # reference to threads
@@ -60,3 +73,4 @@ class TestBench(thread.Thread):
 
             # turn off data listening
             self.httpcomm.q.put([self.httpcomm.data, [], "stop"])
+# --------------------------------------------------------------------------------------------- #

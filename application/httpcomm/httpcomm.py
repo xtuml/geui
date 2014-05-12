@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------------------------- #
+#   httpcomm.py                                                                                 #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * HTTPcomm                                                                              #
+# --------------------------------------------------------------------------------------------- #
+
 import agent.thread
 import Queue
 import server
@@ -5,6 +12,15 @@ import json
 
 import eihttp
 
+# --------------------------------------------------------------------------------------------- #
+#   HTTPcomm class                                                                              #
+#       * Subclass of Thread                                                                    #
+#       * Implements EIhttp interface                                                           #
+#                                                                                               #
+#   The HTTPcomm class takes care of all communication between the Agent and the GUI using a    #
+#   small web server (web.py). All commands are just added to the command queue and they are    #
+#   automatically sent.                                                                         #
+# --------------------------------------------------------------------------------------------- #
 class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
 
     # reference variable for agent
@@ -172,3 +188,4 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
     # update segment command sent from GUI 
     def update_segment(self, start_value, end_value, rate, duration, repeat_value, position):
         self.agent.q.put([self.agent.update_segment, start_value, end_value, rate, duration, repeat_value, position])
+# --------------------------------------------------------------------------------------------- #

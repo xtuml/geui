@@ -1,7 +1,20 @@
+# --------------------------------------------------------------------------------------------- #
+#   command.py                                                                                  #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * CommandLine                                                                           #
+# --------------------------------------------------------------------------------------------- #
+
 import threading
 import thread
 
-# thread for executing commands
+# --------------------------------------------------------------------------------------------- #
+#   CommandLine class                                                                           #
+#       * Subclass of Thread                                                                    #
+#                                                                                               #
+#   CommandLine is the user's access to the agent application. It blocks, waiting for commands  #
+#   from the console.                                                                           #
+# --------------------------------------------------------------------------------------------- #
 class CommandLine(thread.Thread):
     
     commands = [
@@ -31,11 +44,13 @@ class CommandLine(thread.Thread):
                 t.q.put([t.kill_thread])
             self.server.app.stop()
 
+    # override from Thread class    (run on start up)
     def initialize(self):
         print "Type 'help' for command list."
 
+    # override from Thread class    (run every iteration of loop)
     def check(self):
-        x = raw_input()
+        x = raw_input()             # block for a command
         if x == "run":
             if self.agent is not None:
                 self.agent.q.put([self.agent.run_experiment])
@@ -56,3 +71,4 @@ class CommandLine(thread.Thread):
                 print command
         else:
             print "No command '" + x + "'"
+# --------------------------------------------------------------------------------------------- #

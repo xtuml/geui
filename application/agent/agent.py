@@ -1,4 +1,10 @@
-# Main server side application
+# --------------------------------------------------------------------------------------------- #
+#   agent.py                                                                                    #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * Agent                                                                                 #
+#       * ExperimentList                                                                        #
+# --------------------------------------------------------------------------------------------- #
 
 from util import toint
 import time
@@ -13,6 +19,15 @@ import gnosis.xml.pickle
 import thread
 import threading
 
+# --------------------------------------------------------------------------------------------- #
+#   Agent class                                                                                 #
+#       * Subclass of Thread                                                                    #
+#       * Implements the eibus and eihttp interfaces                                            #
+#                                                                                               #
+#   Agent is the hub of the entire server side application. It is responsible for maintaining   #
+#   the current experiment, saving and opening experiments, as well as all control and          #
+#   security oriented functionality.                                                            #
+# --------------------------------------------------------------------------------------------- #
 class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
     # references to other threads
@@ -37,6 +52,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
             self.experiment_list = ExperimentList()
 
     # called when thread is terminated
+    # overwriting from Thread class
     def finalize(self):
         if (self.experiment_list.changed):
             # persist experiment list
@@ -283,12 +299,21 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
     # send GUI indication that the upload was a success
     def upload_success(self, name):
         pass
+# --------------------------------------------------------------------------------------------- #
 
-# object for keeping names of experiments
+
+# --------------------------------------------------------------------------------------------- #
+#   ExperimentList class                                                                        #
+#                                                                                               #
+#   ExperimentList holds the names of the available experiment files. When a new file is        #
+#   created, it is added to the list. When the program terminates, the ExperimentList is        #
+#   persisted in XML format in experiments/experiments.xml.                                     #
+# --------------------------------------------------------------------------------------------- #
 class ExperimentList:
 
-    names = []
-    changed = None
+    names = []                          # list of strings identifying file names
+    changed = True                      # 'dirty bit' flag for marking whether or not the xml
+                                        # file needs to be revised
 
     def __init__(self, names=[]):
         self.names = names
@@ -301,3 +326,4 @@ class ExperimentList:
     def remove_experiment(self, name):
         self.names.pop(self.names.index(name))
         self.changed = True
+# --------------------------------------------------------------------------------------------- #

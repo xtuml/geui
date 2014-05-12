@@ -1,3 +1,11 @@
+# --------------------------------------------------------------------------------------------- #
+#   experiment.py                                                                               #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * Experiment                                                                            #
+#       * Graph                                                                                 #
+# --------------------------------------------------------------------------------------------- #
+
 import threading
 import httpcomm.eihttp
 import wave
@@ -6,11 +14,28 @@ import device
 import conditions
 import gnosis.xml.pickle
 
-# data model for an experiment
+# --------------------------------------------------------------------------------------------- #
+#   Experiment class                                                                            #
+#                                                                                               #
+#   The Experiment class is an object representing one distinct experiment that can be run on   #
+#   the device. It consists of:                                                                 #
+#                                                                                               #
+#       * Graph:                GUI friendly representation of the waveform     (varies)        #
+#       * InitialConditions:    Header for the experiment                                       #
+#       * Wave:                 EC freindly representation of the waveform      (standardized)  #
+#       * DataAcquisition:      Specification for taking data                                   #
+#       * DataFile:             Object in which to save returned data                           #
+#       * Device:               Reference to the device being used                              #
+#                                                                                               #
+#   The Experiment class is abstract. Each expiriment instance must be an instance of one of    #
+#   the more specific experiment subclasses. Each experiment subclass must implement the        #
+#   set_parameters() and get_parameters() methods which are used when making changes to the     #
+#   experiment through the GUI.                                                                 #
+# --------------------------------------------------------------------------------------------- #
 class Experiment:
 
     name = ""                           # name of the experiment
-    experimentType = ""                 # experiement type
+    experimentType = ""                 # experiement type                          (CV, Square wave...)
     tick = 0                            # experiment tick. counts of device tick
 
     agent = None                        # reference to the agent
@@ -53,7 +78,26 @@ class Experiment:
         save_file.write(gnosis.xml.pickle.dumps(self))
         save_file.close()
 
-# superclass to define user viewable waveform graph
+    # takes a dictionary of name/value pairs of the parameters
+    def set_parameters(self, parameters):
+        raise NotImplementedError
+
+    # returns a dictionary of name/value pairs of the parameters
+    def get_parameters(self):
+        raise NotImplementedError
+# --------------------------------------------------------------------------------------------- #
+
+
+# --------------------------------------------------------------------------------------------- #
+#   Graph class                                                                                 #
+#                                                                                               #
+#   The Graph class is an object representing the GUI friendly, visual form of the waveform.    #
+#   It varies greatly in implementation from experiment to experiment. The Experiment class is  #
+#   also abstract. Each experiment must have a graph that inheirits from Graph and implements   #
+#   the methods get_points() and translate(). The get_points() method returns a set of (x, y)   #
+#   coordinates for the GUI to graph. The translate() method converts the graph into the        #
+#   standardized Wave definition to be downloaded to the device.                                #
+# --------------------------------------------------------------------------------------------- #
 class Graph:
 
     def get_points(self):
@@ -61,3 +105,4 @@ class Graph:
 
     def translate(self, wave_type):
         raise NotImplementedError
+# --------------------------------------------------------------------------------------------- #

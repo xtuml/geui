@@ -1,5 +1,19 @@
-# function for coverting an array of arguments into separate arguments
-# the first item in the array is a function call, all others are arguments
+# --------------------------------------------------------------------------------------------- #
+#   util.py                                                                                     #
+#                                                                                               #
+#   Functions defined in this file:                                                             #
+#       * call                                                                                  #
+#       * tobytes                                                                               #
+#       * toint                                                                                 #
+# --------------------------------------------------------------------------------------------- #
+
+
+# --------------------------------------------------------------------------------------------- #
+#   call function                                                                               #
+#                                                                                               #
+#   The call function takes an array of arguments, the first being a function pointer and the   #
+#   rest being arguments and calls the function with those arguments.                           #
+# --------------------------------------------------------------------------------------------- #
 def call(args):
 
     # call a function with no arguments
@@ -32,8 +46,15 @@ def call(args):
 
     else:
         pass
+# --------------------------------------------------------------------------------------------- #
 
-# function to convert an integer to an array of bytes (in integer form 0 <= num < 256)
+
+# --------------------------------------------------------------------------------------------- #
+#   tobytes function                                                                            #
+#                                                                                               #
+#   The tobytes function converts an integer into a string of bytes. It can be either signed    #
+#   (2's complement) or unsigned, and supports little and big endian.                           #
+# --------------------------------------------------------------------------------------------- #
 def tobytes(value, num_bytes, signed=False, little_endian=True):
     # num_bytes has a max value of 4 bytes. After that, I'm not sure what Python does with "long" values
     if (num_bytes > 4):
@@ -61,8 +82,15 @@ def tobytes(value, num_bytes, signed=False, little_endian=True):
             i += 1
 
         return byte_array
+# --------------------------------------------------------------------------------------------- #
 
-# function to convert an array of bytes into an integer
+
+# --------------------------------------------------------------------------------------------- #
+#   toint function                                                                              #
+#                                                                                               #
+#   The toint function converts a byte string into an integer. It can be either signed          #
+#   (2's complement) or unsigned, and supports little and big endian.                           #
+# --------------------------------------------------------------------------------------------- #
 def toint(byte_array, signed=False, little_endian=True):
     value = 0
     n = 0
@@ -80,3 +108,4 @@ def toint(byte_array, signed=False, little_endian=True):
         value *= -1
 
     return value
+# --------------------------------------------------------------------------------------------- #

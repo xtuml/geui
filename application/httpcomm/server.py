@@ -1,7 +1,21 @@
+# --------------------------------------------------------------------------------------------- #
+#   server.py                                                                                   #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * Server                                                                                #
+# --------------------------------------------------------------------------------------------- #
+
 import web
 from requests import *
 import threading
 
+# --------------------------------------------------------------------------------------------- #
+#   Server class                                                                                #
+#       * Subclass of Thread                                                                    #
+#                                                                                               #
+#   The Server class is a threaded wrapper for the web.py server. It links the urls from the    #
+#   http requests to custom behavior.                                                           #
+# --------------------------------------------------------------------------------------------- #
 class Server(threading.Thread):
     
     app = None
@@ -43,3 +57,4 @@ class Server(threading.Thread):
     # method to initialize the server
     def run(self):
         self.app.run()
+# --------------------------------------------------------------------------------------------- #

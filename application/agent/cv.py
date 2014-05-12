@@ -1,10 +1,27 @@
+# --------------------------------------------------------------------------------------------- #
+#   cv.py                                                                                       #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * CV                                                                                    #
+#       * Graph                                                                                 #
+#       * Pattern                                                                               #
+#       * Segment                                                                               #
+#       * Vertex                                                                                #
+# --------------------------------------------------------------------------------------------- #
+
 import threading
 import experiment
 import data_acquisition
 import conditions
 import wave
 
-# data model for Cyclic Voltammetry
+# --------------------------------------------------------------------------------------------- #
+#   CV class                                                                                    #
+#       * Subclass of Experiment                                                                #
+#                                                                                               #
+#   The CV class is a specific form of experiment. It has repeating ramps defining it's         #
+#   potential waveform. See documentation for more information.                                 #
+# --------------------------------------------------------------------------------------------- #
 class CV(experiment.Experiment):
 
     # ===================================== CV PARAMETERS ===================================== #
@@ -33,9 +50,16 @@ class CV(experiment.Experiment):
     # returns a dictionary of name/value pairs of the parameters
     def get_parameters(self):
         raise NotImplementedError
+# --------------------------------------------------------------------------------------------- #
 
 
-# Graph as a whole as defined by the user
+# --------------------------------------------------------------------------------------------- #
+#   Graph class                                                                                 #
+#       * Subclass of Graph                                                                     #
+#                                                                                               #
+#   The Graph class is a specific type of graph unique to the CV type experiment. It is defined #
+#   by patterns and segments and points. See documentation for further information.             #
+# --------------------------------------------------------------------------------------------- #
 class Graph(experiment.Graph):
     
     experiment = None
@@ -189,8 +213,15 @@ class Graph(experiment.Graph):
 
         if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
             self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.load_table, param_list, "pattern"])
+# --------------------------------------------------------------------------------------------- #
 
-# Patterns that make up the graph
+
+# --------------------------------------------------------------------------------------------- #
+#   Pattern class                                                                               #
+#                                                                                               #
+#   The Pattern class defines a distinct repeated section of the graph. Each graph has at least #
+#   one pattern and each pattern has at least one segment.                                      #
+# --------------------------------------------------------------------------------------------- #
 class Pattern:
     
     parent = None
@@ -279,8 +310,15 @@ class Pattern:
 
         if self.parent is not None and self.parent.experiment is not None and self.parent.experiment.agent is not None and self.parent.experiment.agent.httpcomm is not None:
             self.parent.experiment.agent.httpcomm.q.put([self.parent.experiment.agent.httpcomm.load_table, param_list, "segment"])
+# --------------------------------------------------------------------------------------------- #
 
-# segments that make up patterns
+
+# --------------------------------------------------------------------------------------------- #
+#   Segment class                                                                               #
+#                                                                                               #
+#   The Segment class defines one linear part of a pattern. It has a start and end value,       #
+#   slope, duration, and a pair of verticies.                                                   #
+# --------------------------------------------------------------------------------------------- #
 class Segment:
 
     parent = None
@@ -328,7 +366,15 @@ class Segment:
             return self.parent.contents[seg_position - 1].calculate_start_time() + self.parent.contents[seg_position - 1].duration
         else:
             return base
+# --------------------------------------------------------------------------------------------- #
 
+
+# --------------------------------------------------------------------------------------------- #
+#   Vertex class                                                                                #
+#                                                                                               #
+#   The Vertex class defines the endpoints of a segment. Each vertex has an x and y value along #
+#   with a key identifying it as the first or second vertex.                                    #
+# --------------------------------------------------------------------------------------------- #
 class Vertex:
 
     x = 0
@@ -350,3 +396,4 @@ class Vertex:
         else:
             self.x = self.segment.calculate_start_time() + self.segment.duration
             self.y = self.segment.end_value
+# --------------------------------------------------------------------------------------------- #

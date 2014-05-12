@@ -1,7 +1,22 @@
+# --------------------------------------------------------------------------------------------- #
+#   data_file.py                                                                                #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * DataFile                                                                              #
+#       * Point                                                                                 #
+# --------------------------------------------------------------------------------------------- #
+
 from util import toint
 import threading
 import httpcomm
 
+# --------------------------------------------------------------------------------------------- #
+#   DataFile class                                                                              #
+#                                                                                               #
+#   DataFile is an object representation of all the data returned from the device. When a data  #
+#   packet is received, it is unpacked and sent to the GUI for display. It is later persisted   #
+#   into a signed binary data file.                                                             #
+# --------------------------------------------------------------------------------------------- #
 class DataFile:
 
     experiment = None   # reference to the experiment that this datafile is for
@@ -81,7 +96,14 @@ class DataFile:
         # send data to GUI
         if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
             self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.data, points, action])
+# --------------------------------------------------------------------------------------------- #
 
+
+# --------------------------------------------------------------------------------------------- #
+#   Point class                                                                                 #
+#                                                                                               #
+#   The Point class is simply a pairing of a potential value with a current value               #
+# --------------------------------------------------------------------------------------------- #
 class Point:
 
     E = 0               # base Voltage value
@@ -90,3 +112,4 @@ class Point:
     def __init__(self, E=0, I=0):
         self.E = E
         self.I = I
+# --------------------------------------------------------------------------------------------- #

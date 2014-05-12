@@ -1,5 +1,16 @@
-# eibus interface for communicating to the embedded code on the device
+# --------------------------------------------------------------------------------------------- #
+#   eibus.py                                                                                    #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * EIbus                                                                                 #
+# --------------------------------------------------------------------------------------------- #
 
+
+# --------------------------------------------------------------------------------------------- #
+#   EIbus class                                                                                 #
+#                                                                                               #
+#   The EIbus class defines an interface between EIcomm and the Agent.                          #
+# --------------------------------------------------------------------------------------------- #
 class EIbus:
 
     #----- SIGNALS TO EC -----#
@@ -34,3 +45,4 @@ class EIbus:
     # data packet from EC
     def data(self, data):
         raise NotImplementedError
+# --------------------------------------------------------------------------------------------- #

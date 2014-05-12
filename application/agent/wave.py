@@ -1,6 +1,22 @@
-# mathematical representation of waveform
+# --------------------------------------------------------------------------------------------- #
+#   wave.py                                                                                     #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * Wave                                                                                  #
+#       * Pattern                                                                               #
+#       * Segment                                                                               #
+#       * LinearSegment                                                                         #
+# --------------------------------------------------------------------------------------------- #
+
 from util import tobytes
 
+# --------------------------------------------------------------------------------------------- #
+#   Wave class                                                                                  #
+#                                                                                               #
+#   The Wave class defines the waveform representation easy to understand by the device. It     #
+#   consists of header information and patterns. The marshall() method packages it into a byte  #
+#   array  according the the file formats documentation.                                        #
+# --------------------------------------------------------------------------------------------- #
 class Wave:
     
     experiment = None   # reference to the experiment this wave belongs to
@@ -48,7 +64,16 @@ class Wave:
             data += pattern.marshall()
 
         return bytearray(data)
+# --------------------------------------------------------------------------------------------- #
 
+
+# --------------------------------------------------------------------------------------------- #
+#   Pattern class                                                                               #
+#                                                                                               #
+#   The Pattern class defines a distinct repeating set of segments. A Wave object has one or    #
+#   more Patterns. Each Pattern has one or more segments. Segments can be either Segment or     #
+#   LinearSegment objects.                                                                      #
+# --------------------------------------------------------------------------------------------- #
 class Pattern:
 
     wave = None         # reference to parent wave
@@ -74,7 +99,15 @@ class Pattern:
         for segment in self.segments:
             data += segment.marshall()
         return data
+# --------------------------------------------------------------------------------------------- #
 
+
+# --------------------------------------------------------------------------------------------- #
+#   Segment class                                                                               #
+#                                                                                               #
+#   The Segment class defines a set of points to be played by the device. Each point is just    #
+#   a single voltage value. Potentials are measured in counts of device minimum step.           #
+# --------------------------------------------------------------------------------------------- #
 class Segment:
 
     pattern = None      # reference to parent pattern
@@ -100,14 +133,23 @@ class Segment:
             self.pattern.wave.points.append(point)
             data += tobytes(point, 2)
         return data
+# --------------------------------------------------------------------------------------------- #
 
+
+# --------------------------------------------------------------------------------------------- #
+#   LinearSegment class                                                                         #
+#                                                                                               #
+#   The LinearSegment class defines a set of points to be played by the device. The segment is  #
+#   declared linear so the segment is defined by a starting voltage, an ending voltage and the  #
+#   number of ticks. Potentials are measued in count of device minimum step.                    #
+# --------------------------------------------------------------------------------------------- #
 class LinearSegment:
 
     pattern = None      # reference to parent pattern
 
-    ticks = None        # number of ticks between points
-    s = None            # starting voltage point
-    e = None            # ending voltage point
+    ticks = 0           # number of ticks between points
+    s = 0               # starting voltage point
+    e = 0               # ending voltage point
 
     def __init__(self, ticks=None, s=None, e=None):
         self.ticks = ticks
@@ -129,3 +171,4 @@ class LinearSegment:
         data += tobytes(self.s, 2)
         data += tobytes(self.e, 2)
         return data
+# --------------------------------------------------------------------------------------------- #

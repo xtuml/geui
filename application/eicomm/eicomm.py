@@ -1,3 +1,11 @@
+# --------------------------------------------------------------------------------------------- #
+#   eicomm.py                                                                                   #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * EIcomm                                                                                #
+#       * Transport                                                                             #
+# --------------------------------------------------------------------------------------------- #
+
 import threading
 import agent.thread
 import Queue
@@ -9,6 +17,15 @@ import logging
 
 import eibus
 
+# --------------------------------------------------------------------------------------------- #
+#   EIcomm class                                                                                #
+#       * Subclass of Thread                                                                    #
+#       * Implements EIbus interface                                                            #
+#                                                                                               #
+#   The EIcomm class handles all communication with the EC. It takes a string of bytes and an   #
+#   op code and sends the message through the transport layer. When it receives a message, it   #
+#   makes the correct function call to the eibus interface.                                     #
+# --------------------------------------------------------------------------------------------- #
 class EIcomm(agent.thread.Thread, eibus.EIbus):
 
     # reference variable for agent
@@ -141,8 +158,16 @@ class EIcomm(agent.thread.Thread, eibus.EIbus):
     # data packet from EC
     def data(self, data):
         self.agent.q.put([self.agent.data, data])
+# --------------------------------------------------------------------------------------------- #
 
 
+# --------------------------------------------------------------------------------------------- #
+#   Transport class                                                                             #
+#       * Subclass of Thread                                                                    #
+#                                                                                               #
+#   The Transport class encapsulates the nuts and bolts of message sending and receiving. It    #
+#   uses sockets to send and receive messages put in its inbox and outbox.                      #
+# --------------------------------------------------------------------------------------------- #
 class Transport(threading.Thread):
 
     # threading attributes
@@ -235,4 +260,4 @@ class Transport(threading.Thread):
 
             # sleep for 10 milliseconds
             time.sleep(0.010)
-
+# --------------------------------------------------------------------------------------------- #

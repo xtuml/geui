@@ -1,5 +1,16 @@
-# eihttp interface for communicating with the GUI
+# --------------------------------------------------------------------------------------------- #
+#   eihttp.py                                                                                   #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * EIhttp                                                                                #
+# --------------------------------------------------------------------------------------------- #
 
+
+# --------------------------------------------------------------------------------------------- #
+#   EIhttp class                                                                                #
+#                                                                                               #
+#   The EIhttp class defines an interface between HTTPcomm and the Agent.                       #
+# --------------------------------------------------------------------------------------------- #
 class EIhttp:
 
     #----- SIGNALS TO GUI -----#
@@ -105,3 +116,4 @@ class EIhttp:
     # update segment command sent from GUI 
     def update_segment(self, start_value, end_value, rate, duration, repeat_value, position):
         raise NotImplementedError
+# --------------------------------------------------------------------------------------------- #

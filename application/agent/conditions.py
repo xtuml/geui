@@ -1,8 +1,19 @@
-# Model of the initial conditions package to be sent down to the device
-# before a run
+# --------------------------------------------------------------------------------------------- #
+#   conditions.py                                                                               #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * InitialConditions                                                                     #
+# --------------------------------------------------------------------------------------------- #
 
 from util import tobytes
 
+# --------------------------------------------------------------------------------------------- #
+#   InitialConditions class                                                                     #
+#                                                                                               #
+#   InitialConditions is an object definition of various experiment presets theat are not a     #
+#   logical part of the data acquisition definition or the waveform definition. The marshall()  #
+#   method packages the object into a byte array according to the file formats documentation.   #
+# --------------------------------------------------------------------------------------------- #
 class InitialConditions:
 
     tick = 0                # experiment tick defined by the server
@@ -25,3 +36,4 @@ class InitialConditions:
         data += tobytes(self.E_offset, 2)
 
         return bytearray(data)
+# --------------------------------------------------------------------------------------------- #
