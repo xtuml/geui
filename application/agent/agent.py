@@ -76,7 +76,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
     def version(self, data):
         # unmarshall version data
         version = str(data[0]) + "." + str(data[1]) + str(data[2]) + "-" + str(data[3])
-        print "Version: " + version
+        #print "Version: " + version
         if self.httpcomm is not None:
             self.httpcomm.q.put([self.httpcomm.version, version])
 

@@ -207,7 +207,7 @@ class Transport(threading.Thread):
                     receiving = False
                     continue
                 else:
-                    print e
+                    logger.info("Error: {" + e + "} at [" + time.ctime() + "]")
             else:
                 if len(data) == 0:                      # socket has closed
                     receiving = False
@@ -234,7 +234,7 @@ class Transport(threading.Thread):
             s.connect(("localhost",9000))
         except socket.error, e:
             if e.args[1] != "Connection refused":
-                print e
+                logger.info("Error: {" + e + "} at [" + time.ctime() + "]")
         else:
             self.s = s
             self.s.setblocking(0)
