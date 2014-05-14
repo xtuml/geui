@@ -6,11 +6,13 @@ from agent.command import CommandLine
 
 import time
 import sys
+import os
 
 # main method. initializes agent, server, and usb listener
 if __name__ == "__main__":
 
     # initialize command line arguments
+    # ------------------------------------------------------------------------------------- #
     background = False                  # run in background. default is false
     port = 8080                         # port to run server on. default is 8080
 
@@ -25,8 +27,11 @@ if __name__ == "__main__":
 
     # reform arg array so webpy can get the right port
     sys.argv = ["geui.py", str(port)]
+    # ------------------------------------------------------------------------------------- #
+
 
     # setup logging
+    # ------------------------------------------------------------------------------------- #
     import logging
     import logging.handlers
 
@@ -51,8 +56,11 @@ if __name__ == "__main__":
     # add the handlers to the logger
     logger.addHandler(fh)
     logger.addHandler(ch)
+    # ------------------------------------------------------------------------------------- #
+
 
     # define threads
+    # ------------------------------------------------------------------------------------- #
     agent = Agent()
     eicomm = EIcomm()
     httpcomm = HTTPcomm()
@@ -74,8 +82,27 @@ if __name__ == "__main__":
     command.test = test
 
     test.httpcomm = httpcomm
+    # ------------------------------------------------------------------------------------- #
+
+
+    # fork off (if running in background)
+    # ------------------------------------------------------------------------------------- #
+    if (background):
+        pid = os.fork()
+        if pid < 0:
+            sys.exit(1)     # unable to fork
+        elif pid > 0:
+            sys.exit(0)     # exit parent process
+
+        os.close(0)         # close stdin
+        os.close(1)         # close stdout
+        os.close(2)         # close stderr
+
+    # ------------------------------------------------------------------------------------- #
+
 
     # start threads
+    # ------------------------------------------------------------------------------------- #
     agent.start()
     eicomm.start()
     httpcomm.start()
@@ -83,3 +110,4 @@ if __name__ == "__main__":
     command.start()
 
     logger.info("Agent initiated at [" + time.ctime() + "]")
+    # ------------------------------------------------------------------------------------- #
