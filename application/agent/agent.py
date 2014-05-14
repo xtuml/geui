@@ -109,8 +109,11 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
     #---------------------------------#
     # exit
     def exit(self):
-        if self.command is not None:
-            self.command.q.put([self.command.exit])
+        self.kill_thread()
+        for t in threading.enumerate():
+            if t.name == "httpcomm" or t.name == "eicomm" or t.name == "test":
+                t.q.put([t.kill_thread])
+            self.httpcomm.server.app.stop()
 
     # download waveform to device
     def download(self):

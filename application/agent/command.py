@@ -39,10 +39,8 @@ class CommandLine(thread.Thread):
     def exit(self):
         print "Exiting..."
         self.kill_thread()
-        for t in threading.enumerate():
-            if t.name == "httpcomm" or t.name == "eicomm" or t.name == "test" or t.name == "agent":
-                t.q.put([t.kill_thread])
-            self.server.app.stop()
+        if self.agent is not None:
+            self.agent.q.put([self.agent.exit])
 
     # override from Thread class    (run on start up)
     def initialize(self):
