@@ -5,7 +5,7 @@
 #       * Server                                                                                #
 # --------------------------------------------------------------------------------------------- #
 
-import web
+import webpy.web as web
 from requests import *
 import threading
 

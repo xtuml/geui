@@ -4,7 +4,7 @@
 #   This file handles all requests and calls the appropriate EIhttp interface method.           #
 # --------------------------------------------------------------------------------------------- #
 
-import web
+import webpy.web as web
 import threading
 import json
 import time
