@@ -5,9 +5,26 @@ from agent.test_bench import TestBench
 from agent.command import CommandLine
 
 import time
+import sys
 
 # main method. initializes agent, server, and usb listener
 if __name__ == "__main__":
+
+    # initialize command line arguments
+    background = False                  # run in background. default is false
+    port = 8080                         # port to run server on. default is 8080
+
+    for i, arg in enumerate(sys.argv):
+        if (arg == "-p" and i < len(sys.argv) - 1):
+            try:                                    # ValueError if not an integer
+                port = int(sys.argv[i+1])
+            except ValueError:
+                port = 8080                         # default
+        elif (arg == "-b"):
+            background = True
+
+    # reform arg array so webpy can get the right port
+    sys.argv = ["geui.py", str(port)]
 
     # setup logging
     import logging
@@ -21,7 +38,12 @@ if __name__ == "__main__":
     fh.setLevel(logging.DEBUG)
     # create console handler
     ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
+
+    if background:
+        ch.setLevel(logging.ERROR)
+    else:
+        ch.setLevel(logging.INFO)
+
     # create formatter and add it to the handlers
     formatter = logging.Formatter("%(message)s")
     fh.setFormatter(formatter)
