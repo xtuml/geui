@@ -154,7 +154,7 @@ void start_server(struct mg_connection *conn) {
     check_log();
 
     // let the client know it's running
-    mg_printf_data(conn, "success", conn->uri);
+    mg_printf_data(conn, "launch(\"success\");", conn->uri);
 }
 
 // Callback if the server receives a request
@@ -174,14 +174,14 @@ int ev_handler(struct mg_connection *conn, enum mg_event ev) {
                 curr_time = time(NULL);
                 fprintf(log_file, "Port %d busy. ---- %s", app_port, ctime(&curr_time));
                 check_log();
-                mg_printf_data(conn, "busy");
+                mg_printf_data(conn, "launch(\"busy\");");
             }
         }
 
         // exit
         else if (!strcmp(conn->uri, "/done")) {
             running = 0;
-            mg_printf_data(conn, "Goodbye!");
+            mg_printf_data(conn, "");
         }
 
         else mg_printf_data(conn, "");
