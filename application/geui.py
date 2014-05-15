@@ -40,6 +40,10 @@ if __name__ == "__main__":
             except ValueError:
                 pass
 
+    # timeout has minimum value of 1 second
+    if timeout < 1000:
+        timeout = 1000
+
     # reform arg array so webpy can get the right port
     sys.argv = ["geui.py", str(port)]
     # ------------------------------------------------------------------------------------- #
@@ -105,6 +109,7 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------------------- #
 
 
+
     # fork off (if running in background)
     # ------------------------------------------------------------------------------------- #
     if (background):
@@ -114,9 +119,12 @@ if __name__ == "__main__":
         elif pid > 0:
             sys.exit(0)     # exit parent process
 
-        os.close(0)         # close stdin
-        os.close(1)         # close stdout
-        os.close(2)         # close stderr
+        if os.isatty(0):
+            os.close(0)         # close stdin
+        if os.isatty(1):
+            os.close(1)         # close stdout
+        if os.isatty(2):
+            os.close(2)         # close stderr
 
     # ------------------------------------------------------------------------------------- #
 
