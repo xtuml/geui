@@ -3,8 +3,8 @@
 #                                                                                               #
 #   Classes defined in this file:                                                               #
 #       * Wave                                                                                  #
-#       * Pattern                                                                               #
-#       * Segment                                                                               #
+#       * WPattern                                                                              #
+#       * WSegment                                                                              #
 #       * LinearSegment                                                                         #
 # --------------------------------------------------------------------------------------------- #
 
@@ -68,13 +68,13 @@ class Wave:
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Pattern class                                                                               #
+#   WPattern class                                                                              #
 #                                                                                               #
-#   The Pattern class defines a distinct repeating set of segments. A Wave object has one or    #
-#   more Patterns. Each Pattern has one or more segments. Segments can be either Segment or     #
+#   The WPattern class defines a distinct repeating set of segments. A Wave object has one or   #
+#   more Patterns. Each Pattern has one or more segments. Segments can be either WSegment or    #
 #   LinearSegment objects.                                                                      #
 # --------------------------------------------------------------------------------------------- #
-class Pattern:
+class WPattern:
 
     wave = None         # reference to parent wave
     
@@ -103,12 +103,12 @@ class Pattern:
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Segment class                                                                               #
+#   WSegment class                                                                              #
 #                                                                                               #
-#   The Segment class defines a set of points to be played by the device. Each point is just    #
+#   The WSegment class defines a set of points to be played by the device. Each point is just   #
 #   a single voltage value. Potentials are measured in counts of device minimum step.           #
 # --------------------------------------------------------------------------------------------- #
-class Segment:
+class WSegment:
 
     pattern = None      # reference to parent pattern
 

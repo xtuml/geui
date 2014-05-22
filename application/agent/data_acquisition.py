@@ -3,8 +3,8 @@
 #                                                                                               #
 #   Classes defined in this file:                                                               #
 #       * DataAcquisition                                                                       #
-#       * Pattern                                                                               #
-#       * Segment                                                                               #
+#       * DPattern                                                                              #
+#       * DSegment                                                                              #
 #       * Sample                                                                                #
 # --------------------------------------------------------------------------------------------- #
 
@@ -50,13 +50,13 @@ class DataAcquisition:
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Pattern class                                                                               #
+#   DPattern class                                                                              #
 #                                                                                               #
-#   The Pattern class represents a repeating period of similar data acquisition. A              #
+#   The DPattern class represents a repeating period of similar data acquisition. A             #
 #   DataAcquisition object is expected to have one or more patterns. Each pattern has one or    #
 #   more segments.                                                                              #
 # --------------------------------------------------------------------------------------------- #
-class Pattern:
+class DPattern:
 
     N = 0                   # number of pattern repeats
     n = 0                   # number of segments in pattern
@@ -86,12 +86,12 @@ class Pattern:
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Segment class                                                                               #
+#   DSegment class                                                                              #
 #                                                                                               #
-#   The Segment class represents one homogenous set of samples. It is made up of a sample       #
+#   The DSegment class represents one homogenous set of samples. It is made up of a sample      #
 #   object and the number of those samples to take                                              #
 # --------------------------------------------------------------------------------------------- #
-class Segment:
+class DSegment:
 
     n = 0                   # number of samples in this segment
 
