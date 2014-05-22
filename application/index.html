@@ -1,0 +1,72 @@
+﻿<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title> EC Analyzer</title>
+
+        <!-- SCRIPTS INCLUDED -->
+        
+        <!-- jquery -->
+        <script src="/js/jquery/jquery.min.js"></script>
+
+        <!-- jquery deserialize plugin -->
+        <script src="/js/jquery/jquery.ba-bbq.js"></script>
+    
+        <!-- highcharts scripts -->
+        <script src="/js/highcharts/highcharts.js"></script>
+        <script src="/js/highcharts/exporting.js"></script>
+        <script src="/js/highcharts/dark-blue.js"></script>
+    
+	  
+        <!-- MY SCRIPTS -->
+
+        <!-- main application -->
+        <script src="/js/client/client.js"></script>
+        <script src="/js/client/config/config.js"></script>
+        <script src="/js/client/config/waveform_editor.js"></script>
+        <script src="/js/client/config/welcome.js"></script>
+        <script src="/js/client/config/run_experiment.js"></script>
+        <script src="/js/client/config/cyclic_voltammetry.js"></script>
+        <script src="/js/httpcomm/httpcomm.js"></script>
+        <script src="/js/client/init.js"></script>
+
+        <!-- styling -->
+        <link href="css/app-style.css" rel="stylesheet"> <!-- My stylesheet -->
+    
+    </head>
+    <body>
+
+        <div class="app-background">
+            <div id="header" class="app-header">
+                <img src="/img/banner.png" style="float: right">
+            </div>
+            <div class="app-body">
+                <div id="TL" class="app-panel-TL">
+                </div>
+                <div id="TR" class="app-panel-TR">
+                </div>
+                <div id="ML" class="app-panel-ML">
+                </div>
+                <div id="MR" class="app-panel-MR">
+                </div>
+                <div id="BL" class="app-panel-BL">
+                </div>
+                <div id="BR" class="app-panel-BR">
+                </div>
+            </div>
+        </div>
+        <div class="spinner-background" id="spinner_container">
+            <div class="spinner" id="spinner_1">
+            </div>
+            <div class="spinner" id="spinner_2">
+            </div>
+            <div class="spinner" id="spinner_3">
+            </div>
+            <div class="spinner" id="spinner_4">
+            </div>
+            <div class="spinner" id="spinner_5">
+            </div>
+        </div>
+
+    </body>
+</html>
