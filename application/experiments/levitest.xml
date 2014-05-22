@@ -1,76 +1,76 @@
 <?xml version="1.0"?>
 <!DOCTYPE PyObject SYSTEM "PyObjects.dtd">
-<PyObject module="agent.cv" class="CV" id="4392108760">
-<attr name="device" type="PyObject" id="4392249536" module="agent.device" class="Device">
+<PyObject module="agent.cv" class="CV" id="4579581608">
+<attr name="device" type="PyObject" id="4579894696" module="agent.device" class="Device">
   <attr name="min_tick" type="numeric" value="1000000" />
   <attr name="min_step" type="numeric" value="100" />
 </attr>
-<attr name="graph" type="PyObject" id="4392250472" module="agent.cv" class="Graph">
-  <attr name="experiment" type="PyObject" refid="4392108760" />
-  <attr name="contents" type="list" id="4392041648" >
-    <item type="PyObject" id="4392249608" module="agent.cv" class="Pattern">
-      <attr name="parent" type="PyObject" refid="4392250472" />
-      <attr name="contents" type="list" id="4392040784" >
-        <item type="PyObject" id="4392249752" module="agent.cv" class="Segment">
+<attr name="graph" type="PyObject" id="4579894768" module="agent.cv" class="CVGraph">
+  <attr name="experiment" type="PyObject" refid="4579581608" />
+  <attr name="contents" type="list" id="4579572840" >
+    <item type="PyObject" id="4579894840" module="agent.cv" class="CVPattern">
+      <attr name="parent" type="PyObject" refid="4579894768" />
+      <attr name="contents" type="list" id="4579570248" >
+        <item type="PyObject" id="4579890744" module="agent.cv" class="CVSegment">
           <attr name="data_rate" type="numeric" value="1" />
-          <attr name="parent" type="PyObject" refid="4392249608" />
+          <attr name="parent" type="PyObject" refid="4579894840" />
           <attr name="end_value" type="numeric" value="1500." />
-          <attr name="vertices" type="list" id="4392109840" >
-            <item type="PyObject" id="4392250328" module="agent.cv" class="Vertex">
+          <attr name="vertices" type="list" id="4579573056" >
+            <item type="PyObject" id="4579890528" module="agent.cv" class="CVVertex">
               <attr name="y" type="numeric" value="0." />
               <attr name="x" type="numeric" value="0" />
               <attr name="v_num" type="numeric" value="1" />
-              <attr name="segment" type="PyObject" refid="4392249752" />
+              <attr name="segment" type="PyObject" refid="4579890744" />
             </item>
-            <item type="PyObject" id="4392251120" module="agent.cv" class="Vertex">
+            <item type="PyObject" id="4579890816" module="agent.cv" class="CVVertex">
               <attr name="y" type="numeric" value="1500." />
               <attr name="x" type="numeric" value="15." />
               <attr name="v_num" type="numeric" value="2" />
-              <attr name="segment" type="PyObject" refid="4392249752" />
+              <attr name="segment" type="PyObject" refid="4579890744" />
             </item>
           </attr>
           <attr name="rate" type="numeric" value="100." />
           <attr name="duration" type="numeric" value="15." />
           <attr name="start_value" type="numeric" value="0." />
         </item>
-        <item type="PyObject" id="4392250400" module="agent.cv" class="Segment">
+        <item type="PyObject" id="4579886720" module="agent.cv" class="CVSegment">
           <attr name="data_rate" type="numeric" value="1" />
-          <attr name="parent" type="PyObject" refid="4392249608" />
+          <attr name="parent" type="PyObject" refid="4579894840" />
           <attr name="end_value" type="numeric" value="-2000." />
-          <attr name="vertices" type="list" id="4392040928" >
-            <item type="PyObject" id="4392251264" module="agent.cv" class="Vertex">
+          <attr name="vertices" type="list" id="4579572408" >
+            <item type="PyObject" id="4579886072" module="agent.cv" class="CVVertex">
               <attr name="y" type="numeric" value="1500." />
               <attr name="x" type="numeric" value="15." />
               <attr name="v_num" type="numeric" value="1" />
-              <attr name="segment" type="PyObject" refid="4392250400" />
+              <attr name="segment" type="PyObject" refid="4579886720" />
             </item>
-            <item type="PyObject" id="4392251336" module="agent.cv" class="Vertex">
+            <item type="PyObject" id="4579886648" module="agent.cv" class="CVVertex">
               <attr name="y" type="numeric" value="-2000." />
               <attr name="x" type="numeric" value="50." />
               <attr name="v_num" type="numeric" value="2" />
-              <attr name="segment" type="PyObject" refid="4392250400" />
+              <attr name="segment" type="PyObject" refid="4579886720" />
             </item>
           </attr>
           <attr name="rate" type="numeric" value="-100." />
           <attr name="duration" type="numeric" value="35." />
           <attr name="start_value" type="numeric" value="1500." />
         </item>
-        <item type="PyObject" id="4392254856" module="agent.cv" class="Segment">
+        <item type="PyObject" id="4579886144" module="agent.cv" class="CVSegment">
           <attr name="data_rate" type="numeric" value="1" />
-          <attr name="parent" type="PyObject" refid="4392249608" />
+          <attr name="parent" type="PyObject" refid="4579894840" />
           <attr name="end_value" type="numeric" value="1000." />
-          <attr name="vertices" type="list" id="4392251192" >
-            <item type="PyObject" id="4392254928" module="agent.cv" class="Vertex">
+          <attr name="vertices" type="list" id="4579890672" >
+            <item type="PyObject" id="4579886936" module="agent.cv" class="CVVertex">
               <attr name="y" type="numeric" value="-2000." />
               <attr name="x" type="numeric" value="50." />
               <attr name="v_num" type="numeric" value="1" />
-              <attr name="segment" type="PyObject" refid="4392254856" />
+              <attr name="segment" type="PyObject" refid="4579886144" />
             </item>
-            <item type="PyObject" id="4392255000" module="agent.cv" class="Vertex">
+            <item type="PyObject" id="4579887008" module="agent.cv" class="CVVertex">
               <attr name="y" type="numeric" value="1000." />
               <attr name="x" type="numeric" value="80." />
               <attr name="v_num" type="numeric" value="2" />
-              <attr name="segment" type="PyObject" refid="4392254856" />
+              <attr name="segment" type="PyObject" refid="4579886144" />
             </item>
           </attr>
           <attr name="rate" type="numeric" value="100." />
@@ -83,4 +83,5 @@
   </attr>
 </attr>
 <attr name="name" type="string">levitest</attr>
+<attr name="agent" type="None" />
 </PyObject>
