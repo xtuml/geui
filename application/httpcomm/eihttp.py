@@ -1,126 +1,119 @@
-#eihttp interface for communicating with the GUI
+# --------------------------------------------------------------------------------------------- #
+#   eihttp.py                                                                                   #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * EIhttp                                                                                #
+# --------------------------------------------------------------------------------------------- #
 
-import threading
-import eicomm.eibus
-import json
 
-#----- SIGNALS TO GUI -----#
+# --------------------------------------------------------------------------------------------- #
+#   EIhttp class                                                                                #
+#                                                                                               #
+#   The EIhttp class defines an interface between HTTPcomm and the Agent.                       #
+# --------------------------------------------------------------------------------------------- #
+class EIhttp:
 
-#version response from agent
-def version(version):
-    data = {'signal': 'version', 'version': version}
-    t = threading.currentThread()
-    t.commands.put(['version', json.dumps(data)])
+    #----- SIGNALS TO GUI -----#
 
-#chart data response from agent
-def update_graph(delete, add, update):
-    data = {
-        'signal': 'update_graph',
-        'delete': delete,
-        'add': add,
-        'update': []
-    }
-    if update != None:
-        for point in update:
-            data['update'].append({'position': point[0], 'point': [point[1], point[2]]})
-    else:
-        data['update'] = None
-    t = threading.currentThread()
-    t.commands.put(['update_graph', json.dumps(data)])
+    # version response from agent
+    def version(self, version):
+        raise NotImplementedError
 
-#table data response from agent
-def load_table(rows):
-    data = {
-        'signal': 'load_table',
-        'rows': rows
-    }
-    t = threading.currentThread()
-    t.commands.put(['load_table', json.dumps(data)])
+    # data packet from agent
+    def data(self, points, action):
+        raise NotImplementedError
 
-#send GUI list of saved experiment
-def load_experiments(experiments):
-    data = {
-        'signal': 'load_experiments',
-        'experiments': experiments
-    }
-    t = threading.currentThread()
-    t.commands.put(['load_experiments', json.dumps(data)])
+    # chart data response from agent
+    def update_graph(self, points):
+        raise NotImplementedError
 
-#send GUI indication that the upload was a success
-def upload_success(name):
-    data = {
-        'signal': 'upload_success',
-        'name': name
-    }
-    t = threading.currentThread()
-    t.commands.put(['upload_success', json.dumps(data)])
+    # table data response from agent
+    def load_table(self, rows, table_id):
+        raise NotImplementedError
 
-#----- SIGNALS TO AGENT -----#
+    # send GUI list of saved experiment
+    def load_experiments(self, experiments):
+        raise NotImplementedError
 
-#exit
-def exit():
-    pass
+    # send GUI indication that the upload was a success
+    def upload_success(self, name):
+        raise NotImplementedError
 
-#download waveform to device
-def download():
-    pass
+    #----- SIGNALS TO AGENT -----#
 
-#get version command sent from GUI 
-def get_version():
-    pass
+    # exit
+    def exit(self):
+        raise NotImplementedError
 
-#save experiment command sent from GUI 
-def save_experiment():
-    pass
+    # download waveform to device
+    def download(self):
+        raise NotImplementedError
 
-#get experiments command sent from GUI 
-def get_experiments():
-    pass
+    # run the experiment
+    def run_experiment(self):
+        raise NotImplementedError
 
-#open experiment command sent from GUI 
-def open_experiment(name):
-    pass
+    # get version command sent from GUI 
+    def get_version(self):
+        raise NotImplementedError
 
-#create experiment command sent from GUI 
-def create_experiment(name):
-    pass
+    # save experiment command sent from GUI 
+    def save_experiment(self):
+        raise NotImplementedError
 
-#delete experiment command sent from GUI 
-def delete_experiment(name):
-    pass
+    # get experiments command sent from GUI 
+    def get_experiments(self):
+        raise NotImplementedError
 
-#allows user to upload their own experiment files
-def upload_file(name, contents):
-    pass
+    # request table command sent from GUI 
+    def request_table(self, table_id, position):
+        raise NotImplementedError
 
-#add pattern command sent from GUI 
-def add_pattern(start_value, end_value, rate, duration, repeat_value):
-    pass
+    # open experiment command sent from GUI 
+    def open_experiment(self, name):
+        raise NotImplementedError
 
-#delete pattern command sent from GUI 
-def delete_pattern(positions):
-    pass
+    # create experiment command sent from GUI 
+    def create_experiment(self, name):
+        raise NotImplementedError
 
-#move pattern command sent from GUI 
-def move_pattern(position, destination):
-    pass
+    # delete experiment command sent from GUI 
+    def delete_experiment(self, name):
+        raise NotImplementedError
 
-#update pattern command sent from GUI 
-def update_pattern(repeat_value, position):
-    pass
+    # allows user to upload their own experiment files
+    def upload_file(self, name, contents):
+        raise NotImplementedError
 
-#add segment command sent from GUI 
-def add_segment(start_value, end_value, rate, duration, repeat_value, position):
-    pass
+    # add pattern command sent from GUI 
+    def add_pattern(self, start_value, end_value, rate, duration, repeat_value):
+        raise NotImplementedError
 
-#delete segment command sent from GUI 
-def delete_segment(positions):
-    pass
+    # delete pattern command sent from GUI 
+    def delete_pattern(self, positions):
+        raise NotImplementedError
 
-#move segment command sent from GUI 
-def move_segment(position, destination):
-    pass
+    # move pattern command sent from GUI 
+    def move_pattern(self, position, destination):
+        raise NotImplementedError
 
-#update segment command sent from GUI 
-def update_segment(start_value, end_value, rate, duration, repeat_value, position):
-    pass
+    # update pattern command sent from GUI 
+    def update_pattern(self, repeat_value, position):
+        raise NotImplementedError
+
+    # add segment command sent from GUI 
+    def add_segment(self, start_value, end_value, rate, duration, position):
+        raise NotImplementedError
+
+    # delete segment command sent from GUI 
+    def delete_segment(self, positions, pattern):
+        raise NotImplementedError
+
+    # move segment command sent from GUI 
+    def move_segment(self, position, destination, pattern):
+        raise NotImplementedError
+
+    # update segment command sent from GUI 
+    def update_segment(self, start_value, end_value, rate, duration, repeat_value, position):
+        raise NotImplementedError
+# --------------------------------------------------------------------------------------------- #

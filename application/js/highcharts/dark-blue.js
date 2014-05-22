@@ -14,8 +14,6 @@ Highcharts.theme = {
 				[1, 'rgb(0, 0, 0)']
 			]
 		},
-		//borderColor: 'silver',
-		//borderWidth: 1,
 		className: 'dark-container',
 		plotBackgroundColor: 'rgba(255, 255, 255, .1)',
 		plotBorderColor: '#CCCCCC',
@@ -73,12 +71,14 @@ Highcharts.theme = {
 			}
 		}
 	},
+        /*/
 	tooltip: {
 		backgroundColor: 'rgba(0, 0, 0, 0.75)',
 		style: {
 			color: '#F0F0F0'
 		}
 	},
+        /*/
 	toolbar: {
 		itemStyle: {
 			color: 'silver'

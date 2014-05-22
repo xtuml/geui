@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE PyObject SYSTEM "PyObjects.dtd">
-<PyObject module="agent.agent" class="ExperimentList" id="4357513872">
-<attr name="names" type="list" id="4357387472" >
-  <item type="string" value="test" />
-  <item type="string" value="test2" />
-  <item type="string" value="mygraph" />
-</attr>
-</PyObject>

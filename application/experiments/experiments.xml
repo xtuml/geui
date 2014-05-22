@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE PyObject SYSTEM "PyObjects.dtd">
+<PyObject module="agent.agent" class="ExperimentList" id="4559699408">
+<attr name="changed" type="False" value="" />
+<attr name="names" type="list" id="4558499496" >
+  <item type="string">levitest</item>
+</attr>
+</PyObject>

@@ -1,60 +1,76 @@
+# --------------------------------------------------------------------------------------------- #
+#   test_bench.py                                                                               #
+#                                                                                               #
+#   Classes defined in this file:                                                               #
+#       * TestBench                                                                             #
+# --------------------------------------------------------------------------------------------- #
+
+import thread
 import threading
-import Queue
-from util import call
-import time
-import eicomm.eibus
 
-class TestBench(threading.Thread):
+# --------------------------------------------------------------------------------------------- #
+#   TestBench class                                                                             #
+#       * Subclass of Thread                                                                    #
+#                                                                                               #
+#   The TestBench class is designed to run routines to test certain parts of the application.   #
+#   It is accessed through the CommandLine class.                                               #
+# --------------------------------------------------------------------------------------------- #
+class TestBench(thread.Thread):
 
-    q = None
-    running = None
-    
-    def __init__(self, thread_name='test'):
-        threading.Thread.__init__(self, name=thread_name)
-        self.q = Queue.Queue()
-        self.running = False
+    # reference to threads
+    httpcomm = None
 
-    def kill_thread(self):
-        self.running = False
+    def __init__(self, name="test"):
+        thread.Thread.__init__(self, name=name)
 
-    def send_wave(self):
-        print 'Sending test wave...'
-        import wave
+    def test_data(self):
+        if self.httpcomm is not None:
+            import math
+            import time
+            import httpcomm.eihttp
+            # graph test
+            try:
+                open_file = open("test.txt","r")
+                lines = open_file.readlines()
+                open_file.close()
+            except IOError:
+                lines = []
 
-        wave1 = wave.Wave(1, 100, 1, 3)
+            # calculate points to weed out
+            if len(lines) > 1000:
+                mod = math.ceil(float(len(lines)) / float(1000))
+            else:
+                mod = 1
 
-        pattern1 = wave.Pattern(1, 1)
-        seg1 = wave.Segment(1, 5, [1, 2, 3, 4, 5])
-        pattern1.add_segment(seg1)
+            points = [] 
+            for n, point in enumerate(lines):
+                if (n % mod == 0) or (n == 0) or (n == len(lines) - 1):         # only graphs every Nth point, first, and last points
+                    p = point.rsplit(", ")
+                    points.append([float(p[0]), float(p[1])])
 
-        pattern2 = wave.Pattern(50, 2)
-        seg2 = wave.Segment(1, 5, [2, 2, 2, 2, 2])
-        seg3 = wave.Segment(1, 5, [0, 0, 0, 0, 0])
-        pattern2.add_segment(seg2)
-        pattern2.add_segment(seg3)
+            # two second delay
+            time.sleep(2)
 
-        pattern3 = wave.Pattern(1, 1)
-        seg4 = wave.Segment(1, 5, [5, 4, 3, 2, 1])
-        pattern3.add_segment(seg4)
+            # turn on data listening
+            self.httpcomm.q.put([self.httpcomm.data, [], "start"])
 
-        wave1.add_pattern(pattern1)
-        wave1.add_pattern(pattern2)
-        wave1.add_pattern(pattern3)
+            points_sent = 0
 
-        x = wave1.marshall()
-        #print x
+            # send data
+            c = 0
+            rate = 5                                                            # updates per second
+            iterations = rate * 16                                              # updates in 16s
+            pack_size = int(math.ceil(float(len(points)) / float(iterations)))  # number of points in each packet
+            while c < iterations:
+                if (c + 1) * pack_size > len(points):
+                    data = points[c * pack_size:len(points)]
+                else:
+                    data = points[c * pack_size:(c + 1) * pack_size]
+                self.httpcomm.q.put([self.httpcomm.data, data, ""])
+                points_sent += len(data)
+                time.sleep(1 / float(rate))
+                c += 1
 
-        for t in threading.enumerate():
-            if t.name == 'eicomm':
-                t.q.put([eicomm.eibus.wave, x])
-
-    def run(self):
-        self.running = True
-        while self.running:
-            #get command
-            cmd = self.q.get()
-
-            #run command
-            call(cmd) 
-
-        print 'Exited TestBench at ' + time.ctime()
+            # turn off data listening
+            self.httpcomm.q.put([self.httpcomm.data, [], "stop"])
+# --------------------------------------------------------------------------------------------- #

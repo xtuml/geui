@@ -1,4 +1,4 @@
-PARANOIA = 1            # default: security model of xml_pickle-0.51
+PARANOIA = 0            # default: security model of xml_pickle-0.51
 def setParanoia(val):
     global PARANOIA
     PARANOIA = val
