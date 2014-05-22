@@ -3,10 +3,10 @@
 #                                                                                               #
 #   Classes defined in this file:                                                               #
 #       * CV                                                                                    #
-#       * Graph                                                                                 #
-#       * Pattern                                                                               #
-#       * Segment                                                                               #
-#       * Vertex                                                                                #
+#       * CVGraph                                                                               #
+#       * CVPattern                                                                             #
+#       * CVSegment                                                                             #
+#       * CVVertex                                                                              #
 # --------------------------------------------------------------------------------------------- #
 
 import threading
@@ -36,7 +36,7 @@ class CV(experiment.Experiment):
 
     def __init__(self, name=""):
         experiment.Experiment.__init__(self, name)
-        self.graph = Graph()
+        self.graph = CVGraph()
         self.graph.experiment = self
         self.graph.add_pattern([0.0, 0.0, 0.0, 10.0, 1])        # initialize CV with one segment 10s long, from 0mV to 0mV
         self.save()
@@ -54,13 +54,13 @@ class CV(experiment.Experiment):
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Graph class                                                                                 #
+#   CVGraph class                                                                               #
 #       * Subclass of Graph                                                                     #
 #                                                                                               #
-#   The Graph class is a specific type of graph unique to the CV type experiment. It is defined #
-#   by patterns and segments and points. See documentation for further information.             #
+#   The CVGraph class is a specific type of graph unique to the CV type experiment. It is       #
+#   defined by patterns and segments and points. See documentation for further information.     #
 # --------------------------------------------------------------------------------------------- #
-class Graph(experiment.Graph):
+class CVGraph(experiment.Graph):
     
     experiment = None
 
@@ -96,8 +96,8 @@ class Graph(experiment.Graph):
         con = conditions.InitialConditions(self.experiment.tick, 0, 0, 0)   # initial conditions object
 
         for pattern in self.contents:
-            wave_pattern = wave.Pattern(pattern.repeat_value, len(pattern.contents))
-            dacq_pattern = data_acquisition.Pattern(pattern.repeat_value, len(pattern.contents))
+            wave_pattern = wave.WPattern(pattern.repeat_value, len(pattern.contents))
+            dacq_pattern = data_acquisition.DPattern(pattern.repeat_value, len(pattern.contents))
             for segment in pattern.contents:
                 if (wave_type == 0):
                     # create wave segment
@@ -113,7 +113,7 @@ class Graph(experiment.Graph):
                 else:
                     p = abs(segment.start_value - segment.end_value) * 1000 / self.experiment.device.min_step      # number of points per segment 
                                                                                                                         # based on step size voltage range
-                    wave_segment = wave.Segment(1, p, [])
+                    wave_segment = wave.WSegment(1, p, [])
 
                     # calculate points (based on linear model)
                     start_value = float(segment.start_value)
@@ -140,7 +140,7 @@ class Graph(experiment.Graph):
                 n = int(segment.duration * segment.data_rate)
                 t = int(segment.duration * self.experiment.device.min_tick / self.experiment.tick)
                 sample = data_acquisition.Sample(t, 0)
-                dacq_segment = data_acquisition.Segment(n)
+                dacq_segment = data_acquisition.DSegment(n)
                 dacq_segment.sample = sample
 
                 # add to pattern
@@ -158,7 +158,7 @@ class Graph(experiment.Graph):
 
     # appends a pattern to the graph's contents
     def add_pattern(self, values):
-        new_pattern = Pattern(values[4], self)
+        new_pattern = CVPattern(values[4], self)
         self.contents.append(new_pattern)
         new_pattern.add_segment(values)
         
@@ -217,12 +217,12 @@ class Graph(experiment.Graph):
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Pattern class                                                                               #
+#   CVPattern class                                                                             #
 #                                                                                               #
-#   The Pattern class defines a distinct repeated section of the graph. Each graph has at least #
-#   one pattern and each pattern has at least one segment.                                      #
+#   The CVPattern class defines a distinct repeated section of the graph. Each graph has at     #
+#   least one pattern and each pattern has at least one segment.                                #
 # --------------------------------------------------------------------------------------------- #
-class Pattern:
+class CVPattern:
     
     parent = None
     contents = []
@@ -236,7 +236,7 @@ class Pattern:
         
     # appends a segment to the patterns's contents
     def add_segment(self, values):
-        new_segment = Segment(values, self)
+        new_segment = CVSegment(values, self)
         self.contents.append(new_segment)
         for vertex in new_segment.vertices:
             vertex.update()
@@ -279,7 +279,7 @@ class Pattern:
         while iteration < self.repeat_value:
             for segment in self.contents:
                 for vertex in segment.vertices:
-                    vertices.append(Vertex(None, 0, vertex.x + one_repeat * iteration,vertex.y))
+                    vertices.append(CVVertex(None, 0, vertex.x + one_repeat * iteration,vertex.y))
             iteration += 1
         return vertices
 
@@ -314,12 +314,12 @@ class Pattern:
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Segment class                                                                               #
+#   CVSegment class                                                                             #
 #                                                                                               #
-#   The Segment class defines one linear part of a pattern. It has a start and end value,       #
+#   The CVSegment class defines one linear part of a pattern. It has a start and end value,     #
 #   slope, duration, and a pair of verticies.                                                   #
 # --------------------------------------------------------------------------------------------- #
-class Segment:
+class CVSegment:
 
     parent = None
 
@@ -338,7 +338,7 @@ class Segment:
         self.end_value = values[1]
         self.rate = values[2]
         self.duration = values[3]
-        self.vertices = [Vertex(self, 1), Vertex(self, 2)]
+        self.vertices = [CVVertex(self, 1), CVVertex(self, 2)]
 
         self.data_rate = 1      # 1 sample per second (for testing)
 
@@ -370,12 +370,12 @@ class Segment:
 
 
 # --------------------------------------------------------------------------------------------- #
-#   Vertex class                                                                                #
+#   CVVertex class                                                                              #
 #                                                                                               #
-#   The Vertex class defines the endpoints of a segment. Each vertex has an x and y value along #
-#   with a key identifying it as the first or second vertex.                                    #
+#   The CVVertex class defines the endpoints of a segment. Each vertex has an x and y value     #
+#   along with a key identifying it as the first or second vertex.                              #
 # --------------------------------------------------------------------------------------------- #
-class Vertex:
+class CVVertex:
 
     x = 0
     y = 0
