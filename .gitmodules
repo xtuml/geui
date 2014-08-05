@@ -1,6 +1,3 @@
 [submodule "mongoose_server/mongoose"]
 	path = mongoose_server/mongoose
 	url = https://github.com/cesanta/mongoose.git
-[submodule "application/flask"]
-	path = application/flask
-	url = https://github.com/leviathan747/flask.git

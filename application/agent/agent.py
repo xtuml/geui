@@ -113,7 +113,7 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
         for t in threading.enumerate():
             if t.name == "httpcomm" or t.name == "eicomm" or t.name == "test":
                 t.q.put([t.kill_thread])
-            self.httpcomm.server.app.stop()
+            self.httpcomm.server.stop()
 
     # download waveform to device
     def download(self):

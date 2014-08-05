@@ -45,7 +45,7 @@ if __name__ == "__main__":
         timeout = 1000
 
     # reform arg array so webpy can get the right port
-    sys.argv = ["geui.py", str(port)]
+    #sys.argv = ["geui.py", str(port)]
     # ------------------------------------------------------------------------------------- #
 
 

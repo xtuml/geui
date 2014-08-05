@@ -56,7 +56,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
         self.timeout = 0
 
     def initialize(self):
-        self.server = server.Server()
+        self.server = server.Server(debug=True)
         if self.command != None:
             self.command.server = self.server
         self.server.start()
@@ -70,7 +70,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
             self.timer += 10
 
     def finalize(self):
-        self.server.app.stop()
+        self.server.stop()
 
 
     #------- Interface Methods -------#
