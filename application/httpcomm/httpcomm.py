@@ -56,7 +56,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
         self.timeout = 0
 
     def initialize(self):
-        self.server = server.Server(debug=True)
+        self.server = server.Server(debug=True, httpcomm=self)
         if self.command != None:
             self.command.server = self.server
         self.server.start()

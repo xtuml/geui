@@ -34,7 +34,7 @@ function HTTPcomm(){
     this.eihttp.exit = function(){
         $.ajax({
             type: "GET",
-            url: "exit",
+            url: "/exit/",
             data: null,
             success: function(){},
             async:true
@@ -45,7 +45,7 @@ function HTTPcomm(){
     this.eihttp.run_experiment = function(){
         $.ajax({
             type: "GET",
-            url: "run_experiment",
+            url: "/run_experiment/",
             data: null,
             success: function(){},
             async:true
@@ -65,7 +65,7 @@ function HTTPcomm(){
     this.eihttp.get_experiments = function(){
         $.ajax({
             type: "GET",
-            url: "get_experiments",
+            url: "/get_experiments/",
             data: null,
             success: null,
             async:true
@@ -77,11 +77,10 @@ function HTTPcomm(){
             table_id: table_id,
             position: position
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/table/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -91,11 +90,10 @@ function HTTPcomm(){
         obj = {
             name: name
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/open/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -105,11 +103,10 @@ function HTTPcomm(){
         obj = {
             name: name
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/create/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -119,11 +116,10 @@ function HTTPcomm(){
         obj = {
             name: name
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/delete/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -134,11 +130,10 @@ function HTTPcomm(){
             name: name,
             contents: contents
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/upload/",
-            data: data,
+            data: obj,
             success: null,
             async: true
         });
@@ -152,11 +147,10 @@ function HTTPcomm(){
             duration: duration,
             repeat_value: repeat_value
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/add_pattern/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -166,11 +160,10 @@ function HTTPcomm(){
         obj = {
             positions: positions
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/delete_pattern/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -181,11 +174,10 @@ function HTTPcomm(){
             position: position,
             destination: destination
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/move_pattern/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -196,11 +188,10 @@ function HTTPcomm(){
             repeat_value: repeat_value,
             position: position
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/update_pattern/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -214,11 +205,10 @@ function HTTPcomm(){
             duration: duration,
             pattern: pattern
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/add_segment/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -229,11 +219,10 @@ function HTTPcomm(){
             positions: positions,
             pattern: pattern
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/delete_segment/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -245,11 +234,10 @@ function HTTPcomm(){
             destination: destination,
             pattern: pattern
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/move_segment/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -264,11 +252,10 @@ function HTTPcomm(){
             position: position,
             pattern: pattern
         }
-        data = JSON.stringify(obj);
         $.ajax({
             type: "POST",
             url: "/update_segment/",
-            data: data,
+            data: obj,
             success: null,
             async:true
         });
@@ -318,7 +305,7 @@ HTTPcomm.prototype.receive_data = function(){
         var data = null
         $.ajax({
             type: "GET",
-            url: "data",
+            url: "/data/",
             data: null,
             dataType: "json",
             success: function(d){data = d},
