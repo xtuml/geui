@@ -1,4 +1,4 @@
-from flask import request, render_template, Blueprint
+from flask import request, render_template, Blueprint, redirect
 import threading
 import logging
 import time
@@ -6,12 +6,13 @@ import time
 # index view
 class IndexView:
 
-    view = Blueprint("index", "index", template_folder="httpcomm/views/")      # blueprint object
+    view = Blueprint("index", "index")      # blueprint object
+
     httpcomm = None
 
     @view.route("/")
     def index():
-        return render_template("geui.html")
+        return redirect("/welcome")
 
     @view.route("/command/", methods=["GET"])
     def command():

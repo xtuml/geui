@@ -1,0 +1,60 @@
+﻿<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible', content='IE=edge,chrome=1'>
+
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+        <title> EC Analyzer</title>
+
+        <!-- favicon -->
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+        <!-- SCRIPTS INCLUDED -->
+        
+        <!-- jquery -->
+        <script src="/static/js/jquery/jquery.min.js"></script>
+        
+        <!-- bootstrap -->
+        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+
+        <!-- jquery deserialize plugin -->
+        <script src="/static/js/jquery/jquery.ba-bbq.js"></script>
+    
+        <!-- highcharts scripts -->
+        <script src="/static/js/highcharts/highcharts.js"></script>
+        <script src="/static/js/highcharts/exporting.js"></script>
+        <script src="/static/js/highcharts/dark-blue.js"></script>
+    
+	  
+        <!-- MY SCRIPTS -->
+        <!-- main application -->
+
+        <!-- styling -->
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet"> <!-- bootstrap -->
+        <link href="/static/css/style.css" rel="stylesheet"> <!-- My stylesheet -->
+
+    </head>
+    <body>
+        <div class="app-background">
+        <div class="container-fluid" style="margin:5px">
+            <div class="row" style="height:65px">
+                <div class="col-xs-12">
+                    {% block header %}
+                        <div class="app-panel">
+                            <img class="img-responsive pull-right" alt="banner.png" src="/static/img/banner.png">
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="row" style="height:calc(100% - 75px)">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,73 @@
+﻿/*
+
+Styling sheet for X8 GUI
+
+*/
+
+/* Packaging style classes */
+.app-background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background:
+    linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+    linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+    linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+    linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+    linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+    linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
+    background-color: #131313;
+    background-size: 20px 20px;
+}
+
+.app-panel {
+    margin: 5px;
+    height: calc(100% - 10px);
+    background: rgba(255,255,255,0.4);
+    overflow: hidden;
+    border: 1px solid silver;
+}
+
+.big-label {
+    height: 30px;
+    margin: 10px;
+    font-size: 30px;
+    font-family: Arial;
+    color: white;
+    text-shadow: 0px 0px 5px black;
+    cursor: default;
+}
+
+.select-table {
+    width: calc(100% - 20px);
+    margin: 10px;
+    background: rgba(44,52,93,0.5);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 1px solid silver;
+}
+
+.btn-panel {
+    width: calc(100% - 20px);
+    height: 50px;
+    margin: 10px;
+}
+
+.btn-square {
+    //width: 50px;
+    height: 50px;
+}
+
+.icon-50 {
+    font-size: 20px;
+}
+
+.btn-blue:hover {
+    color: blue;
+}
+
+.btn-red:hover {
+    color: red;
+}
