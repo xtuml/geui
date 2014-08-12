@@ -2,7 +2,7 @@
     <div class="btn-panel">
         <div class="pull-left">
             {% for button in leftbuttons %}
-                <button class="btn btn-default btn-square {{button.hover}} icon-50">
+                <button id="{{button.id}}" class="btn btn-default btn-square {{button.hover}} icon-50">
                     {% if button.icon %}
                         <span class="glyphicon {{button.icon}}"></span>
                     {% endif %}
@@ -12,7 +12,7 @@
         </div>
         <div class="pull-right">
             {% for button in rightbuttons %}
-                <button class="btn btn-default btn-square {{button.hover}} icon-50">
+                <button id="{{button.id}}" class="btn btn-default btn-square {{button.hover}} icon-50">
                     {% if button.icon %}
                         <span class="glyphicon {{button.icon}}"></span>
                     {% endif %}

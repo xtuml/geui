@@ -20,6 +20,7 @@ Styling sheet for X8 GUI
     linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
     background-color: #131313;
     background-size: 20px 20px;
+    -webkit-user-select: none;
 }
 
 .app-panel {
@@ -70,4 +71,31 @@ Styling sheet for X8 GUI
 
 .btn-red:hover {
     color: red;
+}
+
+.select-table-row {
+    position: absolute;
+    height: 30px;
+    width: calc(100% - 10px);
+    margin: 5px;
+    font-size: 16px;
+    font-family: Arial;
+    color: black;
+    cursor: default;
+    line-height: 30px;
+    text-indent: 15px;
+    background: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5);
+}
+
+.row-ease {
+    transition: top 0.25s;
+    -webkit-transition: top 0.25s;
+}
+
+.select-table-row-hover:hover {
+    background: -webkit-linear-gradient(top, #DCEEE3, #86C49D);
+}
+
+.select-table-selected {
+    background: -webkit-linear-gradient(top, #D5E8F5, #6EAFDC);
 }

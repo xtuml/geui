@@ -1,0 +1,55 @@
+{% macro selecttable(listobjects, id, height) %}
+    <div id="{{id}}" class="select-table" style="{{ height }}" selectedRow="-1">
+        <ol style="list-style-type:none; padding-left:0; position:relative">
+            {% for obj in listobjects %}
+                <li id="listobject{{loop.index - 1}}" class="select-table-row select-table-row-hover row-ease" tabindex="{{loop.index}}" onclick="selectRow({{loop.index - 1}})" style="top:{{35*(loop.index-1)}}px">{{ obj }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <script>
+
+        function selectRow(index) {
+            if ($("#listobject" + index).hasClass("select-table-selected")) {
+                // set selected row
+                $("#{{id}}").attr("selectedRow", "-1");
+
+                // unselect row css
+                $("#listobject" + index).addClass("select-table-row-hover");
+                $("#listobject" + index).removeClass("select-table-selected");
+            }
+            else {
+                // unselect previous row css
+                $("#listobject" + $("#{{id}}").attr("selectedRow")).addClass("select-table-row-hover");
+                $("#listobject" + $("#{{id}}").attr("selectedRow")).removeClass("select-table-selected");
+
+                // set selected row
+                $("#{{id}}").attr("selectedRow", index);
+
+                // select row css
+                $("#listobject" + index).addClass("select-table-selected");
+                $("#listobject" + index).removeClass("select-table-row-hover");
+            }
+        }
+
+        // jQuery plugin for manipulating the selected row
+        // "get"    -- returns the text of the selected row
+        // "delete" -- removes selected row
+        $.fn.selectedRow = function(action) {
+            if (action == "get") {
+                if (this.attr("selectedRow") == "-1") return null;
+                else return $("#listobject" + this.attr("selectedRow")).text();
+            }
+            else if (action == "delete") {
+                if (this.attr("selectedRow") == "-1") return;
+                else {
+                    $("#listobject" + this.attr("selectedRow")).remove();
+                    $("#{{id}} > ol > li").each(function(i, obj) {
+                        $(obj).css("top", 35*i + "px");
+                    });
+                }
+            }
+        }
+
+    </script>
+{% endmacro %}

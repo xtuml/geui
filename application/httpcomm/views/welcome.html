@@ -2,21 +2,27 @@
 
 {% block content %}
 
+    {% from "select-table.html" import selecttable %}
     {% from "button-panel.html" import buttonpanel %}
+
+    {% set techniques = ["Cyclic Voltammetry", "Square Wave Voltammetry"] %}
 
     {% set openview = {
         "labeltext": "Open Experiment",
         "buttonpanel": {
             "leftbuttons": [{
+                "id": "uploadBtn",
                 "text": "  Upload",
                 "icon": "glyphicon-cloud-upload",
                 "hover": "btn-blue"
             }],
             "rightbuttons": [{
+                "id": "deleteBtn",
                 "text": "  Delete",
                 "icon": "glyphicon-trash",
                 "hover": "btn-red"
             }, {
+                "id": "openBtn",
                 "text": "  Open",
                 "icon": "glyphicon-folder-open",
                 "hover": "btn-blue"
@@ -29,6 +35,7 @@
         "buttonpanel": {
             "leftbuttons": [],
             "rightbuttons": [{
+                "id": "createBtn",
                 "text": "  Create",
                 "icon": "glyphicon-pencil",
                 "hover": "btn-blue"
@@ -39,14 +46,14 @@
     <div class="col-xs-6" style="height:60%">
         <div class="app-panel">
             <div class="big-label">{{ openview.labeltext }}</div>
-            <div class="select-table" style="height:calc(100% - 120px)"></div>
+            {{ selecttable(experiments, "openSelectTable", "height:calc(100% - 120px)") }}
             {{ buttonpanel(openview.buttonpanel.leftbuttons, openview.buttonpanel.rightbuttons) }}
         </div>
     </div>
     <div class="col-xs-6" style="height:60%">
         <div class="app-panel">
             <div class="big-label">{{ createview.labeltext }}</div>
-            <div class="select-table" style="height:calc(100% - 120px)"></div>
+            {{ selecttable(techniques, "createSelectTable", "height:calc(100% - 120px)") }}
             {{ buttonpanel(createview.buttonpanel.leftbuttons, createview.buttonpanel.rightbuttons) }}
         </div>
     </div>
@@ -54,4 +61,16 @@
         <div class="app-panel">
         </div>
     </div>
+
+    <script>
+
+        $("#openBtn").click(function() {
+        });
+
+        $("#deleteBtn").click(function() {
+            $("#openSelectTable").selectedRow("delete");
+        });
+
+    </script>
+
 {% endblock %}
