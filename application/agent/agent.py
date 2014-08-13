@@ -169,6 +169,14 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
     def get_points(self):
         return self.current_experiment.graph.get_points()
 
+    # get the graph patterns from the current experiment
+    def get_patterns(self):
+        return self.current_experiment.graph.calculate_pattern_params()
+
+    # get the graph segments from the current experiment
+    def get_segments(self, pattern):
+        return self.current_experiment.graph.contents[pattern].calculate_segment_params()
+
     # create experiment command sent from GUI 
     def create_experiment(self, name):
         from experiment import Experiment

@@ -14,6 +14,8 @@
 {% block content %}
 
     {# Load Widgets #}
+    {% from "pattern-timeline.html" import patterntimeline %}
+    {% from "segment-timeline.html" import segmenttimeline %}
     {% from "button-panel.html" import buttonpanel %}
 
     {# Set config options #}
@@ -61,17 +63,19 @@
     } %}
 
     {# Page definition #}
-    <div class="col-xs-12" style="height:calc((100% - 80px) * 0.6)">
+    <div class="col-xs-12" style="height:calc((100% - 80px) * 0.5)">
         <div class="app-panel">
             <div id="chart_container"></div>
         </div>
     </div>
-    <div class="col-xs-4" style="height:calc((100% - 80px) * 0.4)">
-        <div class="app-panel">
+    <div class="col-xs-4" style="height:calc((100% - 80px) * 0.5)">
+        <div id="patternContainer" class="app-panel">
+            {{ patterntimeline([]) }}
         </div>
     </div>
-    <div class="col-xs-8" style="height:calc((100% - 80px) * 0.4)">
-        <div class="app-panel">
+    <div class="col-xs-8" style="height:calc((100% - 80px) * 0.5)">
+        <div id="segmentContainer" class="app-panel">
+            {{ segmenttimeline([]) }}
         </div>
     </div>
     <div class="col-xs-4" style="height:80px">
@@ -205,9 +209,24 @@
 
         }
 
+        function updatePatterns() {
+            $.get("/get_patterns", null, function(data) {
+                $("#patternContainer").loadWidget("pattern-timeline.html", {patterns: data.patterns});
+            }, "json");
+        }
+
+        function updateSegments() {
+            $.get("/get_segments", {data: JSON.stringify({pattern: 0})}, function(data) {
+                $("#segmentContainer").loadWidget("segment-timeline.html", {segments: data.segments});
+            }, "json");
+        }
+
         $.get("/get_points", null, function(data) {
             updateChart(data.points);
         }, "json");
+
+        updatePatterns();
+        updateSegments();
 
     </script>
 

@@ -27,3 +27,12 @@ class EditorView:
     @view.route("/get_points")
     def get_points():
         return json.dumps({"points": EditorView.httpcomm.get_points()})
+
+    @view.route("/get_patterns")
+    def get_patterns():
+        return json.dumps({"patterns": EditorView.httpcomm.get_patterns()})
+
+    @view.route("/get_segments")
+    def get_segments():
+        data = json.loads(str(request.args.get("data")))
+        return json.dumps({"segments": EditorView.httpcomm.get_segments(data["pattern"])})

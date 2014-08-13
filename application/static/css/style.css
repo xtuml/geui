@@ -42,7 +42,6 @@ Styling sheet for X8 GUI
 }
 
 .select-table {
-    width: calc(100% - 20px);
     margin: 10px;
     background: rgba(44,52,93,0.5);
     overflow-y: scroll;
@@ -56,7 +55,6 @@ Styling sheet for X8 GUI
 }
 
 .btn-square {
-    //width: 50px;
     height: 50px;
 }
 
@@ -97,4 +95,58 @@ Styling sheet for X8 GUI
 
 .select-table-selected {
     background: -webkit-linear-gradient(top, #D5E8F5, #6EAFDC);
+}
+
+.graph-timeline {
+    margin: 10px;
+    background: rgba(44,52,93,0.5);
+    overflow-x: scroll;
+    overflow-y: hidden;
+    border: 1px solid silver;
+}
+
+.graph-timeline-object {
+    position: absolute;
+    height: calc(100% - 10px);
+    width: 200px;
+    margin: 5px;
+    cursor: default;
+    background:
+    radial-gradient(#282828 15%, transparent 16%) 0 0,
+    radial-gradient(#282828 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+    background-color:#404040;
+    background-size:16px 16px;
+    border-radius: 10px;
+    border: 1px solid silver;
+    overflow: hidden;
+}
+
+.timeline-ease {
+    transition: left 0.25s;
+    -webkit-transition: left 0.25s;
+}
+
+.graph-timeline-content {
+    position: static;
+    margin: 10px;
+    padding: 5px;
+    background-image: -webkit-linear-gradient(top, #E5E5E5, #A5A5A5); /* Chrome 10+, Saf5.1+ */
+    border-radius: 5px;
+    //border: 3px solid #55BF3B;
+
+}
+
+.graph-timeline-number {
+    height: 25px;
+    margin-bottom: 10px;
+    font-size: 25px;
+    font-family: Arial;
+    color: black;
+    cursor: default;
+}
+
+.form-group-tight {
+    margin-bottom: 5px;
 }

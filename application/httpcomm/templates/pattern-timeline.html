@@ -1,0 +1,24 @@
+{% macro patterntimeline(patterns) %}
+
+    <div class="graph-timeline" style="height:calc(100% - 20px);position:relative">
+        {% for pattern in patterns %}
+            <div class="graph-timeline-object timeline-ease" style="left:{{205*(loop.index-1)}}px">
+                <div class="graph-timeline-content">
+                    <div class="graph-timeline-number text-center">Pattern {{loop.index}}</div>
+                    <form role="form">
+                        <div class="form-group form-group-tight">
+                            <label class="sr-only" for="repeats{{loop.index - 1}}">Number of Repeats</label>
+                            <input type="text" class="form-control" id="repeats{{loop.index - 1}}" placeholder="Repeat number" value="{{pattern.repeat_value}}">
+                        </div>
+                        <button class="btn btn-default btn-block"><span class="glyphicon glyphicon-refresh"></span>  Update</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endmacro %}
+
+{% if context %}
+    {{ patterntimeline(context.patterns) }}
+{% endif %}

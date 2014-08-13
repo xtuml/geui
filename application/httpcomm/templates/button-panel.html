@@ -27,3 +27,7 @@
         {% endif %}
     </div>
 {% endmacro %}
+
+{% if context %}
+    {{ buttonpanel(context.leftbuttons, context.rightbuttons) }}
+{% endif %}

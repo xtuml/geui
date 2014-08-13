@@ -208,10 +208,16 @@ class CVGraph(experiment.Graph):
                 else:
                     start_time = 0
                 # return repeat_value, start_time, and duration
-                param_list.append([pattern.repeat_value, start_time, pattern.calculate_duration()])
+                param_list.append({
+                    "repeat_value": pattern.repeat_value, 
+                    "start_time": start_time, 
+                    "duration": pattern.calculate_duration()
+                })
 
-        if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
-            self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.load_table, param_list, "pattern"])
+            return param_list
+        else:
+            return []
+
 # --------------------------------------------------------------------------------------------- #
 
 
@@ -305,10 +311,17 @@ class CVPattern:
         if (len(self.contents) != 0):
             param_list = []
             for segment in self.contents:
-                param_list.append([segment.start_value, segment.end_value, segment.rate, segment.duration])
+                param_list.append({
+                    "start_value": segment.start_value,
+                    "end_value": segment.end_value,
+                    "rate": segment.rate,
+                    "duration": segment.duration
+                })
 
-        if self.parent is not None and self.parent.experiment is not None and self.parent.experiment.agent is not None and self.parent.experiment.agent.httpcomm is not None:
-            self.parent.experiment.agent.httpcomm.q.put([self.parent.experiment.agent.httpcomm.load_table, param_list, "segment"])
+            return param_list
+        else:
+            return []
+
 # --------------------------------------------------------------------------------------------- #
 
 

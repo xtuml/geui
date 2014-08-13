@@ -182,6 +182,14 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
     def get_points(self):
         return self.agent.get_points()
 
+    # get the graph patterns from the current experiment
+    def get_patterns(self):
+        return self.agent.get_patterns()
+
+    # get the graph segments from the current experiment
+    def get_segments(self, pattern):
+        return self.agent.get_segments(pattern)
+
     # create experiment command sent from GUI 
     def create_experiment(self, name):
         self.timer = 0
