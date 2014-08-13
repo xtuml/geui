@@ -176,7 +176,11 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
     # open experiment command sent from GUI 
     def open_experiment(self, name):
         self.timer = 0
-        self.agent.q.put([self.agent.open_experiment, name])
+        return self.agent.open_experiment(name)
+
+    # get the graph points from the current experiment
+    def get_points(self):
+        return self.agent.get_points()
 
     # create experiment command sent from GUI 
     def create_experiment(self, name):

@@ -6,6 +6,7 @@ import agent.thread
 from routes.index import IndexView
 from routes.welcome import WelcomeView
 from routes.experiment import ExperimentView
+from routes.editor import EditorView
 
 class Server(agent.thread.Thread):
 
@@ -35,10 +36,12 @@ class Server(agent.thread.Thread):
         IndexView.httpcomm = self.httpcomm
         WelcomeView.httpcomm = self.httpcomm
         ExperimentView.httpcomm = self.httpcomm
+        EditorView.httpcomm = self.httpcomm
 
         self.app.register_blueprint(IndexView.view)
         self.app.register_blueprint(WelcomeView.view)
         self.app.register_blueprint(ExperimentView.view)
+        self.app.register_blueprint(EditorView.view)
 
     def initialize(self):
         self.app.run(use_reloader=False, port=self.port, debug=self.debug)

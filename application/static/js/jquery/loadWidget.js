@@ -5,7 +5,7 @@ $.fn.loadWidget = function(template, context) {
         template: template,
         context: context
     }
-    $.get("/load_widget", {data: JSON.stringify(getData)}, function(data) {
+    $.post("/load_widget/", {data: JSON.stringify(getData)}, function(data) {
         target.empty().append(data);
     });
 }

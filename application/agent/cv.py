@@ -77,8 +77,7 @@ class CVGraph(experiment.Graph):
             points.append([vertex.x, vertex.y])
 
         # return reply
-        if self.experiment is not None and self.experiment.agent is not None and self.experiment.agent.httpcomm is not None:
-            self.experiment.agent.httpcomm.q.put([self.experiment.agent.httpcomm.update_graph, points])
+        return points
 
     def translate(self, wave_type=0):                                   # defaults to linear segment model
 

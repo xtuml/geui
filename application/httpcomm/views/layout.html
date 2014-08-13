@@ -11,7 +11,7 @@
         <title> EC Analyzer</title>
 
         <!-- favicon -->
-        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}?v=1.0">
 
         <!-- SCRIPTS INCLUDED -->
         
@@ -40,13 +40,13 @@
         <div class="app-background">
         <div class="container-fluid" style="margin:5px">
             <div class="row" style="height:65px">
-                <div class="col-xs-12">
-                    {% block header %}
+                {% block header %}
+                    <div class="col-xs-12">
                         <div class="app-panel">
                             <img class="img-responsive pull-right" alt="banner.png" src="/static/img/banner.png">
                         </div>
-                    {% endblock %}
-                </div>
+                    </div>
+                {% endblock %}
             </div>
             <div class="row" style="height:calc(100% - 75px)">
                 {% block content %}

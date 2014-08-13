@@ -15,9 +15,13 @@ class IndexView:
     def index():
         return redirect("/welcome")
 
-    @view.route("/load_widget/", methods=["GET"])
+    @view.app_errorhandler(404)
+    def not_found(err):
+        return redirect("/")
+
+    @view.route("/load_widget/", methods=["POST"])
     def load_widget():
-        data = json.loads(str(request.args.get("data")))
+        data = json.loads(str(request.form.get("data")))
         return render_template(str(data["template"]), context=data["context"])
 
     @view.route("/command/", methods=["GET"])
@@ -43,12 +47,6 @@ class IndexView:
     def table():
         data = request.form
         IndexView.httpcomm.q.put([IndexView.httpcomm.request_table, data["table_id"], int(data["position"])])
-        return ""
-
-    @view.route("/open/", methods=["POST"])
-    def open():
-        data = request.form
-        IndexView.httpcomm.q.put([IndexView.httpcomm.open_experiment, data["name"]])
         return ""
 
     @view.route("/delete/", methods=["POST"])

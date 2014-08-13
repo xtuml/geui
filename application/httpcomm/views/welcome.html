@@ -73,6 +73,7 @@
         $("#openBtn").click(function() {
             // open experiment
             console.log($("#openSelectTable").selectedRow("get"));
+            window.location.href = "/editor/" + $("#openSelectTable").selectedRow("get");
         });
 
         $("#deleteBtn").click(function() {

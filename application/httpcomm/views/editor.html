@@ -1,0 +1,214 @@
+﻿{% extends "layout.html" %}
+
+{# Define Header #}
+{% block header %}
+    <div class="col-xs-12">
+        <div class="app-panel">
+            <img class="img-responsive pull-right" alt="banner.png" src="/static/img/banner.png">
+            <div class="big-label">{{ name }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{# Define Content #}
+{% block content %}
+
+    {# Load Widgets #}
+    {% from "button-panel.html" import buttonpanel %}
+
+    {# Set config options #}
+    {% set patternbuttonview = {
+        "buttonpanel": {
+            "leftbuttons": [{
+                "id": "addPatternBtn",
+                "text": "  Add",
+                "icon": "glyphicon-plus",
+                "hover": "btn-blue"
+            },{
+                "id": "removePatternBtn",
+                "text": "  Remove",
+                "icon": "glyphicon-remove",
+                "hover": "btn-red"
+            }],
+            "rightbuttons": []
+        }
+    } %}
+    {% set segmentbuttonview = {
+        "buttonpanel": {
+            "leftbuttons": [{
+                "id": "addSegmentBtn",
+                "text": "  Add",
+                "icon": "glyphicon-plus",
+                "hover": "btn-blue"
+            },{
+                "id": "removeSegmentBtn",
+                "text": "  Remove",
+                "icon": "glyphicon-remove",
+                "hover": "btn-red"
+            }],
+            "rightbuttons": [{
+                "id": "saveBtn",
+                "text": "  Save",
+                "icon": "glyphicon-floppy-disk",
+                "hover": "btn-blue"
+            },{
+                "id": "backBtn",
+                "text": "  Back",
+                "icon": "glyphicon-arrow-right",
+                "hover": "btn-blue"
+            }]
+        }
+    } %}
+
+    {# Page definition #}
+    <div class="col-xs-12" style="height:calc((100% - 80px) * 0.6)">
+        <div class="app-panel">
+            <div id="chart_container"></div>
+        </div>
+    </div>
+    <div class="col-xs-4" style="height:calc((100% - 80px) * 0.4)">
+        <div class="app-panel">
+        </div>
+    </div>
+    <div class="col-xs-8" style="height:calc((100% - 80px) * 0.4)">
+        <div class="app-panel">
+        </div>
+    </div>
+    <div class="col-xs-4" style="height:80px">
+        <div class="app-panel">
+            {{ buttonpanel(patternbuttonview.buttonpanel.leftbuttons, patternbuttonview.buttonpanel.rightbuttons) }}
+        </div>
+    </div>
+    <div class="col-xs-8" style="height:80px">
+        <div class="app-panel">
+            {{ buttonpanel(segmentbuttonview.buttonpanel.leftbuttons, segmentbuttonview.buttonpanel.rightbuttons) }}
+        </div>
+    </div>
+
+    {# Page javascript #}
+    <script>
+
+        $("#backBtn").click(function() {
+            window.location.href = "/welcome";
+        });
+
+        // WAVEFORM CHART
+        var chart;
+
+        //chart options
+        var options = {
+            chart: {
+                renderTo: "chart_container",
+                type: "line",
+                style: {
+                    margin: "0 auto"
+                },
+                zoomType: "xy"
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            title: {
+                text:null 
+            },
+            xAxis: {
+                title: {
+                    enabled: false
+                },
+                labels: {
+                    formatter: function() {
+                        return this.value + " s";
+                    }
+                },
+                showLastLabel: true
+            },
+            yAxis: {
+                title: {
+                    text:null 
+                },
+                labels: {
+                    formatter: function() {
+                        return this.value + " mV";
+                    }
+                },
+                lineWidth: 2
+            },
+            legend: {
+                enabled: false
+            },
+            /*/
+            tooltip: {
+                formatter: function() {
+                    return ""+this.x+", "+ this.y +"s";
+                }
+            },
+            /*/
+            plotOptions: {
+                line: {
+                    animation: false 
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            series: [{
+                color: "#07F862",
+                data: []
+            }]
+        };
+
+        chart = new Highcharts.Chart(options);
+
+        function updateChart(points) {
+
+            //add points
+            if (points != null){
+                var options = {
+                    color: "#07F862",
+                    marker: {
+                        enabled: true,
+                        symbol: "circle",
+                        states: {
+                            select: {
+                                fillColor: "red"
+                            }
+                        }
+                    },
+                    states: {
+                        hover: {
+                            enabled: false
+                        }
+                    },
+                    data: points
+                }
+                this.chart.series[0].remove(false);
+                this.chart.addSeries(options);
+            }
+
+            /*
+            //update band
+            var pattern = this.panel.gui.panels[this.panel.gui.config.views["WaveformTablePatterns"]].view.selected_row;
+            if (pattern != -1){
+                this.updateBand(pattern);
+            }
+
+            //update segment band
+            var position = this.highlighted_segment
+            if (this.highlighted_segment != -1){
+                this.removeSegmentBand(this.highlighted_segment);
+            }
+            this.addSegmentBand(position);
+            */
+
+        }
+
+        $.get("/get_points", null, function(data) {
+            updateChart(data.points);
+        }, "json");
+
+    </script>
+
+{% endblock %}
