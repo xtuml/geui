@@ -2,6 +2,7 @@ from flask import request, render_template, Blueprint, redirect
 import threading
 import logging
 import time
+import json
 
 # index view
 class IndexView:
@@ -13,6 +14,11 @@ class IndexView:
     @view.route("/")
     def index():
         return redirect("/welcome")
+
+    @view.route("/load_widget/", methods=["GET"])
+    def load_widget():
+        data = json.loads(str(request.args.get("data")))
+        return render_template(str(data["template"]), context=data["context"])
 
     @view.route("/command/", methods=["GET"])
     def command():
@@ -31,11 +37,6 @@ class IndexView:
     @view.route("/save/", methods=["POST"])
     def save():
         IndexView.httpcomm.q.put([IndexView.httpcomm.save_experiment])
-        return ""
-
-    @view.route("/get_experiments/", methods=["GET"])
-    def get_experiments():
-        IndexView.httpcomm.q.put([IndexView.httpcomm.get_experiments])
         return ""
 
     @view.route("/table/", methods=["POST"])

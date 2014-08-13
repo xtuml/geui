@@ -166,7 +166,7 @@ class HTTPcomm(agent.thread.Thread, eihttp.EIhttp):
     # get experiments command sent from GUI 
     def get_experiments(self):
         self.timer = 0
-        self.agent.q.put([self.agent.get_experiments])
+        return self.agent.get_experiments()
 
     # request table command sent from GUI 
     def request_table(self, table_id, position):

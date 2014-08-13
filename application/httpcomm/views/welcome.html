@@ -2,11 +2,11 @@
 
 {% block content %}
 
+    {# Load Widgets #}
     {% from "select-table.html" import selecttable %}
     {% from "button-panel.html" import buttonpanel %}
 
-    {% set techniques = ["Cyclic Voltammetry", "Square Wave Voltammetry"] %}
-
+    {# Set config options #}
     {% set openview = {
         "labeltext": "Open Experiment",
         "buttonpanel": {
@@ -43,17 +43,22 @@
         }
     } %}
 
+    {# Page definition #}
     <div class="col-xs-6" style="height:60%">
         <div class="app-panel">
             <div class="big-label">{{ openview.labeltext }}</div>
-            {{ selecttable(experiments, "openSelectTable", "height:calc(100% - 120px)") }}
+            <div id="openTableContainer">
+                {{ selecttable([], "openSelectTable", "calc(100% - 120px)") }}
+            </div>
             {{ buttonpanel(openview.buttonpanel.leftbuttons, openview.buttonpanel.rightbuttons) }}
         </div>
     </div>
     <div class="col-xs-6" style="height:60%">
         <div class="app-panel">
             <div class="big-label">{{ createview.labeltext }}</div>
-            {{ selecttable(techniques, "createSelectTable", "height:calc(100% - 120px)") }}
+            <div id="createTableContainer">
+                {{ selecttable([], "createSelectTable", "calc(100% - 120px)") }}
+            </div>
             {{ buttonpanel(createview.buttonpanel.leftbuttons, createview.buttonpanel.rightbuttons) }}
         </div>
     </div>
@@ -62,14 +67,39 @@
         </div>
     </div>
 
+    {# Page javascript #}
     <script>
 
         $("#openBtn").click(function() {
+            // open experiment
+            console.log($("#openSelectTable").selectedRow("get"));
         });
 
         $("#deleteBtn").click(function() {
+            // delete experiment
             $("#openSelectTable").selectedRow("delete");
         });
+
+        $("#createBtn").click(function() {
+            // create experiment
+            console.log($("#createSelectTable").selectedRow("get"));
+        });
+
+        // load open table with available experiments
+        function loadExperiments() {
+            $.get("/get_experiments", null, function(data) {
+                $("#openTableContainer").loadWidget("select-table.html", {listobjects:data.experiments, id:"openSelectTable", height:"calc(100% - 120px)"});
+            }, "json");
+        }
+
+        // load technique table with available techniques
+        function loadTechniques() {
+            var techniques = ["Cyclic Voltammetry", "Square Wave Voltammetry"];
+            $("#createTableContainer").loadWidget("select-table.html", {listobjects:techniques, id:"createSelectTable", height:"calc(100% - 120px)"});
+        }
+
+        loadExperiments();
+        loadTechniques();
 
     </script>
 

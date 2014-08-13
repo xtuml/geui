@@ -138,8 +138,8 @@ class Agent(thread.Thread, eicomm.eibus.EIbus, httpcomm.eihttp.EIhttp):
 
     # get experiments command sent from GUI 
     def get_experiments(self):
-        if self.httpcomm is not None:
-            self.httpcomm.q.put([self.httpcomm.load_experiments, self.experiment_list.names])
+        return self.experiment_list.names
+
 
     # request table command sent from GUI 
     def request_table(self, table_id, position):

@@ -1,24 +1,29 @@
 {% macro buttonpanel(leftbuttons=[], rightbuttons=[]) %}
-    <div class="btn-panel">
-        <div class="pull-left">
-            {% for button in leftbuttons %}
-                <button id="{{button.id}}" class="btn btn-default btn-square {{button.hover}} icon-50">
-                    {% if button.icon %}
-                        <span class="glyphicon {{button.icon}}"></span>
-                    {% endif %}
-                    {{ button.text }}
-                </button>
-            {% endfor %}
-        </div>
-        <div class="pull-right">
-            {% for button in rightbuttons %}
-                <button id="{{button.id}}" class="btn btn-default btn-square {{button.hover}} icon-50">
-                    {% if button.icon %}
-                        <span class="glyphicon {{button.icon}}"></span>
-                    {% endif %}
-                    {{ button.text }}
-                </button>
-            {% endfor %}
-        </div>
+
+    <div class="btn-panel" style="{{style}}">
+        {% if leftbuttons|length > 0 %}
+            <div class="pull-left">
+                {% for button in leftbuttons %}
+                    <button id="{{button.id}}" class="btn btn-default btn-square {{button.hover}} icon-50">
+                        {% if button.icon %}
+                            <span class="glyphicon {{button.icon}}"></span>
+                        {% endif %}
+                        {{ button.text }}
+                    </button>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if rightbuttons|length > 0 %}
+            <div class="pull-right">
+                {% for button in rightbuttons %}
+                    <button id="{{button.id}}" class="btn btn-default btn-square {{button.hover}} icon-50">
+                        {% if button.icon %}
+                            <span class="glyphicon {{button.icon}}"></span>
+                        {% endif %}
+                        {{ button.text }}
+                    </button>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 {% endmacro %}
